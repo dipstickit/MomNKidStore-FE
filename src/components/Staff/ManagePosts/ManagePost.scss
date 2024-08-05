@@ -1,0 +1,45 @@
+.spinner-post {
+  margin-top: 30%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.manage-post-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10%;
+
+  .create-post-btn {
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    border-radius: 15px;
+    text-decoration: none;
+    background-color: #1481e1;
+    color: #fff;
+  }
+
+  .table-post {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .action {
+    .action-btn {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button {
+      // margin: 0 5px;
+      padding: 5px 10px;
+      border: none;
+      background-color: none;
+      border-radius: 10px;
+    }
+  }
+}

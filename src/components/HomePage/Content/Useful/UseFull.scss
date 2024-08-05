@@ -1,0 +1,41 @@
+.use_container{
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+
+.usefull_container {
+  display: flex;
+  justify-content: space-between;
+
+  .usefull_detail {
+    width: 24%;
+    padding: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    transition: transform 0.5s, box-shadow 0.5s;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .usefull-img-container {
+      width: 100%;
+      height: 60%;
+      border-radius: 10px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+}
+}

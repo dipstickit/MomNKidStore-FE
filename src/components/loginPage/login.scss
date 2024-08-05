@@ -1,0 +1,128 @@
+$dark: #81c408;
+$gray: #9f9e9e;
+$blue: #98aa8bcf;
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f7f6;
+  background-image: url('https://res.cloudinary.com/dmyyf65yy/image/upload/v1722849256/2a9c4873f5703f4fb21aea7b7d704bdb_fufvrm.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.login-form {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: $dark;
+}
+
+.login-info {
+  margin-bottom: 20px;
+}
+
+.login-detail {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 2px solid $dark;
+  padding: 5px 0;
+  position: relative;
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  svg {
+    margin-right: 10px;
+    color: $gray;
+  }
+
+  .eyes {
+    cursor: pointer;
+  }
+
+  .error {
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    color: red;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+}
+
+.other {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  a {
+    color: $dark;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.login-btn {
+  width: 100%;
+  background-color: $dark;
+  color: white;
+  border: none;
+  padding: 12px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: darken($dark, 10%);
+  }
+}
+
+.additional-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+
+  .btn-secondary {
+    display: flex;
+    align-items: center;
+    color: white;
+    background-color: $blue;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: darken($blue, 10%);
+    }
+
+    .home-icon {
+      margin-right: 8px;
+    }
+  }
+}

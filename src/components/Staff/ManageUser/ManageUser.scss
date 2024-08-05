@@ -1,0 +1,55 @@
+.spinner-user{
+    margin-top: 30%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+.user {
+    width: 80%;
+    margin: 120px auto 0; 
+    box-shadow: 1px 1px 10px 5px rgba(180, 177, 177, 0.989); 
+    background-color: #fff; 
+
+    .user-th {
+        height: 40px;
+        background-color: #f8f9fa;
+        text-align: center;
+        font-weight: bold;
+        font-size: 17px;
+        line-height: 40px; 
+        border-bottom: 1px solid #ddd; 
+
+        .table-user-th {
+            width: 100%;
+            padding: 6px;
+            table-layout: fixed;
+        }
+    }
+
+    .user-tb {
+        height: 400px;
+        overflow: auto;
+
+        .table-user-tb {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            table-layout: fixed; 
+            tr:nth-child(even) {
+                background-color: #dcdee3;
+            }
+
+            td {
+                padding: 20px;
+                text-align: center;
+            }
+        }
+    }
+
+    .action-btn {
+        background: none;
+        border: none;
+        font-size: 16px;
+    }
+}
+

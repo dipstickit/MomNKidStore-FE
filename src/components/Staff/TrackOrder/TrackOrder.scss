@@ -1,0 +1,107 @@
+.spinner-track {
+    margin-top: 30%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+.track {
+    width: 80%;
+    margin: 100px auto 0; 
+    box-shadow: 1px 1px 10px 5px rgba(180, 177, 177, 0.989); 
+    background-color: #fff; 
+
+    
+
+    .track-th {
+        height: 40px;
+        background-color: #f8f9fa;
+        text-align: center;
+        font-weight: bold;
+        font-size: 17px;
+        line-height: 40px; 
+        border-bottom: 1px solid #ddd; 
+
+        .table-track-th {
+            width: 100%;
+            padding: 6px;
+            table-layout: fixed;
+        }
+    }
+
+    .track-tb {
+        height: 475px;
+        overflow: auto;
+
+        .table-track-tb {
+            width: 100%;
+            padding: 10px;
+            font-size: 15px;
+            table-layout: fixed; 
+            tr:nth-child(even) {
+                background-color: #dcdee3;
+            }
+
+            td {
+                padding: 10px 10px 10px 30px;
+                text-align: center;
+            }
+
+            .status-cancel {
+                color: #dc3545;
+            }
+
+            .status-paid {
+                color: #ff4d00;
+            }
+    
+            .status-complete {
+                color: #28a745;
+            }
+    
+            .status-pending {
+                color: #ffc107;
+            }
+    
+            .status-delivered {
+                color: #a304ff;
+            }
+    
+            .status-confirm {
+                color: #048cfc;
+            }
+    
+            .status-dot {
+                display: inline-block;
+                width: 10px;
+                height: 10px; 
+                border-radius: 50%;
+                margin-right: 5px;
+            }
+                
+            .status-cancel .status-dot {
+                background-color: #dc3545;
+            }
+
+            .status-paid .status-dot {
+                background-color: #ff4d00;
+            }
+    
+            .status-complete .status-dot {
+                background-color: #28a745;
+            }
+    
+            .status-pending .status-dot {
+                background-color: #ffc107;
+            }
+    
+            .status-delivered .status-dot {
+                background-color: #a304ff;
+            }
+    
+            .status-confirm .status-dot {
+                background-color: #048cfc;
+            }
+        }
+    }
+}

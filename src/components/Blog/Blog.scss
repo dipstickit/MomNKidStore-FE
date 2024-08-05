@@ -1,0 +1,44 @@
+.blog-container {
+  margin-top: 90px;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: start;
+  background-color: white;
+  margin-bottom: 20px;
+  border-radius: 10px;
+
+  .link {
+    text-decoration: none;
+  }
+
+  .content-card {
+    height: 420px;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+
+    .content-container {
+      height: 50%;
+
+      .blog-content {
+        height: 60px;
+        overflow: hidden;
+        font-size: small;
+      }
+    }
+  }
+
+  .img-container {
+    height: 60%;
+    width: 100%;
+
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+  }
+}

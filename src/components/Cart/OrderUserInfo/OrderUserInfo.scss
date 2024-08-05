@@ -1,0 +1,70 @@
+.fixed-cart {
+  margin-left: 20px;
+
+  .box-block {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: white;
+
+    .box-block-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .user-address {
+      margin-top: 15px;
+      .show-phone-address {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      span {
+        font-size: medium;
+      }
+
+      .custom-button {
+        border: none;
+        background-color: white;
+        color: lightgray;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .custom-button.checked {
+        color: black;
+      }
+
+      .custom-button .number {
+        margin-right: 10px;
+      }
+
+      .custom-button .checkmark {
+        font-size: 20px;
+        color: lightgray;
+      }
+
+      .custom-button.checked .checkmark {
+        color: black;
+      }
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+
+      span {
+        font-weight: bold;
+      }
+    }
+
+    .btn-order {
+      width: 100%;
+    }
+  }
+}
+
