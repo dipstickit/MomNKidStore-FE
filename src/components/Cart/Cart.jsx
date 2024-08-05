@@ -21,7 +21,6 @@ export default function Cart() {
       <div className="title">
         <h1>Giỏ hàng</h1>
         <button onClick={handleClick} className="button-62">
-          {" "}
           <FaLongArrowAltLeft /> Tiếp tục mua hàng
         </button>
       </div>

@@ -208,7 +208,7 @@ function App() {
         <Route path="/order-payment" element={<OrderPayment />} />
 
         {/* catch all */}
-        <Route path="*" element={<div>There is nothing here</div>} />
+        <Route path="*" element={<div>Không có gì ở đây</div>} />
       </Routes>
     </BrowserRouter>
   );

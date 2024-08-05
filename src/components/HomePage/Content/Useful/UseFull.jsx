@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./UseFull.scss";
-import { listUsefull } from "./UsefullList";
-import { FaRegEye } from "react-icons/fa";
-import { IoIosArrowDropright } from "react-icons/io";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { MainAPI } from "../../../API";
 import { convertSQLDate } from "../../../../utils/Format";
+import { IoIosArrowDropright } from "react-icons/io";
 
 export default function UseFull() {
   const [blogs, setBlogs] = useState([]);
   useEffect(() => {
     axios
-      .get(`${MainAPI}/user/show-top-4-post`)
+      .get(`http://localhost:5000/posts`)
       .then((res) => {
         setBlogs(res.data);
       })
@@ -31,7 +29,7 @@ export default function UseFull() {
               to={"/blogs"}
               style={{
                 textDecoration: "none",
-                color: "FF3E9F",
+                color: "#FF3E9F",
               }}
             >
               Xem tất cả <IoIosArrowDropright />
@@ -39,31 +37,29 @@ export default function UseFull() {
           </span>
         </div>
         <div className="usefull_container ">
-          {blogs.map((usefull) => {
-            return (
-              <Link
-                to={`/blogs/post/${usefull.post_id}`}
-                className="usefull_detail"
-                key={usefull.post_id}
+          {blogs.map((usefull) => (
+            <Link
+              to={`/blogs/post/${usefull.post_id}`}
+              className="usefull_detail"
+              key={usefull.post_id}
+            >
+              <div className="usefull-img-container">
+                <img src={usefull.image_url} alt={usefull.title} />
+              </div>
+              <p
+                className="fw-bold mt-2"
+                style={{ lineHeight: "17px", fontSize: "14px" }}
               >
-                <div className="usefull-img-container">
-                  <img src={usefull.image_url} />
-                </div>
-                <p
-                  className="fw-bold mt-2"
-                  style={{ lineHeight: "17px", fontSize: "14px" }}
-                >
-                  {usefull.title}
-                </p>
-                <p className="mt-auto d-flex justify-content-between">
-                  <span> {convertSQLDate(usefull.post_date)}</span>
-                  <span className="fs-5">
-                    <IoIosArrowDropright />
-                  </span>
-                </p>
-              </Link>
-            );
-          })}
+                {usefull.title}
+              </p>
+              <p className="mt-auto d-flex justify-content-between">
+                <span> {convertSQLDate(usefull.post_date)}</span>
+                <span className="fs-5">
+                  <IoIosArrowDropright />
+                </span>
+              </p>
+            </Link>
+          ))}
         </div>
       </div>
     </div>

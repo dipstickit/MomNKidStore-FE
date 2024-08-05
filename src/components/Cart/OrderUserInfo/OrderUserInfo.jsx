@@ -12,7 +12,6 @@ import { FaBitcoin } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 export default function OrderUserInfo() {
-  /* USESTATE */
   const [show, setShow] = useState(false);
   const [listOfVoucherById, setListOfVoucherById] = useState([]);
   const [isUsedVoucher, setIsUsedVoucher] = useState(false);
@@ -30,7 +29,6 @@ export default function OrderUserInfo() {
   const [address, setAddress] = useState("");
   const [error, setError] = useState("");
 
-  /* USECONTEXT */
   const { orderInfomation, setOrderInfomation } = useOrder();
   const { cartList } = useContext(CartContext);
   const { auth } = useAuth();
@@ -307,7 +305,7 @@ export default function OrderUserInfo() {
                 closeModal={() => {
                   setShow(false);
                 }}
-                onSubmit={() => {}}
+                onSubmit={() => { }}
                 errors={[]}
               />
             )}

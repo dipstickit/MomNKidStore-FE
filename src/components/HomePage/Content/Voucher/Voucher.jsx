@@ -3,12 +3,11 @@ import "./Voucher.scss";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import axios from "axios";
-import { MainAPI } from "../../../API";
-import useAuth from "../../../../hooks/useAuth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
+import useAuth from "../../../../hooks/useAuth";
 
 export default function Voucher() {
   const [voucherList, setVoucherList] = useState([]);
@@ -22,9 +21,9 @@ export default function Voucher() {
 
   useEffect(() => {
     axios
-      .get(`${MainAPI}/user/show-all-voucher`)
+      .get(`http://localhost:5000/vouchers`)
       .then((res) => {
-        setVoucherList(res.data.vouchers.vouchers);
+        setVoucherList(res.data.vouchers);
         setLoading(false);
       })
       .catch((err) => {
@@ -37,7 +36,7 @@ export default function Voucher() {
     try {
       axios
         .post(
-          `${MainAPI}/user/claim-voucher`,
+          `http://localhost:5000/user/claim-voucher`,
           {
             user_id: auth.user.user_id,
             voucher_id: parseInt(e.target.value),
@@ -134,6 +133,7 @@ export default function Voucher() {
           ))}
         </Slide>
       )}
+      <ToastContainer />
     </div>
   );
 }

@@ -1,6 +1,4 @@
 export const categoryList = [
-  // { id: 1, title: "Sữa Úc", country: "Australia " },
-  // { id: 2, title: "Sữa Canada", country: "Canada" },
   { id: 3, title: "Sữa Nhật", country: "Japan" },
   { id: 4, title: "Sữa Pháp", country: "France " },
   { id: 5, title: "Sữa Đức", country: "Germany " },
