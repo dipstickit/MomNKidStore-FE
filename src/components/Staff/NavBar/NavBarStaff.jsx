@@ -50,7 +50,7 @@ export default function NavBarStaff() {
             </div>
 
             <div>
-                <button className="btn btn-primary"
+                <button className="btn btn-secondary"
                     style={{ textAlign: 'center', borderRadius: '50px', border: 'none' }}
                     onClick={handleLogout}
                 >

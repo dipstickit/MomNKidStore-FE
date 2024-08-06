@@ -1,37 +1,9 @@
-// .dashboard_container {
-//   // display: flex;
-
-//   .content {
-//     width: 90%;
-//     margin: 0 20px;
-//     height: 100%;
-//     margin-left: 240px;
-
-//     .col {
-//       margin: 20px;
-//       width: 300px;
-
-//       .card {
-//         width: 100%;
-//         box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-//         border-radius: 10px;
-//         padding: 10px;
-//       }
-
-//       .card-content {
-//         display: flex;
-//         flex-direction: row;
-
-//         .icon {
-//           display: flex;
-//           justify-content: center;
-//           align-items: center;
-//           font-size: 2rem;
-//         }
-//       }
-//     }
-//   }
-// }
+$background-color: #ffffff;
+$text-color: #000000;
+$border-color: #e0e0e0;
+$hover-border-color: #ccc;
+$hover-background-color: #f9f9f9;
+$icon-color: #777777;
 
 .dashboard_container {
   height: 100vh;
@@ -41,37 +13,73 @@
 
   .dashboard-content {
     flex: 1;
-    background-color: #ffffff;
+    background-color: $background-color;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     display: flex;
     flex-direction: column;
+    color: $text-color;
 
     h1 {
       font-size: 2rem;
-      color: #333333;
+      color: $text-color;
     }
 
     .d-flex {
       margin-bottom: 20px;
+      justify-content: space-between;
+      align-items: center;
+
+      .date-picker-container {
+        display: flex;
+        gap: 10px;
+      }
+
+      .date-picker {
+        padding: 8px 12px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 1rem;
+        color: $text-color;
+        background-color: $background-color;
+        cursor: pointer;
+        transition: border-color 0.3s, background-color 0.3s;
+
+        &:hover {
+          border-color: $hover-border-color;
+          background-color: $hover-background-color;
+        }
+
+        &:focus {
+          border-color: #999;
+          outline: none;
+        }
+      }
     }
 
     .row {
       flex: 0.5;
       margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
 
       .card {
-        background-color: #ffffff;
-        border: 1px solid #e0e0e0;
+        background-color: $background-color;
+        border: 1px solid $border-color;
         border-radius: 10px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         display: flex;
         align-items: center;
-        margin-bottom: 10px;
         padding: 10px;
         flex: 1;
         justify-content: space-between;
+        transition: transform 0.3s, box-shadow 0.3s;
+
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
 
         .card-body {
           display: flex;
@@ -82,13 +90,14 @@
 
           .card-title {
             font-size: 1.25rem;
-            color: #555555;
+            color: $text-color;
             margin-bottom: 10px;
+            font-weight: bold;
           }
 
           div {
             font-size: 1.25rem;
-            color: #333333;
+            color: $text-color;
           }
         }
 
@@ -97,48 +106,13 @@
           align-items: center;
           justify-content: center;
           font-size: 2.5rem;
-          color: #777777;
+          color: $icon-color;
         }
       }
     }
 
     .chart {
-      // flex: 1;
       margin-top: 20px;
     }
   }
 }
-
-// @media (max-width: 768px) {
-//   .content {
-//     padding: 10px;
-
-//     h1 {
-//       font-size: 1.5rem;
-//       margin-bottom: 15px;
-//     }
-
-//     .row .card {
-//       flex-direction: column;
-//       align-items: flex-start;
-
-//       .card-body {
-//         flex-direction: row;
-//         align-items: center;
-
-//         .card-title {
-//           font-size: 1rem;
-//           margin-bottom: 5px;
-//         }
-
-//         div {
-//           font-size: 1.25rem;
-//         }
-//       }
-
-//       .icon {
-//         font-size: 2rem;
-//       }
-//     }
-//   }
-// }
