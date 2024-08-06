@@ -36,7 +36,7 @@
             text-align: center;
             border-radius: 8px;
             padding: 10px;
-            background-color: #1481e1;
+            background-color: #717e88;
             color: white;
             transition: background-color 0.3s, box-shadow 0.3s;
             font-size: 1em;
@@ -47,15 +47,16 @@
                 display: block;
             }
         }
+
         .staff_playout:first-child {
-                margin-top: 20px;
+            margin-top: 20px;
         }
 
         .staff_playout:hover {
-            background-color: #1d6fad;
+            background-color: #5e666c;
             box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
         }
-        
+
     }
 
     .line {
@@ -64,6 +65,3 @@
         border-top: 1px solid #ddd;
     }
 }
-
-
-
