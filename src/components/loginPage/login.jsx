@@ -10,6 +10,21 @@ import useAuth from "../../hooks/useAuth";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
+function parseJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error("Invalid token");
+    return null;
+  }
+}
+
 function Login() {
   const { setAuth } = useAuth();
   const nav = useNavigate();
@@ -29,26 +44,45 @@ function Login() {
       password: Yup.string().required("Vui lòng nhập mật khẩu"),
     }),
     onSubmit: async (values) => {
-      const response = await login(values.email, values.password);
-      if (response.status === 200) {
-        const user = response.user;
-        const role = response.user.role_id;
-        const accessToken = response.accessToken;
+      try {
+        const response = await login(values.email, values.password);
+        console.log("API Response: ", response);
 
-        setAuth({ user, role, accessToken });
-        localStorage.setItem("accessToken", JSON.stringify(response.accessToken));
-        localStorage.setItem("auth", JSON.stringify({ user, role, accessToken }));
-        if (role === "admin") {
-          nav("/admin");
-        } else if (role === "staff") {
-          nav("/staff");
-        } else if (role === "customer") {
-          nav("/home");
+        if (response.accessToken) {
+          const accessToken = response.accessToken;
+
+          try {
+            // Tự giải mã token để lấy role
+            const decodedToken = parseJwt(accessToken);
+            if (!decodedToken) {
+              throw new Error("Token is invalid");
+            }
+            console.log("Decoded Token: ", decodedToken);
+            const role = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+            console.log("Role: ", role);
+
+            setAuth({ accessToken });
+            localStorage.setItem("auth", JSON.stringify({ accessToken }));
+
+            if (role === "1") {
+              nav("/admin");
+            } else if (role === "2") {
+              nav("/staff");
+            } else if (role === "3") {
+              nav("/");
+            } else {
+              nav(from, { replace: true });
+            }
+          } catch (error) {
+            console.error("Error decoding token: ", error);
+            toast.error("Invalid token");
+          }
         } else {
-          nav(from, { replace: true });
+          toast.error(response.message || "Login failed");
         }
-      } else {
-        toast.error(response.message);
+      } catch (error) {
+        console.error("Login error: ", error);
+        toast.error("Login failed due to server error");
       }
     },
   });
@@ -58,16 +92,19 @@ function Login() {
   };
 
   const login = async (email, password) => {
-    const data = await fetch(`${MainAPI}/user/login`, {
+    const response = await fetch(`${MainAPI}/Auth/auth`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
-    }).then((res) => {
-      return res.json();
     });
-    return data;
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
   };
 
   return (
