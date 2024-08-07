@@ -1,3 +1,21 @@
+.create-voucher-btn {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5%;
+    margin-bottom: 5px;
+
+    .btn-primary {
+        border: 1px solid #717e88;
+        background-color: #717e88;
+        border-radius: 20px;
+        padding: 10px 20px;
+        color: #fff;
+        cursor: pointer;
+        text-align: center;
+    }
+}
+
+
 .spinner-voucher {
     margin-top: 30%;
     text-align: center;
@@ -7,9 +25,9 @@
 
 .voucher {
     width: 80%;
-    margin: 2% auto 0; 
-    box-shadow: 1px 1px 10px 5px rgba(180, 177, 177, 0.989); 
-    background-color: #fff; 
+    margin: 2% auto 0;
+    box-shadow: 1px 1px 10px 5px rgba(180, 177, 177, 0.989);
+    background-color: #fff;
 
     .voucher-th {
         height: 40px;
@@ -17,8 +35,8 @@
         text-align: center;
         font-weight: bold;
         font-size: 17px;
-        line-height: 40px; 
-        border-bottom: 1px solid #ddd; 
+        line-height: 40px;
+        border-bottom: 1px solid #ddd;
 
         .table-voucher-th {
             width: 100%;
@@ -35,7 +53,8 @@
             width: 100%;
             padding: 10px;
             font-size: 15px;
-            table-layout: fixed; 
+            table-layout: fixed;
+
             tr:nth-child(even) {
                 background-color: #dcdee3;
             }
@@ -64,4 +83,3 @@
         margin-left: 10px;
     }
 }
-
