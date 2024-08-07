@@ -142,7 +142,8 @@ import CreateProduct from "./components/Staff/ProductManagement/CreateProduct";
 import { useEffect } from "react";
 import EditVoucher from "./components/Staff/CreateVoucher/EditVoucher";
 import EditCategory from "./components/Staff/ManageCategory/EditCategory";
-
+import EditPost from "./components/Staff/ManagePosts/EditPost/EditPost";
+import ModalCreatePost from "./components/Staff/ManagePosts/ModalCreatePost/ModalCreatePost";
 function App() {
   useEffect(() => {
     // Function to handle the beforeunload event
@@ -205,6 +206,9 @@ function App() {
         <Route path="/edit-category/:categoryId" element={<EditCategory />} />
         <Route path="/edit-product/:productId" element={<EditProduct />} />
         <Route path="/create-product" element={<CreateProduct />} />
+        <Route path="/create-blog" element={<ModalCreatePost />} />
+        <Route path="/edit-blog/:blogId" element={<EditPost />} />
+
 
         {/* additional public routes */}
         <Route path="/cart" element={<Cart />} />

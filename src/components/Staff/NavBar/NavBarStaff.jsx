@@ -61,7 +61,7 @@ export default function NavBarStaff() {
                     <Link to={'/staff/report'}>Manage Report</Link>
                 </div>
                 <div className='staff_playout'>
-                    <Link to={'/staff/manage_posts'}>Manage Posts</Link>
+                    <Link to={'/staff/manage_posts'}>Manage Blog</Link>
                 </div>
             </div>
         </div>
