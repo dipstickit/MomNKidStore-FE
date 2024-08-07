@@ -37,14 +37,6 @@ export default function NavBar() {
           </Link>
         </li>
         <li>
-          <Link
-            to="/admin/product"
-            className="navbar-link"
-          >
-            Product
-          </Link>
-        </li>
-        <li>
           <a onClick={handleLogout} className="navbar-link">Đăng xuất</a>
         </li>
       </ul>

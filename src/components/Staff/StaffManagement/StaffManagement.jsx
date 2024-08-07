@@ -3,7 +3,7 @@ import NavBarStaff from '../NavBar/NavBarStaff';
 import { Route, Routes } from 'react-router-dom';
 import ConfirmOrder from '../ConfirmOrder/ConfirmOrder';
 import ManageVoucher from '../CreateVoucher/ManageVoucher';
-import ManageInventory from '../ManageInventory/ManageInventory';
+import ProductManagement from '../ProductManagement/ProductManagement';
 import TrackOrder from '../TrackOrder/TrackOrder';
 import ManagePosts from '../ManagePosts/ManagePosts';
 import ModalCreatePost from '../ManagePosts/ModalCreatePost/ModalCreatePost';
@@ -21,7 +21,7 @@ export default function StaffManagement() {
         <div className="col-md-10 col-sm-9">
           <Routes>
             <Route path="comfirm_order" element={<ConfirmOrder />} />
-            <Route path="manage_inventory" element={<ManageInventory />} />
+            <Route path="manage_product" element={<ProductManagement />} />
             <Route path="manage_pcategory" element={<ManageCategory />} />
             <Route path="manage_users" element={<ManageUser />} />
             <Route path="create_voucher_codes" element={<ManageVoucher />} />

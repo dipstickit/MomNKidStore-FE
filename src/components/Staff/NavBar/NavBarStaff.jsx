@@ -43,7 +43,7 @@ export default function NavBarStaff() {
                     <Link to={'/staff/comfirm_order'}>Confirm Order</Link>
                 </div>
                 <div className='staff_playout'>
-                    <Link to={'/staff/manage_inventory'}>Manage Inventory</Link>
+                    <Link to={'/staff/manage_product'}>Manage Product</Link>
                 </div>
                 <div className='staff_playout'>
                     <Link to={'/staff/manage_pcategory'}>Manage ProductCategory</Link>

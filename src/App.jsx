@@ -120,7 +120,6 @@ import Dashboard from "./components/Admin/Dashboard/Dashboard";
 import Edit from "./components/Admin/Edit/Edit";
 import NavBar from "./components/Admin/NavBar/NavBar";
 import UserManagement from "./components/Admin/UserManagement/UserManagement";
-import ProductManagement from "./components/Admin/ProductManagement/ProductManagement";
 import Blog from "./components/Blog/Blog";
 import Cart from "./components/Cart/Cart";
 import HomeScreen from "./components/HomePage/HomeScreen";
@@ -138,8 +137,8 @@ import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import ResetPassword from "./components/ForgotPassword/ResetPassword";
 import BrandPage from "./components/HomePage/Content/Brand/BrandPage";
 import CreateUser from "./components/Admin/Create/CreateUser";
-import EditProduct from "./components/Staff/CreateEdit/EditProduct";
-import CreateProduct from "./components/Staff/CreateEdit/CreateProduct";
+import EditProduct from "./components/Staff/ProductManagement/EditProduct";
+import CreateProduct from "./components/Staff/ProductManagement/CreateProduct";
 import { useEffect } from "react";
 import EditVoucher from "./components/Staff/CreateVoucher/EditVoucher";
 import EditCategory from "./components/Staff/ManageCategory/EditCategory";
@@ -196,7 +195,6 @@ function App() {
         {/* admin routes */}
         <Route path="/admin" element={<NavBar />} />
         <Route path="/admin/user" element={<UserManagement />} />
-        <Route path="/admin/product" element={<ProductManagement />} />
         <Route path="/admin/edit/:id" element={<Edit />} />
         <Route path="/admin/create" element={<CreateUser />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
@@ -205,7 +203,7 @@ function App() {
         <Route path="/staff/*" element={<StaffManagement />} />
         <Route path="/edit-voucher/:voucherId" element={<EditVoucher />} />
         <Route path="/edit-category/:categoryId" element={<EditCategory />} />
-        <Route path="/edit-product/:id" element={<EditProduct />} />
+        <Route path="/edit-product/:productId" element={<EditProduct />} />
         <Route path="/create-product" element={<CreateProduct />} />
 
         {/* additional public routes */}
