@@ -3,26 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MainAPI } from "../../API";
 import "./NavBar.scss";
+import { toast } from 'react-toastify';
 
 export default function NavBar() {
   const token = JSON.parse(localStorage.getItem("accessToken"));
   const nav = useNavigate();
 
   const handleLogout = () => {
-    axios
-      .post(`${MainAPI}/user/logout`, token, {
-        headers: {
-          "x-access-token": token,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        localStorage.removeItem("accessToken");
-        nav("/login");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('auth');
+    toast.success('Đăng xuất thành công');
+    nav('/login');
   };
 
   return (
@@ -46,10 +37,15 @@ export default function NavBar() {
           </Link>
         </li>
         <li>
-          <a href="#settings" className="navbar-link">Settings</a>
+          <Link
+            to="/admin/product"
+            className="navbar-link"
+          >
+            Product
+          </Link>
         </li>
         <li>
-          <a onClick={handleLogout} className="navbar-link">Logout</a>
+          <a onClick={handleLogout} className="navbar-link">Đăng xuất</a>
         </li>
       </ul>
     </nav>

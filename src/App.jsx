@@ -120,6 +120,7 @@ import Dashboard from "./components/Admin/Dashboard/Dashboard";
 import Edit from "./components/Admin/Edit/Edit";
 import NavBar from "./components/Admin/NavBar/NavBar";
 import UserManagement from "./components/Admin/UserManagement/UserManagement";
+import ProductManagement from "./components/Admin/ProductManagement/ProductManagement";
 import Blog from "./components/Blog/Blog";
 import Cart from "./components/Cart/Cart";
 import HomeScreen from "./components/HomePage/HomeScreen";
@@ -195,6 +196,7 @@ function App() {
         {/* admin routes */}
         <Route path="/admin" element={<NavBar />} />
         <Route path="/admin/user" element={<UserManagement />} />
+        <Route path="/admin/product" element={<ProductManagement />} />
         <Route path="/admin/edit/:id" element={<Edit />} />
         <Route path="/admin/create" element={<CreateUser />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
