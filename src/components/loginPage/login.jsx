@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import useAuth from "../../hooks/useAuth";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const { setAuth } = useAuth();
@@ -16,6 +17,30 @@ function Login() {
   const location = useLocation();
   const from = location.state?.from || { pathname: "/home" };
   const [showPassword, setShowPassword] = useState(false);
+
+  const login = async (email, password) => {
+    try {
+      const response = await fetch(`${MainAPI}/Auth/auth`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+
+      console.log("API Response:", data);
+
+      if (response.ok) {
+        return data;
+      } else {
+        return { status: response.status, message: data.message || "Đăng nhập không thành công" };
+      }
+    } catch (error) {
+      console.error("API call error:", error);
+      return { status: 500, message: "Đã xảy ra lỗi. Vui lòng thử lại." };
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -29,45 +54,52 @@ function Login() {
       password: Yup.string().required("Vui lòng nhập mật khẩu"),
     }),
     onSubmit: async (values) => {
-      const response = await login(values.email, values.password);
-      if (response.status === 200) {
-        const user = response.user;
-        const role = response.user.role_id;
-        const accessToken = response.accessToken;
+      try {
+        const response = await login(values.email, values.password);
+        console.log("Login Response:", response);
 
-        setAuth({ user, role, accessToken });
-        localStorage.setItem("accessToken", JSON.stringify(response.accessToken));
-        localStorage.setItem("auth", JSON.stringify({ user, role, accessToken }));
-        if (role === "admin") {
+        const { accessToken } = response;
+        if (!accessToken) {
+          throw new Error("No access token found in the response.");
+        }
+
+        console.log("Access Token:", accessToken);
+
+        localStorage.setItem("accessToken", JSON.stringify(accessToken));
+        console.log("Token stored:", localStorage.getItem("accessToken"));
+
+        var decodedToken = jwtDecode(accessToken);
+        console.log("Decoded Token:", decodedToken);
+
+        const role = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+        console.log("Role:", role);
+
+        if (!role) {
+          throw new Error("Role claim is missing in the token.");
+        }
+
+        setAuth({ role, accessToken });
+        localStorage.setItem("auth", JSON.stringify({ role, accessToken }));
+
+        if (role === "1") {
           nav("/admin");
-        } else if (role === "staff") {
+        } else if (role === "2") {
           nav("/staff");
-        } else if (role === "customer") {
-          nav("/home");
+        } else if (role === "3") {
+          nav("/");
         } else {
           nav(from, { replace: true });
         }
-      } else {
-        toast.error(response.message);
+
+      } catch (error) {
+        console.error("Error during login:", error);
+        toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
       }
-    },
+    }
   });
 
   const handleShowPass = () => {
     setShowPassword(!showPassword);
-  };
-
-  const login = async (email, password) => {
-    const data = await fetch(`${MainAPI}/user/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    }).then((res) => {
-      return res.json();
-    });
-    return data;
   };
 
   return (
@@ -76,7 +108,6 @@ function Login() {
         <ToastContainer autoClose={2000} />
         <div className="login-form">
           <h2>Đăng nhập</h2>
-
           <form onSubmit={formik.handleSubmit}>
             <div className="login-info">
               <div className="login-detail">
@@ -120,7 +151,6 @@ function Login() {
               <Link to="/register">Tạo tài khoản</Link>
               <Link to="/forgot-password">Quên mật khẩu?</Link>
             </div>
-
             <input type="submit" value="Log In" className="login-btn" />
           </form>
           <div className="additional-buttons">

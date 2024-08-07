@@ -10,7 +10,7 @@ import ModalCreatePost from '../ManagePosts/ModalCreatePost/ModalCreatePost';
 import EditPost from '../ManagePosts/EditPost/EditPost';
 import Report from '../Report/Report';
 import ManageUser from '../ManageUser/ManageUser';
-
+import ManageCategory from '../ManageCategory/ManageCategory';
 export default function StaffManagement() {
   return (
     <div className="container-fluid">
@@ -22,6 +22,7 @@ export default function StaffManagement() {
           <Routes>
             <Route path="comfirm_order" element={<ConfirmOrder />} />
             <Route path="manage_inventory" element={<ManageInventory />} />
+            <Route path="manage_pcategory" element={<ManageCategory />} />
             <Route path="manage_users" element={<ManageUser />} />
             <Route path="create_voucher_codes" element={<ManageVoucher />} />
             <Route path="track_orders" element={<TrackOrder />} />

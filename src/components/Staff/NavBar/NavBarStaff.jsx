@@ -8,35 +8,13 @@ import axios from 'axios';
 
 export default function NavBarStaff() {
 
-    // useEffect(() => {
-    //     nav('/staff/comfirm_order');
-    // }, []);
-
-    // const token = JSON.parse(localStorage.getItem("accessToken"));
-    // const { auth, setAuth } = useContext(AuthContext);
-    // const getName = auth.user.username
-    // console.log(getName)
     const nav = useNavigate();
 
     const handleLogout = () => {
-        // axios
-        //     .post(`${MainAPI}/user/logout`, token, {
-        //         headers: {
-        //             "x-access-token": token,
-        //         },
-        //     })
-        //     .then((res) => {
-        //         console.log(res.data);
-        //         localStorage.removeItem("accessToken");
-        //         localStorage.removeItem("auth");
-        //         localStorage.removeItem("name")
-        //         setAuth({});
-        //         toast.success("Đăng xuất thành công");
-        //         nav("/login");
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('auth');
+        toast.success('Đăng xuất thành công');
+        nav('/login');
     };
 
     return (
@@ -68,10 +46,13 @@ export default function NavBarStaff() {
                     <Link to={'/staff/manage_inventory'}>Manage Inventory</Link>
                 </div>
                 <div className='staff_playout'>
+                    <Link to={'/staff/manage_pcategory'}>Manage ProductCategory</Link>
+                </div>
+                <div className='staff_playout'>
                     <Link to={'/staff/manage_users'}>Manage Users</Link>
                 </div>
                 <div className='staff_playout'>
-                    <Link to={'/staff/create_voucher_codes'}>Create Voucher Codes</Link>
+                    <Link to={'/staff/create_voucher_codes'}>Manage Voucher</Link>
                 </div>
                 <div className='staff_playout'>
                     <Link to={'/staff/track_orders'}>Track Orders</Link>

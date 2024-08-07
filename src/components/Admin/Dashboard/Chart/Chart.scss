@@ -1,78 +1,64 @@
-// .row-chart {
-//   width: 100%;
-//   height: 50%;
-//   display: flex;
-
-//   .chart {
-//     width: 100%;
-//     height: 100%;
-//     border-radius: 10px;
-//     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-//     padding: 10px;
-
-//     canvas {
-//       width: 100%;
-//       height: 100%;
-//     }
-//   }
-
-//   .chart-col-vertical {
-//     width: 60%;
-//     height: 100%;
-//   }
-
-//   .chart-col-pie {
-//     margin-left: 5%;
-//     width: 30%;
-//     height: 35%;
-//   }
-// }
-
 .row-chart {
   display: flex;
-  // flex-wrap: wrap;
   gap: 20px;
   background-color: #f8f9fa;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   height: 90%;
-}
-
-.chart-col-vertical,
-.chart-col-pie {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 20px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.chart-col-vertical {
-  flex: 2;
-}
-
-.chart-col-pie {
-  flex: 1;
-}
-
-.chart {
-  width: 90%;
-  height: 90%;
-}
-
-p.fw-bold {
-  font-size: 1.25rem;
-}
-
-@media (max-width: 768px) {
-  .row-chart {
-    flex-direction: column;
-  }
 
   .chart-col-vertical,
   .chart-col-pie {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .chart-col-vertical {
+    flex: 2;
+    padding: 20px;
+  }
+
+  .chart-col-pie {
+    flex: 1;
+    padding: 20px;
+  }
+
+  .chart {
     width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    padding: 10px;
+
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  p.fw-bold {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+
+    .chart-col-vertical,
+    .chart-col-pie {
+      width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    .chart-col-pie {
+      margin-bottom: 0;
+    }
   }
 }
