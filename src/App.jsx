@@ -140,6 +140,8 @@ import CreateUser from "./components/Admin/Create/CreateUser";
 import EditProduct from "./components/Staff/CreateEdit/EditProduct";
 import CreateProduct from "./components/Staff/CreateEdit/CreateProduct";
 import { useEffect } from "react";
+import EditVoucher from "./components/Staff/CreateVoucher/EditVoucher";
+import EditCategory from "./components/Staff/ManageCategory/EditCategory";
 
 function App() {
   useEffect(() => {
@@ -199,6 +201,8 @@ function App() {
 
         {/* staff routes */}
         <Route path="/staff/*" element={<StaffManagement />} />
+        <Route path="/edit-voucher/:voucherId" element={<EditVoucher />} />
+        <Route path="/edit-category/:categoryId" element={<EditCategory />} />
         <Route path="/edit-product/:id" element={<EditProduct />} />
         <Route path="/create-product" element={<CreateProduct />} />
 

@@ -15,6 +15,8 @@ export default function Dashboard() {
   const [endDate, setEndDate] = useState(new Date("2024-08-22"));
   const [data, setData] = useState({});
   const [cancelOrder, setCancelOrder] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+
   const [error, setError] = useState(null);
 
   const handleStartDateChange = (date) => {
@@ -38,7 +40,9 @@ export default function Dashboard() {
           },
         });
         setData(response.data);
-        setCancelOrder(response.data.canceledOrdersPerMonth);
+        // setCancelOrder(response.data.canceledOrdersPerMonth);
+        setCancelOrder(30);
+        setTotalOrders(1200);
       } catch (err) {
         console.error(err);
       }
@@ -112,7 +116,7 @@ export default function Dashboard() {
                     <div className="card-body col-10">
                       <div className="card-title fw-bold">Tổng số đơn hàng</div>
                       <div className="d-flex justify-content-between m-0">
-                        <div>{data.totalOrders}</div>
+                        <div>{totalOrders}</div>
                         <div className="col-2 icon">
                           <BsCart3 />
                         </div>
