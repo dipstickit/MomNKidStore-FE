@@ -3,72 +3,26 @@ import "./Voucher.scss";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
-import useAuth from "../../../../hooks/useAuth";
 
 export default function Voucher() {
   const [voucherList, setVoucherList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const [isGet, setIsGet] = useState({
-    get: false,
-    voucher_id: "",
-  });
-  const { auth } = useAuth();
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/vouchers`)
-      .then((res) => {
-        setVoucherList(res.data.vouchers);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://52.221.186.240:5173/api/v1/VoucherOfShop`);
+        setVoucherList(response.data);
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.log(err);
         setLoading(false);
-      });
-  }, []);
+      }
+    };
 
-  const handleClick = (e) => {
-    try {
-      axios
-        .post(
-          `http://localhost:5000/user/claim-voucher`,
-          {
-            user_id: auth.user.user_id,
-            voucher_id: parseInt(e.target.value),
-          },
-          {
-            headers: {
-              "x-access-token": JSON.parse(localStorage.getItem("accessToken")),
-            },
-          }
-        )
-        .then((res) => {
-          setIsGet({
-            get: true,
-            voucher_id: e.target.value,
-          });
-          toast.success(res.data.message, {
-            position: "bottom-right",
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error(err.response.data.errors[0].message, {
-            position: "bottom-right",
-          });
-        });
-    } catch (err) {
-      console.log(err);
-      toast.error("Đăng nhập để nhận voucher", {
-        position: "bottom-right",
-      });
-    }
-  };
+    fetchData();
+  }, []);
 
   return (
     <div className="voucher-container p-4">
@@ -101,39 +55,18 @@ export default function Voucher() {
           ]}
         >
           {voucherList.map((voucher) => (
-            <div key={voucher.code} className="each-slide">
+            <div key={voucher.voucherId} className="each-slide">
               <div className="first-part">
-                <p className="fw-bold">{voucher.discount}%</p>
+                <p className="fw-bold">{voucher.voucherValue}%</p>
               </div>
               <div className="second-part">
                 <p className="fw-bold">Tất cả sản phẩm</p>
-                <p>{voucher.code}</p>
-                <div className="button-container">
-                  <span>HSD: {voucher.expiration_date}</span>
-                  {isGet.get && isGet.voucher_id === voucher.voucher_id ? (
-                    <button
-                      className="btn btn-danger fw-bold px-4"
-                      onClick={() => navigate("/cart")}
-                    >
-                      Mua hàng
-                    </button>
-                  ) : (
-                    <button
-                      className="btn btn-danger fw-bold px-4"
-                      style={{ marginLeft: "30px" }}
-                      value={voucher.voucher_id}
-                      onClick={handleClick}
-                    >
-                      Lấy mã
-                    </button>
-                  )}
-                </div>
+                <p>HSD: {voucher.endDate}</p>
               </div>
             </div>
           ))}
         </Slide>
       )}
-      <ToastContainer />
     </div>
   );
 }
