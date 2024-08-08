@@ -129,6 +129,7 @@ import ProductDetail from "./components/ProductInfo/ProductDetail";
 import Register from "./components/Register/Register";
 import StaffManagement from "./components/Staff/StaffManagement/StaffManagement";
 import UserAccount from "./components/UserAccount/UserAccount";
+import CustomerProfile from "./components/UserAccount/UserProfile/CustomerProfile";
 import Unauthorized from "./components/Unauthorized/Unauthorized";
 import OrderPayment from "./components/OrderPayment/OrderPayment";
 import SearchPage from "./components/HomePage/Search/SearchPage";
@@ -212,7 +213,7 @@ function App() {
 
         {/* additional public routes */}
         <Route path="/cart" element={<Cart />} />
-        <Route path="/customer-account" element={<UserAccount />} />
+        <Route path="/customer-account" element={<CustomerProfile/>} />
         <Route path="/order-payment" element={<OrderPayment />} />
 
         {/* catch all */}
