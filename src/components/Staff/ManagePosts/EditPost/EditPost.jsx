@@ -6,9 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./EditPost.scss";
+import { MainAPI } from "../../../API";
+import { FaArrowLeft, FaSave } from "react-icons/fa";
+
 
 const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/dmyyf65yy/image/upload";
-const PRODUCTS_API_URL = "http://54.151.230.5:5173/api/v1/Product/get-all-products";
 
 // Validation schema
 const validationSchema = Yup.object({
@@ -30,10 +32,10 @@ const EditPost = () => {
     fetchProductOptions();
   }, [blogId]);
 
-  // Fetch blog details
+
   const fetchBlogDetails = async () => {
     try {
-      const response = await axios.get(`http://54.151.230.5:5173/api/Blog/GetAllBlogByBlogId/${blogId}`);
+      const response = await axios.get(`${MainAPI}/Blog/GetAllBlogByBlogId/${blogId}`);
       setBlog(response.data);
     } catch (error) {
       console.error("Error fetching blog details:", error);
@@ -41,11 +43,11 @@ const EditPost = () => {
     }
   };
 
-  // Fetch product options
+
   const fetchProductOptions = async () => {
     try {
-      const response = await axios.get(PRODUCTS_API_URL);
-      const products = response.data.map(product => ({
+      const response = await axios.get(`${MainAPI}/Product/get-all-products`);
+      const products = response.data.productList.map(product => ({
         id: product.productId,
         name: product.productName,
       }));
@@ -56,7 +58,7 @@ const EditPost = () => {
     }
   };
 
-  // Handle blog update
+
   const handleUpdate = async (values) => {
     const token = JSON.parse(localStorage.getItem('accessToken'));
 
@@ -65,13 +67,13 @@ const EditPost = () => {
       return;
     }
 
-    // Construct payload
+
     const payload = {
       blogTitle: values.blogTitle,
       blogContent: values.blogContent,
-      blogImage: values.blogImage || "",  // Provide an empty string if no image is selected
-      status: true,  // Assuming 'status' is required and true by default
-      productId: [Number(values.productId)],  // Ensure productId is a number and wrapped in an array
+      blogImage: values.blogImage || "",
+      status: true,
+      productId: [Number(values.productId)],
     };
 
     try {
@@ -94,7 +96,6 @@ const EditPost = () => {
     }
   };
 
-  // Upload image to Cloudinary
   const uploadImage = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -114,7 +115,9 @@ const EditPost = () => {
   return (
     <div className="blog-detail-container">
       <ToastContainer autoClose={2000} />
-      <button className="back-button" onClick={() => navigate('/staff/manage_posts')}>Back</button>
+      <button className="back-button" onClick={() => navigate('/staff/manage_posts')}>
+        <FaArrowLeft /> Back to Manage Blog
+      </button>
       {blog ? (
         <div className="blog-detail">
           <h1>{isEditing ? "Edit Blog" : blog.blogTitle}</h1>
@@ -124,7 +127,7 @@ const EditPost = () => {
                 blogTitle: blog.blogTitle,
                 blogContent: blog.blogContent,
                 blogImage: blog.blogImage || "",
-                productId: blog.productId ? blog.productId[0] : "", // Initialize with the first element of the productId array
+                productId: blog.productId ? blog.productId[0] : "",
               }}
               validationSchema={validationSchema}
               onSubmit={async (values, { setFieldValue }) => {
@@ -184,7 +187,7 @@ const EditPost = () => {
                     <ErrorMessage name="productId" component="div" className="error" />
                   </label>
                   <div className="button-container">
-                    <button type="submit" className="save-button">Save</button>
+                    <button type="submit" className="save-button"> <FaSave /> Save</button>
                     <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>Cancel</button>
                   </div>
                 </Form>

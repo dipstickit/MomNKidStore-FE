@@ -16,7 +16,17 @@ root.render(
       <CartProvider>
         <OrderProvider>
           <App />
-          <ToastContainer />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
         </OrderProvider>
       </CartProvider>
     </AuthProvider>

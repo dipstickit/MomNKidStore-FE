@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { MainAPI } from '../../API';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './EditProduct.scss';
 
@@ -84,7 +84,6 @@ const EditProduct = () => {
                 toast.error('Error fetching product: ' + (error?.response?.data?.message || error.message));
             }
         };
-        console.log("Selected Images:", selectedImages);
 
         const fetchCategories = async () => {
             try {
@@ -136,8 +135,7 @@ const EditProduct = () => {
                     productStatus: values.productStatus === 'available',
                     images: imagesFormatted,
                 };
-                console.log(requestData);
-                console.log("Image URLs:", imageUrls);
+
                 await axios.put(`${MainAPI}/Product/update-product/${productId}`, requestData, {
                     headers: {
                         'x-access-token': token,
@@ -167,12 +165,13 @@ const EditProduct = () => {
         formik.setFieldValue("images", fileObjects);
     };
 
-
     if (!product) return <div>Loading...</div>;
 
     return (
         <div className="edit-product-container">
+            <button className="back-button" onClick={() => navigate(-1)}>Back</button>
             <h1>Edit Product</h1>
+            <ToastContainer autoClose={2000} />
             <form onSubmit={formik.handleSubmit} className="edit-product-form">
                 <div className="form-group">
                     <label htmlFor="productName">Product Name</label>
@@ -267,17 +266,14 @@ const EditProduct = () => {
                     ) : null}
                 </div>
 
-                {selectedImages.length > 0 && (
-                    <div className="image-previews">
-                        {selectedImages.map((image, index) => (
-                            <img key={index} src={image} alt={`Preview ${index}`} />
-                        ))}
-                    </div>
-                )}
-
+                <div className="image-previews">
+                    {selectedImages.map((img, index) => (
+                        <img key={index} src={img} alt={`Preview ${index}`} />
+                    ))}
+                </div>
 
                 <div className="form-group">
-                    <label htmlFor="productStatus">Status</label>
+                    <label htmlFor="productStatus">Product Status</label>
                     <select
                         id="productStatus"
                         name="productStatus"

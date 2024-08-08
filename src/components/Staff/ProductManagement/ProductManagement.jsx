@@ -125,7 +125,7 @@ export default function UserManagement() {
                     }
                   });
                   toast.success("Product deleted successfully");
-                  fetchData(); // Refresh data on the current page
+                  fetchData();
                 } catch (error) {
                   console.error("Error deleting product:", error);
                   if (error.response) {

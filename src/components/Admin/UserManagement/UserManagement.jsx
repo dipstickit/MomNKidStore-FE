@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import DataTable from "react-data-table-component";
-import { MdOutlineBlock } from "react-icons/md";
+import { MdOutlineRemoveCircleOutline } from "react-icons/md";
 import { CgUnblock } from "react-icons/cg";
 import "./UserManagement.scss";
 import { useNavigate } from "react-router-dom";
@@ -13,73 +13,88 @@ import { MainAPI } from "../../API";
 export default function UserManagement() {
   const nav = useNavigate();
   const [data, setData] = useState([]);
-  const [records, setRecords] = useState(data);
   const [searchQuery, setSearchQuery] = useState("");
 
-  async function fetchData() {
-    const token = JSON.parse(localStorage.getItem("accessToken"));
-    const response = await axios.get(`${MainAPI}/Admin/all-account`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    console.log(response.data);
-    setRecords(response.data);
-  }
+  const fetchData = async () => {
+    try {
+      const token = JSON.parse(localStorage.getItem("accessToken"));
+      const response = await axios.get(`${MainAPI}/Admin/all-account`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const updatedData = response.data.map(user => ({
+        ...user,
+        isLocked: false,
+      }));
+
+      setData(updatedData);
+    } catch (error) {
+      toast.error("Failed to fetch user data");
+      console.error("Fetch data error:", error);
+    }
+  };
+
+
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const lockAccount = async (userId) => {
-    console.log(userId);
+  const toggleAccountStatus = async (accountId, isLocked = false) => {
     try {
       const token = JSON.parse(localStorage.getItem("accessToken"));
-      await axios.post(
-        `${MainAPI}/lock-account`,
-        { userId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
+      const url = isLocked
+        ? `${MainAPI}/unlock-account?accountId=${accountId}`
+        : `${MainAPI}/lock-account?accountId=${accountId}`;
+
+      await axios.post(url, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setData(prevData =>
+        prevData.map(user =>
+          user.accountId === accountId ? { ...user, isLocked: !isLocked } : user
+        )
       );
-      toast.success("Account locked successfully");
-      fetchData();
+
+      toast.success(isLocked ? "Account unlocked successfully" : "Account locked successfully");
     } catch (error) {
-      toast.error("Failed to lock account");
-      console.error(error);
+      toast.error(isLocked ? "Failed to unlock account" : "Failed to lock account");
+      console.error("Toggle account status error:", error);
     }
   };
 
-  const unlockAccount = async (userId) => {
-    try {
-      const token = JSON.parse(localStorage.getItem("accessToken"));
-      await axios.post(
-        `${MainAPI}/unlock-account`,
-        { userId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      toast.success("Account unlocked successfully");
-      fetchData();
-    } catch (error) {
-      toast.error("Failed to unlock account");
-      console.error(error);
-    }
-  };
 
-  const handleFilter = records.filter((user) =>
+
+  const filteredData = data.filter((user) =>
     user.userName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const column = [
+  const getRoleName = (roleId) => {
+    switch (roleId) {
+      case 1:
+        return "Admin";
+      case 2:
+        return "Staff";
+      case 3:
+        return "Customer";
+      default:
+        return "Unknown";
+    }
+  };
+
+  const columns = [
+    {
+      name: "ID",
+      selector: (row) => row.accountId,
+      sortable: true,
+    },
     {
       name: "UserName",
       selector: (row) => row.userName,
@@ -92,34 +107,36 @@ export default function UserManagement() {
     },
     {
       name: "Role",
-      selector: (row) => row.roleId,
+      selector: (row) => getRoleName(row.roleId),
       sortable: true,
     },
     {
-      cell: (row) => (
-        <div className="action">
-          <span
-            className="action-btn"
-            onClick={() => lockAccount(row.userId)}
-          >
-            <MdOutlineBlock color="red" />
-          </span>
-          <span
-            className="action-btn"
-            onClick={() => unlockAccount(row.userId)}
-          >
-            <CgUnblock color="green" />
-          </span>
-        </div>
-      ),
+      name: "Status",
+      cell: (row) => {
+        const isLocked = row.isLocked !== undefined ? row.isLocked : false;
+
+        return (
+          <div className="action">
+            <span
+              className={`action-btn ${isLocked ? 'unlock-btn' : 'lock-btn'}`}
+              title={isLocked ? "Unban Account" : "Ban Account"}
+              onClick={(e) => { e.preventDefault(); toggleAccountStatus(row.accountId, isLocked) }}
+            >
+              {isLocked ? <CgUnblock /> : <MdOutlineRemoveCircleOutline />}
+            </span>
+          </div>
+        );
+      },
     },
   ];
+
+
 
   return (
     <div className="userManage_container">
       <NavBar />
       <div className="content">
-        <ToastContainer autoClose={2000} />
+        <ToastContainer />
         <h1 className="mt-0">User Management</h1>
         <div className="user_manage mt-4">
           <div className="search">
@@ -138,13 +155,11 @@ export default function UserManagement() {
         </div>
         <div className="table mt-3">
           <DataTable
-            columns={column}
-            data={handleFilter}
-            selectableRows
+            columns={columns}
+            data={filteredData}
             pagination
             paginationPerPage={5}
-            paginationRowsPerPageOptions={[5, 10]}
-            className="table-content"
+            paginationRowsPerPageOptions={[10, 20, 30, 40, 50]}
           />
         </div>
       </div>

@@ -106,7 +106,6 @@ export default function CreateProduct() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-
                 toast.success("Product created successfully!");
                 navigate("/staff/manage_product");
             } catch (error) {
