@@ -33,7 +33,7 @@ export default function NavBar() {
             to="/admin/user"
             className="navbar-link"
           >
-            Users
+            Tài Khoản
           </Link>
         </li>
         <li>

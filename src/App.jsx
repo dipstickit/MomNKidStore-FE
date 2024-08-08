@@ -197,7 +197,7 @@ function App() {
         <Route path="/admin" element={<NavBar />} />
         <Route path="/admin/user" element={<UserManagement />} />
         <Route path="/admin/edit/:id" element={<Edit />} />
-        <Route path="/admin/create" element={<CreateUser />} />
+        <Route path="/admin/create-staff" element={<CreateUser />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
 
         {/* staff routes */}

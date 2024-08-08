@@ -48,9 +48,9 @@ export default function NavBarStaff() {
                 <div className='staff_playout'>
                     <Link to={'/staff/manage_pcategory'}>Manage ProductCategory</Link>
                 </div>
-                <div className='staff_playout'>
+                {/* <div className='staff_playout'>
                     <Link to={'/staff/manage_users'}>Manage Users</Link>
-                </div>
+                </div> */}
                 <div className='staff_playout'>
                     <Link to={'/staff/create_voucher_codes'}>Manage Voucher</Link>
                 </div>
