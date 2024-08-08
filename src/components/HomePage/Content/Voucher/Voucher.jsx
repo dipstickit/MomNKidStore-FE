@@ -4,6 +4,7 @@ import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
+import { MainAPI } from "../../../API";
 
 export default function Voucher() {
   const [voucherList, setVoucherList] = useState([]);
@@ -12,7 +13,7 @@ export default function Voucher() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://54.151.230.5:5173/api/v1/VoucherOfShop`);
+        const response = await axios.get(`${MainAPI}/VoucherOfShop`);
         setVoucherList(response.data);
         setLoading(false);
       } catch (err) {

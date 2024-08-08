@@ -74,10 +74,6 @@ export default function InfoDetail({ product }) {
             <div className="table_info">
               <table>
                 <tbody>
-                  <tr>
-                    <td className="th">Category</td>
-                    <td>{product.brandName}</td>
-                  </tr>
                  
                   <tr>
                     <td className="th">Weight</td>
