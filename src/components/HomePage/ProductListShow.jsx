@@ -158,36 +158,38 @@ import { formatVND } from "../../utils/Format";
 import { Spinner } from "react-bootstrap";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
-import { MainAPI } from "../../components/API"; // Đường dẫn điều chỉnh
+import { MainAPI } from "../../components/API"; // Adjusted path
 
-export default function ProductListShow({ productList, changePage, totalPage }) {
+export default function ProductListShow() {
   const { handleAddToCart } = useContext(CartContext);
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const { brand_name } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPageAll, setTotalPageAll] = useState(0);
-  const itemsPerPage = 5; // Đặt pageSize mặc định là 5
-  const [categories, setCategories] = useState([]); // Trạng thái mới cho danh mục
-  const [selectedCategory, setSelectedCategory] = useState(null); // Trạng thái cho danh mục đang được chọn
+  const itemsPerPage = 10; // Default page size
+  const [categories, setCategories] = useState([]); // New state for categories
+  const [selectedCategory, setSelectedCategory] = useState(null); // State for selected category
 
-  // Lấy tất cả sản phẩm ban đầu
+  // Fetch all products initially
   useEffect(() => {
     setLoading(true);
     axios
       .get(`${MainAPI}/Product/get-all-products?page=${currentPage}&pageSize=${itemsPerPage}`)
       .then((res) => {
-        setFilteredItems(res.data);
-        setTotalPageAll(Math.ceil(res.data.length / itemsPerPage));
+        console.log('API Response:', res.data); // Log API response
+        setFilteredItems(Array.isArray(res.data.productList) ? res.data.productList : []);
+        setTotalPageAll(res.data.totalPage);
         setLoading(false);
       })
       .catch((err) => {
         console.log(err);
+        setFilteredItems([]); // Ensure filteredItems is an array even if there's an error
         setLoading(false);
       });
   }, [currentPage]);
 
-  // useEffect mới để lấy danh mục
+  // Fetch categories
   useEffect(() => {
     axios
       .get(`${MainAPI}/categories`)
@@ -201,17 +203,17 @@ export default function ProductListShow({ productList, changePage, totalPage }) 
 
   const handleFilterButtonClick = (categoryId) => {
     setLoading(true);
-    setSelectedCategory(categoryId); // Cập nhật danh mục đang được chọn
+    setSelectedCategory(categoryId); // Update selected category
     axios
       .get(`${MainAPI}/Product/get-all-products?CategoryId=${categoryId}&page=${currentPage}&pageSize=${itemsPerPage}`)
       .then((res) => {
-        setFilteredItems(res.data);
-        setTotalPageAll(Math.ceil(res.data.length / itemsPerPage));
+        setFilteredItems(Array.isArray(res.data.productList) ? res.data.productList : []);
+        setTotalPageAll(res.data.totalPage);
         setLoading(false);
       })
       .catch((err) => {
         console.log(err);
-        setFilteredItems([]); // Xóa các mục đã lọc khi có lỗi
+        setFilteredItems([]); // Ensure filteredItems is an array even if there's an error
         setLoading(false);
       });
   };
@@ -222,11 +224,12 @@ export default function ProductListShow({ productList, changePage, totalPage }) 
     axios
       .get(`${MainAPI}/Product/get-all-products?page=${page}&pageSize=${itemsPerPage}`)
       .then((res) => {
-        setFilteredItems(res.data);
+        setFilteredItems(Array.isArray(res.data.productList) ? res.data.productList : []);
         setLoading(false);
       })
       .catch((err) => {
         console.log(err);
+        setFilteredItems([]); // Ensure filteredItems is an array even if there's an error
         setLoading(false);
       });
   };
@@ -268,7 +271,7 @@ export default function ProductListShow({ productList, changePage, totalPage }) 
                       <div className="home-product-detail-img-container">
                         {product.images.length > 0 ? (
                           <img
-                            src={`data:image/png;base64,${product.images[0].imageProduct}`}
+                            src={product.images[0].imageProduct1}
                             alt={product.productName}
                             style={{ maxWidth: "100%", height: "auto" }}
                           />
@@ -323,3 +326,5 @@ export default function ProductListShow({ productList, changePage, totalPage }) 
     </div>
   );
 }
+
+
