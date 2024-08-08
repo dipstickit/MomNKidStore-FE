@@ -43,14 +43,14 @@ export default function NavBarStaff() {
                     <Link to={'/staff/comfirm_order'}>Confirm Order</Link>
                 </div>
                 <div className='staff_playout'>
-                    <Link to={'/staff/manage_inventory'}>Manage Inventory</Link>
+                    <Link to={'/staff/manage_product'}>Manage Product</Link>
                 </div>
                 <div className='staff_playout'>
                     <Link to={'/staff/manage_pcategory'}>Manage ProductCategory</Link>
                 </div>
-                <div className='staff_playout'>
+                {/* <div className='staff_playout'>
                     <Link to={'/staff/manage_users'}>Manage Users</Link>
-                </div>
+                </div> */}
                 <div className='staff_playout'>
                     <Link to={'/staff/create_voucher_codes'}>Manage Voucher</Link>
                 </div>
@@ -61,7 +61,7 @@ export default function NavBarStaff() {
                     <Link to={'/staff/report'}>Manage Report</Link>
                 </div>
                 <div className='staff_playout'>
-                    <Link to={'/staff/manage_posts'}>Manage Posts</Link>
+                    <Link to={'/staff/manage_posts'}>Manage Blog</Link>
                 </div>
             </div>
         </div>

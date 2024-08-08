@@ -138,11 +138,13 @@ import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import ResetPassword from "./components/ForgotPassword/ResetPassword";
 import BrandPage from "./components/HomePage/Content/Brand/BrandPage";
 import CreateUser from "./components/Admin/Create/CreateUser";
-import EditProduct from "./components/Staff/CreateEdit/EditProduct";
-import CreateProduct from "./components/Staff/CreateEdit/CreateProduct";
+import EditProduct from "./components/Staff/ProductManagement/EditProduct";
+import CreateProduct from "./components/Staff/ProductManagement/CreateProduct";
 import { useEffect } from "react";
 import EditVoucher from "./components/Staff/CreateVoucher/EditVoucher";
 import EditCategory from "./components/Staff/ManageCategory/EditCategory";
+import EditPost from "./components/Staff/ManagePosts/EditPost/EditPost";
+import ModalCreatePost from "./components/Staff/ManagePosts/ModalCreatePost/ModalCreatePost";
 function App() {
   useEffect(() => {
     // Function to handle the beforeunload event
@@ -196,15 +198,18 @@ function App() {
         <Route path="/admin" element={<NavBar />} />
         <Route path="/admin/user" element={<UserManagement />} />
         <Route path="/admin/edit/:id" element={<Edit />} />
-        <Route path="/admin/create" element={<CreateUser />} />
+        <Route path="/admin/create-staff" element={<CreateUser />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
 
         {/* staff routes */}
         <Route path="/staff/*" element={<StaffManagement />} />
         <Route path="/edit-voucher/:voucherId" element={<EditVoucher />} />
         <Route path="/edit-category/:categoryId" element={<EditCategory />} />
-        <Route path="/edit-product/:id" element={<EditProduct />} />
+        <Route path="/edit-product/:productId" element={<EditProduct />} />
         <Route path="/create-product" element={<CreateProduct />} />
+        <Route path="/create-blog" element={<ModalCreatePost />} />
+        <Route path="/edit-blog/:blogId" element={<EditPost />} />
+
 
         {/* additional public routes */}
         <Route path="/cart" element={<Cart />} />

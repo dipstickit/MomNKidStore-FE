@@ -1,165 +1,161 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { MainAPI } from "../../API";
+import DataTable from "react-data-table-component";
+import { MdModeEdit } from "react-icons/md";
+import { DeleteIcon } from "../../../utils/Icon/DeleteIcon";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useAuth from "../../../hooks/useAuth";
-import { Link, useNavigate } from "react-router-dom";
-import DataTable from "react-data-table-component";
-import { DeleteIcon } from "../../../utils/Icon/DeleteIcon";
-import { MdModeEdit } from "react-icons/md";
+import axios from "axios";
+import { MainAPI } from "../../API";
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import "./ManagePost.scss";
-import { convertSQLDate } from "../../../utils/Format";
-import { Button, Modal } from "react-bootstrap";
-import { Spinner } from "react-bootstrap";
 
 export default function ManagePosts() {
-  // console.log(description);
-  const { auth } = useAuth();
   const nav = useNavigate();
-  const [records, setRecords] = useState([]);
-  const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [blogs, setBlogs] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const fetchData = () => {
-    axios
-      .get(`${MainAPI}/user/show-all-posts`)
-      .then((res) => {
-        console.log(res.data);
-        setRecords(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
+  const fetchBlogs = async () => {
+    try {
+      const response = await axios.get(`http://54.151.230.5:5173/api/Blog/GetAllBlog`);
+      setBlogs(response.data);
+    } catch (error) {
+      console.error("Error fetching blog data:", error);
+      toast.error("Error fetching blog data.");
+    }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchBlogs();
   }, []);
 
-  const handleDelete = (id) => {
-    axios
-      .delete(`${MainAPI}/staff/delete-post/${id}`, {
-        headers: {
-          "x-access-token": JSON.parse(localStorage.getItem("accessToken")),
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        toast.success(res.data.message);
-        fetchData();
-        localStorage.removeItem("post_id");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const handleDelete = (blog) => {
+    const token = JSON.parse(localStorage.getItem("accessToken"));
+
+    confirmAlert({
+      title: 'Confirm Deletion',
+      message: `Are you sure you want to delete "${blog.blogTitle}"?`,
+      customUI: ({ onClose }) => (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
+          <h1>Confirm Deletion</h1>
+          <p>Are you sure you want to delete "{blog.blogTitle}"?</p>
+          <div style={{ display: 'flex', marginTop: '20px' }}>
+            <button
+              onClick={async () => {
+                try {
+                  await axios.delete(`${MainAPI}/Blog/delete-blog/${blog.blogId}`, {
+                    headers: {
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${token}`
+                    }
+                  });
+                  toast.success("Blog deleted successfully");
+                  fetchBlogs();
+                } catch (error) {
+                  console.error("Error deleting blog:", error);
+                  toast.error("Error deleting blog.");
+                }
+                onClose();
+              }}
+              style={{
+                backgroundColor: '#007bff',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '5px',
+                padding: '8px 40px',
+                fontSize: '1rem',
+                cursor: 'pointer',
+                marginRight: '10px'
+              }}
+            >
+              Yes
+            </button>
+            <button
+              onClick={onClose}
+              style={{
+                backgroundColor: '#dc3545',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '5px',
+                padding: '8px 40px',
+                fontSize: '1rem',
+                cursor: 'pointer'
+              }}
+            >
+              No
+            </button>
+          </div>
+        </div>
+      )
+    });
   };
 
-  const column = [
+  const filteredBlogs = blogs.filter((blog) =>
+    blog.blogTitle.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const columns = [
+    { name: "ID", selector: (row) => row.blogId, sortable: true },
+    { name: "Title", selector: (row) => row.blogTitle, sortable: true },
+    { name: "Content", selector: (row) => row.blogContent },
+    { name: "Status", selector: (row) => (row.status ? "Active" : "Inactive") },
     {
-      name: "Post Id",
-      selector: (row) => row.post_id,
-      sortable: true,
-      center: true,
+      name: "Image",
+      cell: (row) => (
+        row.blogImage ? <img src={row.blogImage} alt={row.blogTitle} style={{ width: '100px', height: 'auto', borderRadius: '5px' }} /> : 'No Image'
+      ),
     },
     {
-      name: "Post Title",
-      selector: (row) => row.title,
-      sortable: true,
-      center: true,
-    },
-    {
-      name: "Post date",
-      selector: (row) => convertSQLDate(row.post_date),
-      sortable: true,
-      center: true,
-    },
-    {
+      name: "Actions",
       cell: (row) => (
         <div className="action">
-          <span
-            className="action-btn"
-            onClick={() => {
-              // handleDelete(row.post_id);
-              handleShow();
-              localStorage.setItem("post_id", row.post_id);
-            }}
-          >
+          <span className="action-btn" onClick={() => handleDelete(row)}>
             <DeleteIcon color="red" />
           </span>
-          <Link className="action-btn" to={`/staff/edit-post/${row.post_id}`}>
+          <span className="action-btn" onClick={() => nav(`/edit-blog/${row.blogId}`)}>
             <MdModeEdit color="green" />
-          </Link>
+          </span>
         </div>
       ),
-      center: true,
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
     },
   ];
 
   return (
-    <>
-      {
-        loading ? (
-          <>
-            <div className=" spinner-post">
-              <Spinner animation="border" role="status" />
-            </div>
-          </>
-        ) : (
-          <div className="manage-post-container">
-            <ToastContainer autoClose={2000} />
-
-            <Link to={"/staff/create-post"} className="create-post-btn">
-              Thêm bài
-            </Link>
-
-            <div className="table-post mt-3">
-              <DataTable
-                pagination
-                paginationPerPage={5}
-                paginationRowsPerPageOptions={[5, 8]}
-                columns={column}
-                data={records}
-                className="table-content"
-              />
-            </div>
-
-            <div className="modal-content">
-              <Modal show={show} onHide={handleClose} animation={false}>
-                <Modal.Header closeButton>
-                  <Modal.Title>Remove post</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Do you want to remove this post?</Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    variant="secondary"
-                    onClick={() => {
-                      handleClose();
-                      localStorage.removeItem("post_id");
-                    }}
-                  >
-                    Close
-                  </Button>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      handleClose();
-                      handleDelete(localStorage.getItem("post_id"));
-                    }}
-                  >
-                    Confirm
-                  </Button>
-                </Modal.Footer>
-              </Modal>
-            </div>
+    <div className="blogManagement-container">
+      <div className="content">
+        <ToastContainer autoClose={2000} />
+        <h1>Blog Management</h1>
+        <div className="blog-management">
+          <div className="search">
+            <label htmlFor="searchInput">Search: </label>
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Search blogs..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
-        )
-      }
-    </>
+          <div className="button-group">
+            <button className="btn add-btn" onClick={() => nav("/create-blog")}>
+              Add Blog
+            </button>
+          </div>
+        </div>
+        <div className="table">
+          <DataTable
+            columns={columns}
+            data={filteredBlogs}
+            pagination
+            paginationPerPage={5}
+            paginationRowsPerPageOptions={[5, 10]}
+          />
+        </div>
+      </div>
+    </div>
   );
 }
