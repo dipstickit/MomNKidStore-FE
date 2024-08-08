@@ -51,7 +51,9 @@ const CreateUser = () => {
                     }
                 );
                 toast.success("Staff account created successfully!");
-                formik.resetForm();
+                setTimeout(() => {
+                    nav("/admin/user");
+                }, 2000);
             } catch (error) {
                 console.error("Error creating staff account:", error);
                 toast.error("Failed to create staff account");

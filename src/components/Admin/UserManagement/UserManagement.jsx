@@ -158,8 +158,8 @@ export default function UserManagement() {
             columns={columns}
             data={filteredData}
             pagination
-            paginationPerPage={5}
-            paginationRowsPerPageOptions={[10, 20, 30, 40, 50]}
+            paginationPerPage={8}
+            paginationRowsPerPageOptions={[8, 16, 24, 32, 40, 48, 56, 64, 72]}
           />
         </div>
       </div>
