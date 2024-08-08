@@ -18,7 +18,7 @@ export default function ManagePosts() {
 
   const fetchBlogs = async () => {
     try {
-      const response = await axios.get(`http://54.151.230.5:5173/api/Blog/GetAllBlog`);
+      const response = await axios.get(`${MainAPI}/Blog/GetAllBlog`);
       setBlogs(response.data);
     } catch (error) {
       console.error("Error fetching blog data:", error);

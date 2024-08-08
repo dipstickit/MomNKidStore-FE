@@ -76,7 +76,7 @@ const EditPost = () => {
 
     try {
       await axios.put(
-        `http://54.151.230.5:5173/api/Blog/updateBlog/${blogId}`,
+        `${MainAPI}/Blog/updateBlog/${blogId}`,
         payload,
         {
           headers: {

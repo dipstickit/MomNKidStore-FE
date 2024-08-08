@@ -1,15 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { MainAPI } from "../../API";
 import { FaImage, FaPlus, FaArrowLeft } from "react-icons/fa";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./CreateProduct.scss";
 
 export default function CreateProduct() {
     const navigate = useNavigate();
     const [imagePreviews, setImagePreviews] = useState([]);
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${MainAPI}/categories`);
+                setCategories(response.data);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+                toast.error("Failed to fetch categories.");
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const uploadImageToCloudinary = async (file) => {
         const formData = new FormData();
@@ -29,6 +45,7 @@ export default function CreateProduct() {
             return response.data.secure_url;
         } catch (error) {
             console.error("Error uploading image to Cloudinary:", error.response?.data || error.message);
+            toast.error("Error uploading image.");
             return null;
         }
     };
@@ -39,7 +56,7 @@ export default function CreateProduct() {
             productInfor: "",
             productPrice: 0,
             productQuantity: 0,
-            productStatus: true,
+            productCategoryId: "",
             images: [],
         },
         validationSchema: Yup.object({
@@ -51,34 +68,35 @@ export default function CreateProduct() {
             productQuantity: Yup.number()
                 .positive("Product Quantity must be greater than 0")
                 .required("Product Quantity is required"),
+            productCategoryId: Yup.number().required("Product Category is required"),
             images: Yup.array().min(1, "At least one image is required"),
         }),
         onSubmit: async (values) => {
-            const imageUrls = await Promise.all(values.images.map(async (file) => {
-                const imageUrl = await uploadImageToCloudinary(file);
-                return imageUrl ? imageUrl : null;
-            }));
-
-            const imagesFormatted = imageUrls.reduce((acc, url, index) => {
-                if (url) {
-                    acc[`imageProduct${index + 1}`] = url;
-                }
-                return acc;
-            }, {});
-
-            const productPayload = {
-                productName: values.productName,
-                productInfor: values.productInfor,
-                productPrice: values.productPrice,
-                productQuantity: values.productQuantity,
-                productStatus: values.productStatus,
-                images: [imagesFormatted], // Wrap imagesFormatted in an array
-            };
-
             try {
+                const imageUrls = await Promise.all(values.images.map(async (file) => {
+                    const imageUrl = await uploadImageToCloudinary(file);
+                    return imageUrl ? imageUrl : null;
+                }));
+
+                const imagesFormatted = imageUrls.filter(Boolean).map((url, index) => ({
+                    [`imageProduct${index + 1}`]: url,
+                }));
+
+                const productPayload = {
+                    productName: values.productName,
+                    productInfor: values.productInfor,
+                    productPrice: values.productPrice,
+                    productQuantity: values.productQuantity,
+                    productCategoryId: Number(values.productCategoryId),
+                    images: imagesFormatted,
+                };
+                console.log(productPayload);
+                console.log("Image URLs:", imageUrls);
+
                 const token = JSON.parse(localStorage.getItem("accessToken"));
                 if (!token) {
                     console.error("No access token found.");
+                    toast.error("No access token found.");
                     return;
                 }
 
@@ -89,9 +107,11 @@ export default function CreateProduct() {
                     },
                 });
 
+                toast.success("Product created successfully!");
                 navigate("/staff/manage_product");
             } catch (error) {
                 console.error("Error creating product:", error);
+                toast.error("Error creating product.");
             }
         },
     });
@@ -166,17 +186,24 @@ export default function CreateProduct() {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="productStatus">Product Status</label>
+                    <label htmlFor="productCategoryId">Product Category</label>
                     <select
-                        id="productStatus"
-                        name="productStatus"
+                        id="productCategoryId"
+                        name="productCategoryId"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        value={formik.values.productStatus}
+                        value={formik.values.productCategoryId}
                     >
-                        <option value={true}>Available</option>
-                        <option value={false}>Unavailable</option>
+                        <option value="">Select Category</option>
+                        {categories.map((category) => (
+                            <option key={category.productCategoryId} value={category.productCategoryId}>
+                                {category.productCategoryName}
+                            </option>
+                        ))}
                     </select>
+                    {formik.touched.productCategoryId && formik.errors.productCategoryId ? (
+                        <div className="error">{formik.errors.productCategoryId}</div>
+                    ) : null}
                 </div>
 
                 <div className="form-group">

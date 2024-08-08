@@ -11,6 +11,12 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import "./ProductManagement.scss";
 
+export const formatVND = (number) => {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(number);
+};
 export default function UserManagement() {
   const nav = useNavigate();
   const [products, setProducts] = useState([]);
@@ -48,7 +54,7 @@ export default function UserManagement() {
     return categoryMap;
   };
 
-  const fetchData = async () => {
+  const fetchData = async (page = 1) => {
     const token = JSON.parse(localStorage.getItem("accessToken"));
 
     if (!token) {
@@ -64,9 +70,12 @@ export default function UserManagement() {
         },
       });
 
-      const categoryMap = await fetchCategories(response.data);
+      console.log("API response data:", response.data);
 
-      const productsWithCategories = response.data.map((product) => ({
+      const productsList = Array.isArray(response.data.productList) ? response.data.productList : [];
+      const categoryMap = await fetchCategories(productsList);
+
+      const productsWithCategories = productsList.map((product) => ({
         ...product,
         categoryName: categoryMap[product.productCategoryId] || "Loading...",
       }));
@@ -100,11 +109,11 @@ export default function UserManagement() {
 
     confirmAlert({
       title: 'Confirm Deletion',
-      message: `Are you sure you want to delete "${product.productName}"?`, // Use product.productName here
+      message: `Are you sure you want to delete "${product.productName}"?`,
       customUI: ({ onClose }) => (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
           <h1>Confirm Deletion</h1>
-          <p>Are you sure you want to delete "{product.productName}"?</p> {/* Ensure productName is used here */}
+          <p>Are you sure you want to delete "{product.productName}"?</p>
           <div style={{ display: 'flex', marginTop: '20px' }}>
             <button
               onClick={async () => {
@@ -116,7 +125,7 @@ export default function UserManagement() {
                     }
                   });
                   toast.success("Product deleted successfully");
-                  fetchData();
+                  fetchData(); // Refresh data on the current page
                 } catch (error) {
                   console.error("Error deleting product:", error);
                   if (error.response) {
@@ -169,18 +178,20 @@ export default function UserManagement() {
     });
   };
 
+  const filteredProducts = Array.isArray(products)
+    ? products.filter((product) =>
+      product.productName.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    : [];
 
-  const filteredProducts = products.filter((product) =>
-    product.productName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
+  console.log("Filtered products:", filteredProducts);
   const columns = [
     { name: "ID", selector: (row) => row.productId, sortable: true },
     { name: "Category Name", selector: (row) => row.categoryName },
     { name: "Name", selector: (row) => row.productName, sortable: true },
     { name: "Information", selector: (row) => row.productInfor },
-    { name: "Price", selector: (row) => row.productPrice, sortable: true },
-    { name: "Quantity", selector: (row) => row.productQuatity, sortable: true },
+    { name: "Price", selector: (row) => formatVND(row.productPrice), sortable: true },
+    { name: "Quantity", selector: (row) => row.productQuantity, sortable: true },
     {
       name: "Status",
       selector: (row) => (row.productStatus ? "Available" : "Unavailable"),
@@ -192,7 +203,7 @@ export default function UserManagement() {
       cell: (row) => (
         <div>
           {row.images.map((img, index) => (
-            <img key={index} src={img} alt={`Product ${index}`} width={50} />
+            <img key={index} src={img.imageProduct1} alt={`Product ${index}`} width={50} />
           ))}
         </div>
       ),
@@ -241,8 +252,8 @@ export default function UserManagement() {
             columns={columns}
             data={filteredProducts}
             pagination
-            paginationPerPage={5}
-            paginationRowsPerPageOptions={[5, 10]}
+            paginationPerPage={10}
+            paginationRowsPerPageOptions={[10, 20, 30, 40, 50]}
           />
         </div>
       </div>

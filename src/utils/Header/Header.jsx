@@ -25,26 +25,10 @@ export default function HeaderPage() {
   const myParam = searchParams.get("search_query");
 
   const handleLogout = () => {
-    axios
-      .post(`${MainAPI}/user/logout`, token, {
-        headers: {
-          "x-access-token": token,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("auth");
-        setAuth({});
-        setOrderInfomation({});
-        toast.success("Đăng xuất thành công");
-        setTimeout(() => {
-          nav("/home");
-        }, 2000);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('auth');
+    toast.success('Đăng xuất thành công');
+    nav('/login');
   };
 
   const handleSearch = (e) => {

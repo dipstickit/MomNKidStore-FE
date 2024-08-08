@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { MainAPI } from '../../API';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './EditProduct.scss';
 
 const validationSchema = Yup.object({
@@ -16,9 +18,11 @@ const validationSchema = Yup.object({
         .positive("Product Quantity must be greater than 0")
         .required("Product Quantity is required"),
     productCategoryId: Yup.number().required('Category is required'),
-    images: Yup.array().of(Yup.object({
-        imageProduct1: Yup.string().url('Invalid URL').required('Image URL is required')
-    })).optional(),
+    images: Yup.array().of(
+        Yup.object({
+            imageProduct1: Yup.string().url('Invalid URL').required('Image URL is required')
+        })
+    ).optional(),
     productStatus: Yup.string().required('Product status is required'),
 });
 
@@ -61,8 +65,11 @@ const EditProduct = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+
                 setProduct(response.data);
-                setSelectedImages(response.data.images.map(img => img.imageProduct1));
+                const imageUrls = response.data.images.map(img => img.imageProduct1);
+                setSelectedImages(imageUrls);
+
                 formik.setValues({
                     productName: response.data.productName,
                     productInfor: response.data.productInfor,
@@ -74,8 +81,10 @@ const EditProduct = () => {
                 });
             } catch (error) {
                 console.error('Error fetching product:', error);
+                toast.error('Error fetching product: ' + (error?.response?.data?.message || error.message));
             }
         };
+        console.log("Selected Images:", selectedImages);
 
         const fetchCategories = async () => {
             try {
@@ -83,6 +92,7 @@ const EditProduct = () => {
                 setCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
+                toast.error('Error fetching categories: ' + (error?.response?.data?.message || error.message));
             }
         };
 
@@ -105,29 +115,29 @@ const EditProduct = () => {
             try {
                 const token = JSON.parse(localStorage.getItem('accessToken'));
 
-                const uploadedImages = await Promise.all(
-                    values.images.map(async (img) => {
-                        if (typeof img.imageProduct1 === 'string') return img;
-                        const uploadedUrl = await uploadImageToCloudinary(img.imageProduct1);
-                        if (!uploadedUrl) {
-                            throw new Error('Image upload failed');
-                        }
-                        return { imageProduct1: uploadedUrl };
-                    })
-                );
+                const imageUrls = await Promise.all(values.images.map(async (file) => {
+                    if (file instanceof File) {
+                        const imageUrl = await uploadImageToCloudinary(file);
+                        return imageUrl ? imageUrl : null;
+                    }
+                    return file.imageProduct1;
+                }));
+
+                const imagesFormatted = imageUrls.filter(Boolean).map((url, index) => ({
+                    "imageProduct1": url,
+                }));
 
                 const requestData = {
-                    productCategoryId: values.productCategoryId,
+                    productCategoryId: Number(values.productCategoryId),
                     productName: values.productName,
                     productInfor: values.productInfor,
                     productPrice: values.productPrice,
                     productQuantity: values.productQuantity,
                     productStatus: values.productStatus === 'available',
-                    images: uploadedImages.length ? uploadedImages : formik.values.images,
+                    images: imagesFormatted,
                 };
-
-                console.log('Request data:', requestData);
-
+                console.log(requestData);
+                console.log("Image URLs:", imageUrls);
                 await axios.put(`${MainAPI}/Product/update-product/${productId}`, requestData, {
                     headers: {
                         'x-access-token': token,
@@ -136,19 +146,27 @@ const EditProduct = () => {
                     },
                 });
 
+                toast.success('Product updated successfully!');
                 navigate('/staff/manage_product');
             } catch (error) {
                 console.error('Error updating product:', error?.response?.data || error.message);
+                toast.error('Error updating product: ' + (error?.response?.data?.message || error.message));
             }
         }
     });
 
-    const handleImageUpload = (event) => {
-        const files = Array.from(event.target.files);
-        const newImages = files.map(file => ({ imageProduct1: URL.createObjectURL(file) }));
-        setSelectedImages(newImages.map(img => img.imageProduct1));
-        formik.setFieldValue('images', newImages);
+    const handleImageChange = (event) => {
+        const files = Array.from(event.currentTarget.files);
+        const imagePreviews = files.map(file => URL.createObjectURL(file));
+
+        setSelectedImages(imagePreviews);
+
+        const fileObjects = files.map(file => ({
+            imageProduct1: file
+        }));
+        formik.setFieldValue("images", fileObjects);
     };
+
 
     if (!product) return <div>Loading...</div>;
 
@@ -226,10 +244,8 @@ const EditProduct = () => {
                         onBlur={formik.handleBlur}
                     >
                         <option value="">Select a category</option>
-                        {categories.map((category) => (
-                            <option key={category.productCategoryId} value={category.productCategoryId}>
-                                {category.productCategoryName}
-                            </option>
+                        {categories.map(category => (
+                            <option key={category.productCategoryId} value={category.productCategoryId}>{category.productCategoryName}</option>
                         ))}
                     </select>
                     {formik.touched.productCategoryId && formik.errors.productCategoryId ? (
@@ -238,36 +254,30 @@ const EditProduct = () => {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="images">Product Images</label>
+                    <label htmlFor="images">Images</label>
                     <input
                         id="images"
                         name="images"
                         type="file"
-                        accept="image/*"
                         multiple
-                        onChange={handleImageUpload}
+                        onChange={handleImageChange}
                     />
                     {formik.touched.images && formik.errors.images ? (
                         <div className="error-message">{formik.errors.images}</div>
                     ) : null}
                 </div>
 
-                <div className="form-group">
-                    <label>Selected Images:</label>
-                    <div className="selected-images">
+                {selectedImages.length > 0 && (
+                    <div className="image-previews">
                         {selectedImages.map((image, index) => (
-                            <img
-                                key={index}
-                                src={image}
-                                alt={`Preview ${index}`}
-                                className="image-preview"
-                            />
+                            <img key={index} src={image} alt={`Preview ${index}`} />
                         ))}
                     </div>
-                </div>
+                )}
+
 
                 <div className="form-group">
-                    <label htmlFor="productStatus">Product Status</label>
+                    <label htmlFor="productStatus">Status</label>
                     <select
                         id="productStatus"
                         name="productStatus"
@@ -283,7 +293,7 @@ const EditProduct = () => {
                     ) : null}
                 </div>
 
-                <button type="submit">Save Changes</button>
+                <button type="submit" className="submit-button">Update Product</button>
             </form>
         </div>
     );

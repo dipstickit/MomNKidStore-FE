@@ -6,6 +6,8 @@ import { AuthProvider } from "./context/AuthProvider";
 import { CartProvider } from "./components/Cart/CartContext";
 import { OrderProvider } from "./context/OrderProvider";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -14,9 +16,9 @@ root.render(
       <CartProvider>
         <OrderProvider>
           <App />
+          <ToastContainer />
         </OrderProvider>
       </CartProvider>
     </AuthProvider>
   </React.StrictMode>
 );
-
