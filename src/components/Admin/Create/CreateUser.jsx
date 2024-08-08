@@ -1,168 +1,137 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { MainAPI } from "../../API";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import "./CreateUser.scss";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import NavBar from "../NavBar/NavBar";
+import "react-toastify/dist/ReactToastify.css";
+import { MainAPI } from "../../API";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { MdArrowBack } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
-export default function CreateUser() {
-  const nav = useNavigate();
-  const [user, setUser] = useState({
-    username: "",
-    password: "",
-    email: "",
-    role_id: "",
-  });
-  const [errors, setErrors] = useState([]);
-  console.log(user);
+const CreateUser = () => {
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const nav = useNavigate();
+    const validationSchema = Yup.object({
+        email: Yup.string()
+            .email("Invalid email address")
+            .required("Email is required"),
+        password: Yup.string()
+            .min(6, "Password must be at least 6 characters")
+            .required("Password is required"),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref('password'), null], "Passwords must match")
+            .required("Confirm Password is required"),
+    });
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    axios
-      .post(`${MainAPI}/admin/create`, user, {
-        headers: {
-          "x-access-token": JSON.parse(localStorage.getItem("accessToken")),
+    const formik = useFormik({
+        initialValues: {
+            email: "",
+            password: "",
+            confirmPassword: "",
         },
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          toast.success(res.data.message);
-          setTimeout(() => {
-            nav("/admin/user");
-          }, 2000);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setErrors(err.response.data.errors);
-      });
-  }
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            try {
+                const token = JSON.parse(localStorage.getItem("accessToken"));
+                await axios.post(
+                    `${MainAPI}/Admin/create-staff`,
+                    {
+                        email: values.email,
+                        password: values.password,
+                        confirmPassword: values.confirmPassword,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+                toast.success("Staff account created successfully!");
+                formik.resetForm();
+            } catch (error) {
+                console.error("Error creating staff account:", error);
+                toast.error("Failed to create staff account");
+            }
+        },
+    });
 
-  const specificError = (name) => {
-    return errors.find((err) => err.name === name);
-  };
+    const handleBackClick = () => {
+        nav(`/admin/user`);
+    };
 
-  return (
-    <div className="edit-container d-flex">
-      <ToastContainer />
-      <NavBar />
-      <div className="content">
-        <div className="d-flex w-100 vh-100 justify-content-center align-items-center">
-          <div className="w-50 border bg-secondary text-white p-5">
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label htmlFor="username" className="form-label">
-                  Tên đăng nhập:
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  className="form-control"
-                  placeholder="Enter username"
-                  value={user.username}
-                  onChange={(e) =>
-                    setUser({
-                      ...user,
-                      username: e.target.value,
-                    })
-                  }
-                />
-                {specificError("username") && (
-                  <p className="text-danger fw-bold">{specificError("username").message}</p>
-                )}
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="email" className="form-label">
-                  Email:
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="form-control"
-                  placeholder="Enter email"
-                  value={user.email}
-                  onChange={(e) =>
-                    setUser({
-                      ...user,
-                      email: e.target.value,
-                    })
-                  }
-                />
-                {specificError("email") && (
-                  <p className="text-danger fw-bold">{specificError("email").message}</p>
-                )}
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="password" className="form-label">
-                  Mật khẩu:
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="form-control"
-                  placeholder="Enter password"
-                  value={user.password}
-                  onChange={(e) =>
-                    setUser({
-                      ...user,
-                      password: e.target.value,
-                    })
-                  }
-                />
-                {specificError("password") && (
-                  <p className="text-danger fw-bold">{specificError("password").message}</p>
-                )}
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="role_id" className="form-label">
-                  Role:
-                </label>
-                <select
-                  id="role_id"
-                  name="role_id"
-                  className="form-select"
-                  value={user.role_id}
-                  onChange={(e) =>
-                    setUser({
-                      ...user,
-                      role_id: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Choose role</option>
-                  <option value="admin">Admin</option>
-                  <option value="staff">Staff</option>
-                  <option value="customer">Customer</option>
-                </select>
-                {specificError("role_id") && (
-                  <p className="text-danger fw-bold">{specificError("role_id").message}</p>
-                )}
-              </div>
-
-              <div className="d-flex justify-content-between">
-                <button
-                  type="button"
-                  className="btn btn-light"
-                  onClick={() => {
-                    nav("/admin/user");
-                  }}
-                >
-                  Hủy
+    return (
+        <div className="create-staff-container">
+            <ToastContainer autoClose={2000} />
+            <h2>Create Staff Account</h2>
+            <form onSubmit={formik.handleSubmit} className="create-staff-form">
+                <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        {...formik.getFieldProps('email')}
+                        className={formik.touched.email && formik.errors.email ? 'input-error' : ''}
+                    />
+                    {formik.touched.email && formik.errors.email ? (
+                        <div className="error-message">{formik.errors.email}</div>
+                    ) : null}
+                </div>
+                <div className="form-group">
+                    <label htmlFor="password">Password</label>
+                    <div className="password-input">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            id="password"
+                            name="password"
+                            {...formik.getFieldProps('password')}
+                            className={formik.touched.password && formik.errors.password ? 'input-error' : ''}
+                        />
+                        <span
+                            className="toggle-password"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                        </span>
+                    </div>
+                    {formik.touched.password && formik.errors.password ? (
+                        <div className="error-message">{formik.errors.password}</div>
+                    ) : null}
+                </div>
+                <div className="form-group">
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <div className="password-input">
+                        <input
+                            type={showConfirmPassword ? "text" : "password"}
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            {...formik.getFieldProps('confirmPassword')}
+                            className={formik.touched.confirmPassword && formik.errors.confirmPassword ? 'input-error' : ''}
+                        />
+                        <span
+                            className="toggle-password"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                            {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                        </span>
+                    </div>
+                    {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
+                        <div className="error-message">{formik.errors.confirmPassword}</div>
+                    ) : null}
+                </div>
+                <button type="submit" className="submit-button">
+                    Create Account
                 </button>
-                <button type="submit" className="btn btn-info">
-                  Tạo
+                <button type="button" className="back-button" onClick={handleBackClick}>
+                    <MdArrowBack /> Back to User Management
                 </button>
-              </div>
             </form>
-          </div>
         </div>
-      </div>
-    </div>
-  );
-}
+    );
+};
+
+export default CreateUser;

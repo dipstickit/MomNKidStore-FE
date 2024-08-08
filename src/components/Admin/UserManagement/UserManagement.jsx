@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "../NavBar/NavBar";
 import DataTable from "react-data-table-component";
-import { MdModeEdit } from "react-icons/md";
+import { MdOutlineBlock } from "react-icons/md";
+import { CgUnblock } from "react-icons/cg";
 import "./UserManagement.scss";
-import { DeleteIcon } from "../../../utils/Icon/DeleteIcon";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,46 +14,75 @@ export default function UserManagement() {
   const nav = useNavigate();
   const [data, setData] = useState([]);
   const [records, setRecords] = useState(data);
+  const [searchQuery, setSearchQuery] = useState("");
 
   async function fetchData() {
-    const response = await fetch(`${MainAPI}/admin/allUsers`, {
+    const token = JSON.parse(localStorage.getItem("accessToken"));
+    const response = await axios.get(`${MainAPI}/Admin/all-account`, {
       headers: {
-        "x-access-token": JSON.parse(localStorage.getItem("accessToken")),
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        return data.user;
-      });
-    console.log(response);
-    setRecords(response);
+    });
+    console.log(response.data);
+    setRecords(response.data);
   }
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  function handleDelete(id) {
+  const lockAccount = async (userId) => {
+    console.log(userId);
     try {
-      axios
-        .get(`${MainAPI}/admin/delete/${id}`, {
+      const token = JSON.parse(localStorage.getItem("accessToken"));
+      await axios.post(
+        `${MainAPI}/lock-account`,
+        { userId },
+        {
           headers: {
-            "x-access-token": JSON.parse(localStorage.getItem("accessToken")),
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-        })
-        .then((res) => {
-          fetchData();
-          toast.success(res.data.message);
-        });
-    } catch (err) {
-      console.log(err);
+        }
+      );
+      toast.success("Account locked successfully");
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to lock account");
+      console.error(error);
     }
-  }
+  };
+
+  const unlockAccount = async (userId) => {
+    try {
+      const token = JSON.parse(localStorage.getItem("accessToken"));
+      await axios.post(
+        `${MainAPI}/unlock-account`,
+        { userId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast.success("Account unlocked successfully");
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to unlock account");
+      console.error(error);
+    }
+  };
+
+  const handleFilter = records.filter((user) =>
+    user.userName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const column = [
     {
-      name: "Name",
-      selector: (row) => row.username,
+      name: "UserName",
+      selector: (row) => row.userName,
       sortable: true,
     },
     {
@@ -63,7 +92,7 @@ export default function UserManagement() {
     },
     {
       name: "Role",
-      selector: (row) => row.role_id,
+      selector: (row) => row.roleId,
       sortable: true,
     },
     {
@@ -71,19 +100,15 @@ export default function UserManagement() {
         <div className="action">
           <span
             className="action-btn"
-            onClick={() => {
-              handleDelete(row.user_id);
-            }}
+            onClick={() => lockAccount(row.userId)}
           >
-            <DeleteIcon color="red" />
+            <MdOutlineBlock color="red" />
           </span>
           <span
             className="action-btn"
-            onClick={() => {
-              nav(`/admin/edit/${row.user_id}`);
-            }}
+            onClick={() => unlockAccount(row.userId)}
           >
-            <MdModeEdit color="green" />
+            <CgUnblock color="green" />
           </span>
         </div>
       ),
@@ -97,25 +122,24 @@ export default function UserManagement() {
         <ToastContainer autoClose={2000} />
         <h1 className="mt-0">User Management</h1>
         <div className="user_manage mt-4">
-          {/* <div className="search">
+          <div className="search">
             <label>Search: </label>
-            <input type="text" onChange={handleFilter}></input>
-          </div> */}
-          <div className="add">
-            <button
-              className="btn"
-              onClick={() => {
-                nav("/admin/create");
-              }}
-            >
-              Add User
-            </button>
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Search account..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
+          <button className="btn" onClick={() => nav("/admin/create-staff")}>
+            Create Staff
+          </button>
         </div>
         <div className="table mt-3">
           <DataTable
             columns={column}
-            data={records}
+            data={handleFilter}
             selectableRows
             pagination
             paginationPerPage={5}
