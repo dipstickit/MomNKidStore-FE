@@ -82,7 +82,7 @@ export default function Blog() {
 
   useEffect(() => {
     axios
-      .get(`http://54.151.230.5:5173/api/Blog/GetAllBlog`)
+      .get(`${MainAPI}/Blog/GetAllBlog`)
       .then((res) => {
         setBlogs(res.data);
         setLoading(false);
@@ -110,7 +110,7 @@ export default function Blog() {
                   <div className="card content-card">
                     <div className="img-container mb-3">
                       {blog.blogImage ? (
-                        <img src={`data:image/jpeg;base64,${blog.blogImage}`} alt={blog.blogTitle} />
+                        <img src={blog.blogImage} alt={blog.blogTitle} />
                       ) : (
                         <img src="https://via.placeholder.com/150" alt="Placeholder" />
                       )}
