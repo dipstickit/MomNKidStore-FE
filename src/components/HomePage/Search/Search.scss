@@ -1,0 +1,64 @@
+.container {
+    padding: 20px;
+  }
+  
+  .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+  }
+  
+  .img-container {
+    text-align: center;
+    padding: 15px;
+  }
+  
+  .img-container img {
+    max-width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .content-container {
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .content-container h4 {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  
+  .price {
+    color: #ff5722;
+  }
+  
+  .emptyinfo img {
+    display: block;
+    margin: 0 auto 20px;
+  }
+  
+  .emptyinfo p {
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+  }
+  
+  /* New styles to remove underline from links */
+  .link {
+    text-decoration: none;
+  }
+  
+  .link h4 {
+    color: inherit; /* inherit the color from parent */
+  }
+  
+  .link:hover h4 {
+    color: #ff5722; /* add a hover effect to the text */
+  }
+  

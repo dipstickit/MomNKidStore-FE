@@ -1,0 +1,25 @@
+.container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .profile-details p {
+    font-size: 18px;
+    margin: 10px 0;
+    line-height: 1.5;
+  }
+  
+  .profile-details p strong {
+    display: inline-block;
+    width: 150px;
+  }
+  
