@@ -79,7 +79,7 @@ export default function UseFull() {
 
   useEffect(() => {
     axios
-      .get(`http://54.151.230.5:5173/api/Blog/GetAllBlog`)
+      .get(`${MainAPI}/Blog/GetAllBlog`)
       .then((res) => {
         setBlogs(res.data);
       })
@@ -108,21 +108,21 @@ export default function UseFull() {
         <div className="usefull_container ">
           {blogs.map((usefull) => (
             <Link
-              to={`/blogs/post/${usefull.blogId}`} 
+              to={`/blogs/post/${usefull.blogId}`}
               className="usefull_detail"
-              key={usefull.blogId} 
+              key={usefull.blogId}
             >
               <div className="usefull-img-container">
                 <img
-                  src={usefull.blogImage || "https://via.placeholder.com/150"} 
-                  alt={usefull.blogTitle} 
+                  src={usefull.blogImage || "https://via.placeholder.com/150"}
+                  alt={usefull.blogTitle}
                 />
               </div>
               <p
                 className="fw-bold mt-2"
                 style={{ lineHeight: "17px", fontSize: "14px" }}
               >
-                {usefull.blogTitle} 
+                {usefull.blogTitle}
               </p>
             </Link>
           ))}

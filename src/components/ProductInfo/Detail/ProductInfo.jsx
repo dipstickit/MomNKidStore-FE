@@ -113,19 +113,35 @@
 // }
 
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Productinfo.scss";
-import { FaFacebookSquare } from "react-icons/fa";
-import { FaInstagramSquare } from "react-icons/fa";
-import { FaHeart } from "react-icons/fa";
+import { FaFacebookSquare, FaInstagramSquare, FaHeart } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { CartContext } from "../../Cart/CartContext";
 import { formatVND } from "../../../utils/Format";
+import axios from "axios";
+import { MainAPI } from "../../API";
+import { Spinner } from "react-bootstrap";
 
-export default function ProductInfo({ product }) {
+export default function ProductInfo() {
   const { handleAddToCart } = useContext(CartContext);
   const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    axios
+      .get(`${MainAPI}/Product/get-product-by-id/${id}`)
+      .then((res) => {
+        setProduct(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, [id]);
 
   const handleIncrease = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
@@ -135,15 +151,27 @@ export default function ProductInfo({ product }) {
     setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
   };
 
+  if (loading) {
+    return (
+      <div className="text-center" style={{ marginTop: "120px" }}>
+        <Spinner animation="border" role="status" />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return <div>Product not found</div>;
+  }
+
   return (
-    <div key={product.productId} className="productInfo_container">
+    <div className="productInfo_container">
       <div className="container">
         <div className="row product-content">
           <div className="col-md-6 info">
             <div className="ptc">
               {product.images && product.images.length > 0 ? (
                 <img
-                  src={`data:image/png;base64,${product.images[0].imageProduct}`}
+                  src={product.images[0].imageProduct1}
                   alt={product.productName}
                   style={{ maxWidth: "100%", height: "auto" }}
                 />
@@ -183,16 +211,10 @@ export default function ProductInfo({ product }) {
             <div className="milk_name">
               <h3>{product.productName}</h3>
             </div>
-            <div className="brand">
-              Category:&nbsp;&nbsp;&nbsp;&nbsp;
-              <span style={{ color: "#DB7093" }}>{product.brandName}</span>
-            </div>
 
             <div className="name">
               Name Of Product:&nbsp;&nbsp;&nbsp;{product.productName}
             </div>
-
-            
 
             <div className="feed_rate">
               Description: &nbsp;&nbsp;{product.productInfor}
@@ -235,3 +257,4 @@ export default function ProductInfo({ product }) {
     </div>
   );
 }
+
