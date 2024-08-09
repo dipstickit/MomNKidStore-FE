@@ -1,6 +1,5 @@
 // General styles for the container
 .edit-product-container {
-<<<<<<< HEAD
     width: 80%;
     max-width: 800px;
     margin: 0 auto;
@@ -8,39 +7,56 @@
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 2rem;
+    }
 }
 
-h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 2rem;
-}
-
+// Form styles
 .edit-product-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
     .form-group {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
+        margin-bottom: 15px;
 
         label {
             font-weight: bold;
+            margin-bottom: 5px;
             color: #555;
         }
 
-        input,
-        select {
+        input[type='text'],
+        input[type='number'],
+        select,
+        input[type='file'] {
             padding: 0.75rem;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 1rem;
             width: 100%;
+            box-sizing: border-box;
+
+            &:focus {
+                border-color: #007bff;
+                outline: none;
+                box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+            }
         }
 
-        input[type="number"] {
+        input[type='number'] {
             -moz-appearance: textfield;
             -webkit-appearance: none;
             appearance: none;
@@ -49,59 +65,10 @@ h1 {
             &::-webkit-outer-spin-button {
                 -webkit-appearance: none;
                 margin: 0;
-=======
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    font-family: Arial, sans-serif;
-
-    h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #333;
-    }
-}
-
-// Form styles
-.edit-product-form {
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-    .form-group {
-        margin-bottom: 15px;
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #555;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        select,
-        input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-
-            &:focus {
-                border-color: #007bff;
-                outline: none;
-                box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
->>>>>>> 83d1db3 (fix minor change)
             }
         }
 
         .error-message {
-<<<<<<< HEAD
-            color: #d9534f;
-            font-size: 0.875rem;
-=======
             color: #e74c3c;
             font-size: 0.875em;
             margin-top: 5px;
@@ -122,24 +89,6 @@ h1 {
         }
     }
 
-    .submit-button {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        font-size: 1em;
-        cursor: pointer;
-        text-align: center;
-
-        &:hover {
-            background-color: #0056b3;
->>>>>>> 83d1db3 (fix minor change)
-        }
-    }
-
     .image-previews {
         display: flex;
         gap: 1rem;
@@ -155,26 +104,29 @@ h1 {
     }
 
     .submit-button {
+        display: block;
+        width: 100%;
+        padding: 1rem;
         background-color: #5cb85c;
         color: #fff;
-        padding: 1rem;
         border: none;
         border-radius: 4px;
         font-size: 1rem;
         cursor: pointer;
+        text-align: center;
         transition: background-color 0.3s;
 
         &:hover {
             background-color: #4cae4c;
         }
     }
-
 }
 
 .back-button {
     border: none;
     border-radius: 20px;
     padding: 0.5rem 1rem;
+    background-color: #6c757d;
     color: #fff;
     cursor: pointer;
     font-size: 1rem;
@@ -184,6 +136,6 @@ h1 {
     transition: background-color 0.3s ease;
 
     &:hover {
-        background-color: #0056b3;
+        background-color: #5a6268;
     }
 }

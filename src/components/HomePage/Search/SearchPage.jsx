@@ -59,7 +59,7 @@ export default function SearchPage() {
                       <div className="card content-card">
                         <div className="img-container mb-3">
                           <img
-                            src={product.images.length ? `data:image/jpeg;base64,${product.images[0].imageProduct}` : "public/assest/images/product/aptamil-profutura-duobiotik-2-danh-cho-tre-tu-6-12-thang-tuoi-800g.png"}
+                            src={product.images.length ? `${product.images[0].imageProduct1}` : "public/assest/images/product/aptamil-profutura-duobiotik-2-danh-cho-tre-tu-6-12-thang-tuoi-800g.png"}
                             alt={product.productName}
                           />
                         </div>
