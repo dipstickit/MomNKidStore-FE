@@ -16,6 +16,7 @@ root.render(
       <CartProvider>
         <OrderProvider>
           <App />
+<<<<<<< HEAD
           <ToastContainer
             position="top-right"
             autoClose={5000}
@@ -27,6 +28,9 @@ root.render(
             draggable
             pauseOnHover
           />
+=======
+          <ToastContainer />
+>>>>>>> 83d1db3 (fix minor change)
         </OrderProvider>
       </CartProvider>
     </AuthProvider>

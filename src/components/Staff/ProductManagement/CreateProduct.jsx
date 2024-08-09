@@ -106,6 +106,10 @@ export default function CreateProduct() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 83d1db3 (fix minor change)
                 toast.success("Product created successfully!");
                 navigate("/staff/manage_product");
             } catch (error) {

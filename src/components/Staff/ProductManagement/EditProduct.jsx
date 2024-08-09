@@ -4,7 +4,11 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { MainAPI } from '../../API';
+<<<<<<< HEAD
 import { toast, ToastContainer } from 'react-toastify';
+=======
+import { toast } from 'react-toastify';
+>>>>>>> 83d1db3 (fix minor change)
 import 'react-toastify/dist/ReactToastify.css';
 import './EditProduct.scss';
 
@@ -84,6 +88,7 @@ const EditProduct = () => {
                 toast.error('Error fetching product: ' + (error?.response?.data?.message || error.message));
             }
         };
+        console.log("Selected Images:", selectedImages);
 
         const fetchCategories = async () => {
             try {
@@ -135,7 +140,12 @@ const EditProduct = () => {
                     productStatus: values.productStatus === 'available',
                     images: imagesFormatted,
                 };
+<<<<<<< HEAD
 
+=======
+                console.log(requestData);
+                console.log("Image URLs:", imageUrls);
+>>>>>>> 83d1db3 (fix minor change)
                 await axios.put(`${MainAPI}/Product/update-product/${productId}`, requestData, {
                     headers: {
                         'x-access-token': token,
@@ -164,6 +174,7 @@ const EditProduct = () => {
         }));
         formik.setFieldValue("images", fileObjects);
     };
+
 
     if (!product) return <div>Loading...</div>;
 
@@ -266,14 +277,25 @@ const EditProduct = () => {
                     ) : null}
                 </div>
 
+<<<<<<< HEAD
                 <div className="image-previews">
                     {selectedImages.map((img, index) => (
                         <img key={index} src={img} alt={`Preview ${index}`} />
                     ))}
                 </div>
+=======
+                {selectedImages.length > 0 && (
+                    <div className="image-previews">
+                        {selectedImages.map((image, index) => (
+                            <img key={index} src={image} alt={`Preview ${index}`} />
+                        ))}
+                    </div>
+                )}
+
+>>>>>>> 83d1db3 (fix minor change)
 
                 <div className="form-group">
-                    <label htmlFor="productStatus">Product Status</label>
+                    <label htmlFor="productStatus">Status</label>
                     <select
                         id="productStatus"
                         name="productStatus"
