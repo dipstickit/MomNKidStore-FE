@@ -24,12 +24,12 @@ export default function Cart() {
           <FaLongArrowAltLeft /> Tiếp tục mua hàng
         </button>
       </div>
-      <div className="order-information row">
-        <div className="col-md-8">
+      <div className="order-information">
+        <div className="order-details">
           <OrderDetail />
         </div>
-        <div className="col-md-4">
-          {/* <OrderUserInfo /> */}
+        <div className="order-user-info">
+          <OrderUserInfo />
         </div>
       </div>
       <FooterPage />

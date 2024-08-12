@@ -15,6 +15,7 @@ import { Bar, Pie } from "react-chartjs-2";
 import axios from "axios";
 import { MainAPI } from "../../../API";
 import "./Chart.scss";
+import { formatVND, formattedDate, convertSQLDate } from '../../../../utils/Format';
 
 ChartJS.register(
   CategoryScale,
@@ -34,76 +35,66 @@ export const options = {
     legend: {
       position: "top",
     },
+    tooltip: {
+      callbacks: {
+        label: function (tooltipItem) {
+          return formatVND(tooltipItem.raw);
+        }
+      }
+    }
   },
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: {
+        callback: function (value) {
+          return formatVND(value);
+        }
+      }
+    }
+  }
 };
 
 export default function Chart({ startDate, endDate }) {
-  const [dataChart, setDataChart] = useState({});
   const [topProducts, setTopProducts] = useState([]);
-  const [totalRevenuePerPeriod, setTotalRevenuePerPeriod] = useState([]);
-
-  const barChartLabels = totalRevenuePerPeriod.map(
-    (revenue) => revenue.periodMonth
-  );
-  const barChartData = totalRevenuePerPeriod.map(
-    (revenue) => revenue.totalRevenue
-  );
+  const [monthSales, setMonthSales] = useState([]);
 
   useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("accessToken"));
     axios
       .get(`${MainAPI}/admin/dashboard`, {
-        params: {
-          startDate: startDate,
-          endDate: endDate,
-        },
         headers: {
-          "x-access-token": JSON.parse(localStorage.getItem("accessToken")),
+          "Authorization": `Bearer ${token}`,
         },
       })
       .then((res) => {
-        setDataChart(res.data);
-        setTopProducts(res.data.topProducts || []);
-        setTotalRevenuePerPeriod(res.data.totalRevenuePerPeriod || []);
+        setTopProducts(res.data.topSellingProducts || []);
+        setMonthSales(res.data.monthSales || []);
       })
       .catch((err) => {
         console.log(err);
-
-        // Fallback to dummy data
-        setTopProducts([
-          { brand_name: "Product A", totalSold: 150 },
-          { brand_name: "Product B", totalSold: 120 },
-          { brand_name: "Product C", totalSold: 90 },
-          { brand_name: "Product D", totalSold: 70 },
-          { brand_name: "Product E", totalSold: 60 },
-        ]);
-
-        setTotalRevenuePerPeriod([
-          { periodMonth: "Jan", totalRevenue: 10000 },
-          { periodMonth: "Feb", totalRevenue: 15000 },
-          { periodMonth: "Mar", totalRevenue: 20000 },
-          { periodMonth: "Apr", totalRevenue: 25000 },
-          { periodMonth: "May", totalRevenue: 30000 },
-        ]);
       });
   }, [startDate, endDate]);
 
   const dataBarChart = {
-    labels: barChartLabels.length > 0 ? barChartLabels : ["Jan", "Feb", "Mar", "Apr", "May"],
+    labels: monthSales.length > 0 ? monthSales.map((sale) => `Tháng ${sale.month}`) : [],
     datasets: [
       {
         label: "Doanh thu theo tháng",
-        data: barChartData.length > 0 ? barChartData : [10000, 15000, 20000, 25000, 30000],
+        data: monthSales.length > 0 ? monthSales.map((sale) => sale.totalSales) : [],
         backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
       },
     ],
   };
 
   const dataPieChart = {
-    labels: topProducts.length > 0 ? topProducts.map((product) => product.brand_name) : ["Product A", "Product B", "Product C", "Product D", "Product E"],
+    labels: topProducts.length > 0 ? topProducts.map((product) => product.productName) : [],
     datasets: [
       {
         label: "Số lượng đã bán",
-        data: topProducts.length > 0 ? topProducts.map((product) => product.totalSold) : [150, 120, 90, 70, 60],
+        data: topProducts.length > 0 ? topProducts.map((product) => product.productQuantity) : [],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",

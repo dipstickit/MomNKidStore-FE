@@ -1,14 +1,35 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './NavBarStaff.scss'
 import { MainAPI } from '../../API';
 import AuthContext from '../../../context/AuthProvider';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { jwtDecode } from "jwt-decode";
 
 export default function NavBarStaff() {
-
+    // const [username, setUsername] = useState("");
     const nav = useNavigate();
+    // const token = JSON.parse(localStorage.getItem("accessToken"));
+
+    // useEffect(() => {
+    //     if (token) {
+    //         const decodedToken = jwtDecode(token);
+    //         const customerId = decodedToken.customerId;
+
+    //         axios.get(`${MainAPI}/Customer/${customerId}`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //         })
+    //             .then(response => {
+    //                 setUsername(response.data.userName);
+    //             })
+    //             .catch(error => {
+    //                 console.error("Error fetching customer data:", error);
+    //             });
+    //     }
+    // }, [token]);
 
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
@@ -24,7 +45,7 @@ export default function NavBarStaff() {
             </div>
 
             <div className='user_name'>
-                {/* <p><span>User Name:</span>&nbsp; {getName}</p> */}
+                <p><span>Staff</span>&nbsp;</p>
             </div>
 
             <div>

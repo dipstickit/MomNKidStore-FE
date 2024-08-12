@@ -16,7 +16,7 @@ import { jwtDecode } from "jwt-decode";
 
 export default function HeaderPage() {
   const [searchValue, setSearchValue] = useState("");
-  const [username, setUsername] = useState(""); // State để lưu trữ tên người dùng
+  const [username, setUsername] = useState("");
   const { setAuth } = useContext(AuthContext);
   const { setOrderInfomation } = useOrder();
   const [searchParams, setSearchParams] = useSearchParams();

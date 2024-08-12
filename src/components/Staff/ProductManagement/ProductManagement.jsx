@@ -9,6 +9,7 @@ import axios from "axios";
 import { MainAPI } from "../../API";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import Switch from "react-switch";
 import "./ProductManagement.scss";
 
 export const formatVND = (number) => {
@@ -17,11 +18,16 @@ export const formatVND = (number) => {
     currency: "VND",
   }).format(number);
 };
+
 export default function UserManagement() {
   const nav = useNavigate();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const fetchCategoryName = async (categoryId) => {
     try {
@@ -63,14 +69,12 @@ export default function UserManagement() {
     }
 
     try {
-      const response = await axios.get(`${MainAPI}/Product/get-all-products`, {
+      const response = await axios.get(`${MainAPI}/Product/get-all-products?page=${page}&pageSize=10`, {
         headers: {
           "x-access-token": token,
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log("API response data:", response.data);
 
       const productsList = Array.isArray(response.data.productList) ? response.data.productList : [];
       const categoryMap = await fetchCategories(productsList);
@@ -81,6 +85,7 @@ export default function UserManagement() {
       }));
 
       setProducts(productsWithCategories);
+      setTotalPages(response.data.totalPage);
     } catch (error) {
       console.error("Error fetching product data:", error);
       if (error.response) {
@@ -101,8 +106,12 @@ export default function UserManagement() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const handleDelete = (product) => {
     const token = JSON.parse(localStorage.getItem("accessToken"));
@@ -125,7 +134,9 @@ export default function UserManagement() {
                     }
                   });
                   toast.success("Product deleted successfully");
-                  fetchData(); // Refresh data on the current page
+                  setProducts((prevProducts) =>
+                    prevProducts.filter((item) => item.productId !== product.productId)
+                  );
                 } catch (error) {
                   console.error("Error deleting product:", error);
                   if (error.response) {
@@ -178,24 +189,44 @@ export default function UserManagement() {
     });
   };
 
-  const filteredProducts = Array.isArray(products)
-    ? products.filter((product) =>
-      product.productName.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    : [];
+  const handleStatusChange = async (productId, currentStatus) => {
+    const newStatus = currentStatus ? 0 : 1; // Toggle status
+    const token = JSON.parse(localStorage.getItem("accessToken"));
 
-  console.log("Filtered products:", filteredProducts);
+    try {
+      await axios.put(`${MainAPI}/Product/update-status?id=${productId}&status=${newStatus}`, {}, {
+        headers: {
+          "x-access-token": token,
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product.productId === productId
+            ? { ...product, productStatus: newStatus }
+            : product
+        )
+      );
+
+      toast.success(`Product status updated successfully`);
+    } catch (error) {
+      console.error("Error updating product status:", error);
+      toast.error("Failed to update product status.");
+    }
+  };
+
+  const filteredProducts = products
+    .filter((product) => {
+      return (
+        product.productName.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (selectedCategory ? product.categoryName === selectedCategory : true) &&
+        (selectedStatus ? (selectedStatus === "Available" ? product.productStatus : !product.productStatus) : true)
+      );
+    });
+
   const columns = [
     { name: "ID", selector: (row) => row.productId, sortable: true },
-    { name: "Category Name", selector: (row) => row.categoryName },
-    { name: "Name", selector: (row) => row.productName, sortable: true },
-    { name: "Information", selector: (row) => row.productInfor },
-    { name: "Price", selector: (row) => formatVND(row.productPrice), sortable: true },
-    { name: "Quantity", selector: (row) => row.productQuantity, sortable: true },
-    {
-      name: "Status",
-      selector: (row) => (row.productStatus ? "Available" : "Unavailable"),
-    },
     {
       name: "Images",
       selector: (row) => row.images.length,
@@ -206,6 +237,30 @@ export default function UserManagement() {
             <img key={index} src={img.imageProduct1} alt={`Product ${index}`} width={50} />
           ))}
         </div>
+      ),
+    },
+    { name: "Category Name", selector: (row) => row.categoryName },
+    { name: "Name", selector: (row) => row.productName, sortable: true },
+    { name: "Price", selector: (row) => formatVND(row.productPrice), sortable: true },
+    { name: "Quantity", selector: (row) => row.productQuantity, sortable: true },
+    {
+      name: "Status",
+      selector: (row) => (row.productStatus ? "Available" : "Unavailable"),
+      cell: (row) => (
+        <Switch
+          onChange={() => handleStatusChange(row.productId, row.productStatus)}
+          checked={row.productStatus === 1}
+          onColor="#86d3ff"
+          onHandleColor="#2693e6"
+          handleDiameter={30}
+          uncheckedIcon={false}
+          checkedIcon={false}
+          boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+          activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+          height={20}
+          width={48}
+          className="react-switch"
+        />
       ),
     },
     {
@@ -228,7 +283,6 @@ export default function UserManagement() {
   return (
     <div className="userManagement-container">
       <div className="content">
-        <ToastContainer autoClose={2000} />
         <h1>Product Management</h1>
         <div className="user-management">
           <div className="search">
@@ -241,6 +295,27 @@ export default function UserManagement() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+          <div className="filters">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <option value="">All Categories</option>
+              {Object.keys(categories).map((categoryId) => (
+                <option key={categoryId} value={categories[categoryId]}>
+                  {categories[categoryId]}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+            >
+              <option value="">All Statuses</option>
+              <option value="Available">Available</option>
+              <option value="Unavailable">Unavailable</option>
+            </select>
+          </div>
           <div className="button-group">
             <button className="btn add-btn" onClick={() => nav("/create-product")}>
               Add Product
@@ -252,11 +327,17 @@ export default function UserManagement() {
             columns={columns}
             data={filteredProducts}
             pagination
+            paginationServer
+            paginationTotalRows={totalPages * 10}
             paginationPerPage={10}
-            paginationRowsPerPageOptions={[10, 20, 30, 40, 50]}
+            paginationComponentOptions={{
+              noRowsPerPage: true,
+            }}
+            onChangePage={handlePageChange}
           />
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

@@ -10,7 +10,6 @@ export default function OrderDetail() {
   const [cartList, setCartList] = useState([]);
   const token = JSON.parse(localStorage.getItem("accessToken"));
 
-
   useEffect(() => {
     if (token) {
       const decodedToken = jwtDecode(token);
@@ -101,6 +100,7 @@ export default function OrderDetail() {
               <div className="item-cart-price">Đơn giá</div>
               <div className="item-cart-quantity">Số lượng</div>
               <div className="item-cart-total">Thành tiền</div>
+              <div className="item-cart-actions">Actions</div>
             </div>
             {cartList.map((cartItem) => (
               <div key={cartItem.cartId} className="cart-product-line">
@@ -120,12 +120,6 @@ export default function OrderDetail() {
                   </div>
                 </div>
                 <div className="block-cart-end">
-                  <div className="item-cart-price-pro mr-0 ">
-                    {cartItem.productView.productPrice.toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })}{" "}
-                  </div>
                   <div className="item-cart-quantity-pro">
                     <div className="btn-1">
                       <button onClick={() => handleDecreaseQuantity(cartItem)}>
@@ -148,13 +142,15 @@ export default function OrderDetail() {
                       }
                     )}
                   </div>
-                  <div className="btn-delete">
-                    <button
-                      onClick={() => handleDeleteCart(cartItem)}
-                      style={{ border: "none", background: "none" }}
-                    >
-                      <MdDelete />
-                    </button>
+                  <div className="item-cart-actions">
+                    <div className="btn-delete">
+                      <button
+                        onClick={() => handleDeleteCart(cartItem)}
+                        style={{ border: "none", background: "none" }}
+                      >
+                        <MdDelete />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -165,3 +161,4 @@ export default function OrderDetail() {
     </>
   );
 }
+

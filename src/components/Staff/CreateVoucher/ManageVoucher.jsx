@@ -14,6 +14,9 @@ export default function ManageVoucher() {
   const [voucherValue, setVoucherValue] = useState("");
   const [quantity, setQuantity] = useState("");
   const [startDate, setStartDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1); // Track the current page
+  const pageSize = 10; // Number of vouchers per page
+
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -31,7 +34,8 @@ export default function ManageVoucher() {
           "Authorization": `Bearer ${token}`
         },
       });
-      setVouchers(response.data);
+
+      setVouchers(response.data); // Assuming response.data is the array of vouchers
       console.log("Vouchers:", response.data);
     } catch (error) {
       console.error("Error fetching data voucher:", error);
@@ -57,6 +61,10 @@ export default function ManageVoucher() {
   }, []);
 
   const handleAddVoucher = async () => {
+    if (!voucherValue || !quantity || !startDate || !exDate) {
+      toast.error("Please fill in all fields before creating a voucher.");
+      return;
+    }
     const token = JSON.parse(localStorage.getItem("accessToken"));
 
     if (!token) {
@@ -80,8 +88,6 @@ export default function ManageVoucher() {
           }
         }
       );
-
-      console.log("Add Voucher Response:", response.data);
 
       if (response.data.status === 200) {
         fetchData();
@@ -118,7 +124,6 @@ export default function ManageVoucher() {
   };
 
   const handleEditVoucher = async (voucherId) => {
-    console.log("Update voucher with ID:", voucherId);
     navigate(`/edit-voucher/${voucherId}`);
   };
 
@@ -159,105 +164,139 @@ export default function ManageVoucher() {
     }
   };
 
+  // Pagination logic
+  const totalPages = Math.ceil(vouchers.length / pageSize);
+
+  const currentVouchers = vouchers.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <>
       <ToastContainer />
-      <div className="create-voucher-btn">
-        <button
-          className="btn btn-primary"
-          onClick={() => setShowAdd(true)}
-        >
-          Create Voucher
-        </button>
-      </div>
-      <div className="voucher">
-        {showAdd && (
-          <div className="add-voucher" style={{ marginLeft: "10px", textAlign: 'left' }}>
-            <div className="add-voucher-detail">
-              <h4 style={{ marginLeft: '10px' }}>Create Voucher</h4>
-              <label className="code-dis">Voucher Value:</label>
-              <input
-                type="number"
-                value={voucherValue}
-                onChange={(event) => setVoucherValue(event.target.value)}
-              />
-              &nbsp;&nbsp;&nbsp;
-              <label>Start Date:</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(event) => setStartDate(event.target.value)}
-              />
-              &nbsp;&nbsp;&nbsp;
-              <label>Expiration Date:</label>
-              <input
-                type="date"
-                value={exDate}
-                onChange={(event) => setExDate(event.target.value)}
-              />
-              &nbsp;&nbsp;&nbsp;
-              <label>Quantity:</label>
-              <input
-                type="number"
-                value={quantity}
-                onChange={(event) => setQuantity(event.target.value)}
-              />
-              &nbsp;&nbsp;&nbsp;
-              <button className="add-cancel" onClick={handleAddVoucher}>
-                Create
-              </button>
-              <button className="add-cancel" onClick={() => setShowAdd(false)}>
-                Cancel
+      <div className="manage-voucher-container">
+        <div className="content">
+          <h1>Voucher Management</h1>
+          <div className="voucher-management">
+            <div className="create-voucher-btn">
+              <button className="btn add-btn" onClick={() => setShowAdd(true)}>
+                Create Voucher
               </button>
             </div>
           </div>
-        )}
 
-        <div className="voucher-th">
-          <table className="table-voucher-th">
-            <thead>
-              <tr>
-                <th>Voucher ID</th>
-                <th>Voucher Value</th>
-                <th>Voucher Quantity</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-          </table>
-        </div>
+          {showAdd && (
+            <div className="add-voucher">
+              <h4>Create Voucher</h4>
+              <div className="add-voucher-detail">
+                <label>Voucher Value:</label>
+                <input
+                  type="number"
+                  value={voucherValue}
+                  onChange={(event) => setVoucherValue(event.target.value)}
+                />
+                <label>Start Date:</label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(event) => setStartDate(event.target.value)}
+                />
+                <label>Expiration Date:</label>
+                <input
+                  type="date"
+                  value={exDate}
+                  onChange={(event) => setExDate(event.target.value)}
+                />
+                <label>Quantity:</label>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(event) => setQuantity(event.target.value)}
+                />
+                <div className="btn-group">
+                  <button className="btn create-btn" onClick={handleAddVoucher}>
+                    Create
+                  </button>
+                  <button className="btn cancel-btn" onClick={() => setShowAdd(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
-        <div className="voucher-tb">
-          <table className="table-voucher-tb">
-            <tbody>
-              {vouchers.length > 0 ? (
-                vouchers.map((voucher) => (
-                  <tr key={voucher.voucherId}>
-                    <td>{voucher.voucherId}</td>
-                    <td>{voucher.voucherValue}</td>
-                    <td>{voucher.voucherQuantity}</td>
-                    <td>{voucher.startDate}</td>
-                    <td>{voucher.endDate}</td>
-                    <td>
-                      <button onClick={() => handleEditVoucher(voucher.voucherId)}>
-                        <FaEdit />
-                      </button>
-                      <button onClick={() => handleDeleteVoucher(voucher.voucherId)}>
-                        <FaTrash />
-                      </button>
+          <div className="voucher-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Voucher ID</th>
+                  <th>Voucher Value</th>
+                  <th>Quantity</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentVouchers.length > 0 ? (
+                  currentVouchers.map((voucher) => (
+                    <tr key={voucher.voucherId}>
+                      <td>{voucher.voucherId}</td>
+                      <td>{voucher.voucherValue}</td>
+                      <td>{voucher.voucherQuantity}</td>
+                      <td>{voucher.startDate}</td>
+                      <td>{voucher.endDate}</td>
+                      <td>
+                        <button className="action-btn" onClick={() => handleEditVoucher(voucher.voucherId)}>
+                          <FaEdit />
+                        </button>
+                        <button className="action-btn" onClick={() => handleDeleteVoucher(voucher.voucherId)}>
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: 'center' }}>
+                      No vouchers available
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" style={{ textAlign: 'center' }}>
-                    No vouchers available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="pagination">
+            <button
+              className="btn page-btn"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                className={`btn page-btn ${currentPage === index + 1 ? 'active' : ''}`}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button
+              className="btn page-btn"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </>
