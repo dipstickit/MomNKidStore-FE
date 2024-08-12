@@ -6,6 +6,7 @@ import "./CustomerProfile.scss"; // Import the CSS file for styling
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MainAPI } from "../../API";
+import defaultAvatar from "./default-avatar.png"; // Assuming you have this image
 
 export default function CustomerProfile() {
   const [customer, setCustomer] = useState(null);
@@ -69,15 +70,20 @@ export default function CustomerProfile() {
   }
 
   return (
-    <div className="container">
+    <div className="container profile-container">
       <ToastContainer autoClose={2000} />
       <h2>Customer Profile</h2>
-      <div className="profile-details">
-        <p><strong>Username:</strong> {customer.userName}</p>
-        <p><strong>Phone:</strong> {customer.phone}</p>
-        <p><strong>Address:</strong> {customer.address}</p>
-        <p><strong>Date of Birth:</strong> {customer.dob}</p>
-        <p><strong>Points:</strong> {customer.point}</p>
+      <div className="profile-card">
+        <div className="avatar-container">
+          <img src={defaultAvatar} alt="Customer Avatar" className="avatar" />
+        </div>
+        <div className="profile-details">
+          <p><strong>Username:</strong> {customer.userName}</p>
+          <p><strong>Phone:</strong> {customer.phone}</p>
+          <p><strong>Address:</strong> {customer.address}</p>
+          <p><strong>Date of Birth:</strong> {customer.dob}</p>
+          <p><strong>Points:</strong> {customer.point}</p>
+        </div>
       </div>
     </div>
   );

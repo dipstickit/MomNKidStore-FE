@@ -1,25 +1,123 @@
 .container {
-    padding: 20px;
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  color: #333;
+}
+
+h2 {
+  font-size: 26px;
+  color: #222;
+  margin-bottom: 25px;
+  text-align: center;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.avatar-container {
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 2px solid #eee;
+  margin-right: 20px;
+}
+
+.profile-details {
+  flex-grow: 1;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #555;
+
+  p {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #fff;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+
+    strong {
+      color: #222;
+      font-weight: 500;
+    }
   }
-  
+}
+
+/* Media queries for responsive design */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
   h2 {
-    text-align: center;
-    margin-bottom: 20px;
+    font-size: 22px;
   }
-  
-  .profile-details p {
-    font-size: 18px;
-    margin: 10px 0;
-    line-height: 1.5;
+
+  .profile-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
   }
-  
-  .profile-details p strong {
-    display: inline-block;
-    width: 150px;
+
+  .avatar {
+    margin-bottom: 15px;
   }
-  
+
+  .profile-details {
+    width: 100%;
+    font-size: 14px;
+
+    p {
+      flex-direction: column;
+      align-items: flex-start;
+
+      strong {
+        margin-bottom: 5px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .profile-details {
+    font-size: 14px;
+
+    p {
+      font-size: 13px;
+    }
+  }
+}
