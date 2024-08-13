@@ -1,4 +1,3 @@
-
 import React, { useContext, useEffect, useState } from "react";
 import "./Post.scss";
 import HeaderPage from "../../utils/Header/Header";
@@ -10,10 +9,6 @@ import { formatVND } from "../../utils/Format";
 import { CartContext } from "../Cart/CartContext";
 import { FaShoppingCart } from "react-icons/fa";
 import { Spinner } from "react-bootstrap";
-
-const useFind = ({ list, id }) => {
-  return list.find((item) => item.id === id);
-};
 
 export default function Post() {
   const { id } = useParams();
@@ -28,82 +23,73 @@ export default function Post() {
       .get(`${MainAPI}/Blog/GetAllBlogByBlogId/${id}`)
       .then((res) => {
         setBlog(res.data);
-        setRelatedProducts(res.data.products);
+        setRelatedProducts(res.data.blogProducts);
         setLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
-
-  // console.log(blog);
+  }, [id]);
 
   return (
-    <div style={{ "background-color": "#f5f7fd" }}>
+    <div style={{ backgroundColor: "#f5f7fd" }}>
       <HeaderPage />
       {loading ? (
-        <>
-          <div className="text-center" style={{ marginTop: "90px" }}>
-            <Spinner animation="border" role="status" />
-          </div>
-        </>
+        <div className="text-center" style={{ marginTop: "90px" }}>
+          <Spinner animation="border" role="status" />
+        </div>
       ) : (
-        <>
-          <div className="container">
-            <div className="post-container">
-              <div className="row">
-                <div
-                  className="editor col-md-9 editor-content"
-                  dangerouslySetInnerHTML={{ __html: blog.description }}
-                ></div>
-                <div className="col-md-3">
-                  {relatedProducts.map((product) => {
-                    return (
-                      <div key={product.product_id} className="product-card">
-                        <Link
-                          className="product-detail-link"
-                          to={`/home/ProductDetail/${product.product_id}`}
-                        >
-                          <div className="home-product-detail-img-container">
-                            <img src={product.image_url} alt={product.title} />
-                          </div>
-                          <div className="mt-2">{product.product_name}</div>
-                          <div className="text-center">
-                            <span className="star">★</span>
-                            <span className="star">★</span>
-                            <span className="star">★</span>
-                            <span className="star">★</span>
-                            <span className="star">★</span>
-                            <span style={{ fontSize: "10px" }}>
-                              {product.sale}
-                            </span>
-                          </div>
-                        </Link>
-                        <div
-                          style={{
-                            display: "flex",
-                            marginTop: "10px",
-                            justifyContent: "space-around",
-                          }}
-                        >
-                          <div>{formatVND(product.price)}</div>
-                          <div
-                            className="icon_cart"
-                            onClick={() =>
-                              handleAddToCart({ ...product, quantity })
-                            }
-                          >
-                            <FaShoppingCart />
-                          </div>
-                        </div>
+        <div className="container">
+          <div className="post-container">
+            <div className="row">
+              <div className="editor col-md-9 editor-content">
+                <h1>{blog.blogTitle}</h1> {/* Displaying Blog Title */}
+                <p>{blog.blogContent}</p> {/* Displaying Blog Content */}
+                <img
+                  src={blog.blogImage || "https://via.placeholder.com/150"}
+                  alt={blog.blogTitle || "Placeholder"}
+                  className="img-fluid mb-3"
+                />
+              </div>
+              <div className="col-md-3">
+                <h4>Related Products</h4>
+                {relatedProducts.map((product) => (
+                  <div key={product.productId} className="product-card mb-4">
+                    <Link
+                      className="product-detail-link"
+                      to={`/home/ProductDetail/${product.productId}`}
+                    >
+                      <div className="home-product-detail-img-container mb-2">
+                        {product.images && product.images.length > 0 ? (
+                          <img
+                            src={product.images[0].images || "https://via.placeholder.com/150"}
+                            alt={product.productName || "Placeholder"}
+                          />
+                        ) : (
+                          <img
+                            src="https://via.placeholder.com/150"
+                            alt="Placeholder"
+                          />
+                        )}
                       </div>
-                    );
-                  })}
-                </div>
+                      <div className="product-name">{product.productName}</div>
+                      <div className="product-infor">{product.productInfor}</div>
+                      <div className="product-price mt-2">
+                        {formatVND(product.productPrice)}
+                      </div>
+                    </Link>
+                    <div
+                      className="icon_cart mt-2"
+                      onClick={() => handleAddToCart({ ...product, quantity })}
+                    >
+                      <FaShoppingCart />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
       <FooterPage />
     </div>
