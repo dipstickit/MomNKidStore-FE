@@ -1,5 +1,17 @@
+/* General styling for the entire page */
+.blog-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.blog-page {
+  flex: 1; /* This makes sure the content takes up the remaining space after the header */
+  padding-top: 80px; /* Adjust to your header's height */
+}
+
+/* Your existing styles for the blog container */
 .blog-container {
-  margin-top: 90px;
   display: flex;
   flex-wrap: wrap;
   text-align: start;
@@ -9,6 +21,7 @@
 
   .link {
     text-decoration: none;
+    color: inherit;
   }
 
   .content-card {
@@ -18,14 +31,27 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      transform: translateY(-5px);
+    }
 
     .content-container {
+      padding: 10px;
       height: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
 
       .blog-content {
         height: 60px;
         overflow: hidden;
         font-size: small;
+        color: #555;
       }
     }
   }
@@ -40,5 +66,25 @@
       object-fit: cover;
       border-radius: 10px;
     }
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blog-container {
+    padding-top: 100px; /* Adjust padding-top for smaller screens */
+    padding: 10px;
+  }
+
+  .content-card {
+    height: auto;
+  }
+
+  .img-container {
+    height: 200px;
+  }
+
+  .content-container .blog-content {
+    font-size: 14px;
   }
 }

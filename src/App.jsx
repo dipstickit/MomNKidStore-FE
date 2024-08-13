@@ -191,7 +191,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/trackorder/:id" element={<Trackorder />} />
         <Route path="/home/productdetail/:id" element={<ProductDetail />} />
-        <Route path="/blogs/post/:id" element={<Post />} />
+        <Route path="/blogs/:id" element={<Post />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/* admin routes */}
