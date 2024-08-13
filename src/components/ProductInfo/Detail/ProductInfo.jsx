@@ -1,23 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Productinfo.scss";
 import { FaFacebookSquare, FaInstagramSquare, FaHeart } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import { CartContext } from "../../Cart/CartContext";
 import { formatVND } from "../../../utils/Format";
 import axios from "axios";
 import { MainAPI } from "../../API";
 import { Spinner } from "react-bootstrap";
+import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
+
 
 export default function ProductInfo() {
-  const { handleAddToCart } = useContext(CartContext);
-  const { id } = useParams();
+  const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     axios
-      .get(`${MainAPI}/Product/get-product-by-id/${id}`)
+      .get(`${MainAPI}/Product/get-product-by-id/${productId}`)
       .then((res) => {
         setProduct(res.data);
         setLoading(false);
@@ -26,7 +27,7 @@ export default function ProductInfo() {
         console.error(err);
         setLoading(false);
       });
-  }, [id]);
+  }, [productId]);
 
   const handleIncrease = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
@@ -35,6 +36,44 @@ export default function ProductInfo() {
   const handleDecrease = () => {
     setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
   };
+
+  const handleAddToCart = async () => {
+    const token = JSON.parse(localStorage.getItem("accessToken"));
+    if (!token) {
+      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      return;
+    }
+
+    const decodedToken = jwtDecode(token);
+    const customerId = decodedToken.customerId;
+
+    try {
+      const response = await axios.post(
+        `${MainAPI}/Cart`,
+        {
+          productId: product.productId,
+          customerId: customerId,
+          cartQuantity: quantity,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
+      } else {
+        toast.error("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+    }
+  };
+
 
   if (loading) {
     return (
@@ -110,7 +149,9 @@ export default function ProductInfo() {
             </div>
 
             <div className="price fs-2 fw-bold ">
-              <span style={{ color: "red" }}>{formatVND(product.productPrice)}</span>
+              <span style={{ color: "red" }}>
+                {formatVND(product.productPrice)}
+              </span>
             </div>
 
             <div className="quantity">
@@ -126,12 +167,7 @@ export default function ProductInfo() {
 
             <div className="add_buy ">
               <span>
-                <button
-                  className="btn_add"
-                  onClick={() => {
-                    handleAddToCart({ ...product, quantity });
-                  }}
-                >
+                <button className="btn_add" onClick={handleAddToCart}>
                   Add To Cart
                 </button>
               </span>
@@ -142,4 +178,3 @@ export default function ProductInfo() {
     </div>
   );
 }
-
