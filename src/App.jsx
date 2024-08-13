@@ -189,9 +189,9 @@ function App() {
         <Route path="/brand/:brand_name" element={<BrandPage />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/trackorder/:id" element={<Trackorder />} />
-        <Route path="/home/productdetail/:id" element={<ProductDetail />} />
-        <Route path="/blogs/:id" element={<Post />} />
+        <Route path="/trackorder/:productId" element={<Trackorder />} />
+        <Route path="/home/productdetail/:productId" element={<ProductDetail />} />
+        <Route path="/blogs/post/:id" element={<Post />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/* admin routes */}

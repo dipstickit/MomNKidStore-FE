@@ -29,7 +29,7 @@ export default function Cart() {
           <OrderDetail />
         </div>
         <div className="col-md-4">
-          <OrderUserInfo />
+          {/* <OrderUserInfo /> */}
         </div>
       </div>
       <FooterPage />

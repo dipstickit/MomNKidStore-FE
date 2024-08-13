@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
@@ -12,17 +12,48 @@ import { RiLogoutBoxLine } from "react-icons/ri";
 import { CartContext } from "../../components/Cart/CartContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { jwtDecode } from "jwt-decode";
 
 export default function HeaderPage() {
   const [searchValue, setSearchValue] = useState("");
+  const [username, setUsername] = useState(""); // State để lưu trữ tên người dùng
   const { setAuth } = useContext(AuthContext);
   const { setOrderInfomation } = useOrder();
   const [searchParams, setSearchParams] = useSearchParams();
   const { cartList } = useContext(CartContext);
+  const [suggestions, setSuggestions] = useState([]);
 
   const token = JSON.parse(localStorage.getItem("accessToken"));
   const nav = useNavigate();
   const myParam = searchParams.get("search_query");
+
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const customerId = decodedToken.customerId;
+
+      axios.get(`${MainAPI}/Customer/${customerId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(response => {
+          setUsername(response.data.userName);
+        })
+        .catch(error => {
+          console.error("Error fetching customer data:", error);
+        });
+    }
+  }, [token]);
+
+  const fetchSuggestions = async (query) => {
+    try {
+      const response = await axios.get(`${MainAPI}/Product/search-product/${query}`);
+      setSuggestions(response.data);
+    } catch (error) {
+      console.error("Failed to fetch suggestions:", error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
@@ -33,15 +64,27 @@ export default function HeaderPage() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setSearchParams({ search_query: searchValue });
     nav({
       pathname: "/search",
       search: `?search_query=${searchValue}`,
     });
+
+    setSuggestions([]);
+  };
+
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+
+    if (value.length > 2) {
+      fetchSuggestions(value);
+    } else {
+      setSuggestions([]);
+    }
   };
 
   return (
-    <div className=" search-bar">
+    <div className="search-bar">
       <ToastContainer />
       <div className="container">
         <div className="row justify-content-between align-items-center">
@@ -61,12 +104,28 @@ export default function HeaderPage() {
                 type="text"
                 placeholder="Tìm kiếm loại sữa phù hợp"
                 value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
+                onChange={handleSearchInputChange}
               />
               <button type="submit" className="btn" name="submit-search">
                 Tìm kiếm
               </button>
             </form>
+
+            {suggestions.length > 0 && (
+              <div className="suggestions">
+                <ul>
+                  {suggestions.map((item) => (
+                    <li key={item.id} onClick={() => {
+                      setSearchValue(item.name);
+                      setSuggestions([]);
+                      nav(`/product/${item.id}`);
+                    }}>
+                      {item.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           <div className="other_header d-flex align-center justify-content-space col-3">
@@ -77,7 +136,7 @@ export default function HeaderPage() {
                     <button type="button" className="btn position-relative">
                       <FaShoppingCart />
                       <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {cartList.length <= 10 ? cartList.length : 10 + "+"}
+                        Giỏ hàng
                       </span>
                     </button>
                   </div>
@@ -87,8 +146,8 @@ export default function HeaderPage() {
                   <div className="acc_icon">
                     <FaUser />
                   </div>
-                  <div className="detail">Tài khoản</div>
-                </Link>{" "}
+                  <div className="detail">{username}</div>
+                </Link>
                 <div className="acc" onClick={handleLogout}>
                   <div className="acc_icon">
                     <RiLogoutBoxLine />
