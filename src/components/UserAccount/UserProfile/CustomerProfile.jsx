@@ -6,9 +6,9 @@ import "./CustomerProfile.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MainAPI } from "../../API";
-import defaultAvatar from "../../../../public/assest/images/avatar/default-avatar.png"; // Assuming you have this image
-import HeaderPage from "../../../utils/Header/Header"; // Import the Header component
-import FooterPage from "../../../utils/Footer/FooterPage"; // Import the Footer component
+import defaultAvatar from "../../../../public/assest/images/avatar/default-avatar.png"; 
+import HeaderPage from "../../../utils/Header/Header"; 
+import FooterPage from "../../../utils/Footer/FooterPage"; 
 
 export default function CustomerProfile() {
   const [customer, setCustomer] = useState(null);
