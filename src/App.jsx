@@ -146,6 +146,8 @@ import EditCategory from "./components/Staff/ManageCategory/EditCategory";
 import EditPost from "./components/Staff/ManagePosts/EditPost/EditPost";
 import ModalCreatePost from "./components/Staff/ManagePosts/ModalCreatePost/ModalCreatePost";
 import PurchaseHistory from "./components/UserAccount/UserProfile/PurchaseHistory";
+import OrderDetail from "./components/UserAccount/UserProfile/OrderDetail"; // Import OrderDetail
+
 import UpdateInfo from "./components/UserAccount/UserProfile/UpdateInfo";
 
 function App() {
@@ -219,6 +221,7 @@ function App() {
         <Route path="/customer-account" element={<CustomerProfile />} />
         <Route path="/purchase-history" element={<PurchaseHistory />} />
         <Route path="/update-info" element={<UpdateInfo />} />
+        <Route path="/order-detail/:orderId" element={<OrderDetail />} /> {/* Add OrderDetail route */}
         <Route path="/order-payment" element={<OrderPayment />} />
 
         {/* catch all */}
