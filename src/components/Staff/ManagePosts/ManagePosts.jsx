@@ -127,7 +127,6 @@ export default function ManagePosts() {
   return (
     <div className="blogManagement-container">
       <div className="content">
-        <ToastContainer autoClose={2000} />
         <h1>Blog Management</h1>
         <div className="blog-management">
           <div className="search">

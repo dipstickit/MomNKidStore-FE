@@ -164,7 +164,6 @@ export default function ManageVoucher() {
     }
   };
 
-  // Pagination logic
   const totalPages = Math.ceil(vouchers.length / pageSize);
 
   const currentVouchers = vouchers.slice(
@@ -178,7 +177,6 @@ export default function ManageVoucher() {
 
   return (
     <>
-      <ToastContainer />
       <div className="manage-voucher-container">
         <div className="content">
           <h1>Voucher Management</h1>

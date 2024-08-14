@@ -93,7 +93,6 @@ const ModalCreatePost = () => {
 
   return (
     <div className="create-post-container">
-      <ToastContainer autoClose={2000} />
       <h1>Create New Blog</h1>
       <Formik
         initialValues={{

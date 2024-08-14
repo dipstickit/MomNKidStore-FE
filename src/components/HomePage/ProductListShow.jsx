@@ -92,7 +92,7 @@ export default function ProductListShow() {
 
   const handleFilterButtonClick = (categoryId) => {
     setLoading(true);
-    setSelectedCategory(categoryId); // Update selected category
+    setSelectedCategory(categoryId);
     axios
       .get(`${MainAPI}/Product/get-all-products?CategoryId=${categoryId}&page=${currentPage}&pageSize=${itemsPerPage}`)
       .then((res) => {
@@ -102,7 +102,7 @@ export default function ProductListShow() {
       })
       .catch((err) => {
         console.log(err);
-        setFilteredItems([]); // Ensure filteredItems is an array even if there's an error
+        setFilteredItems([]);
         setLoading(false);
       });
   };

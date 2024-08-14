@@ -10,12 +10,13 @@ import {
   Legend,
   PointElement,
   LineElement,
+  LineController,
 } from "chart.js";
-import { Bar, Pie } from "react-chartjs-2";
+import { Bar, Pie, Line } from "react-chartjs-2";
 import axios from "axios";
 import { MainAPI } from "../../../API";
 import "./Chart.scss";
-import { formatVND, formattedDate, convertSQLDate } from '../../../../utils/Format';
+import { formatVND } from '../../../../utils/Format';
 
 ChartJS.register(
   CategoryScale,
@@ -26,7 +27,8 @@ ChartJS.register(
   Legend,
   ArcElement,
   PointElement,
-  LineElement
+  LineElement,
+  LineController
 );
 
 export const options = {
@@ -89,6 +91,19 @@ export default function Chart({ startDate, endDate }) {
     ],
   };
 
+  const dataLineChart = {
+    labels: monthSales.length > 0 ? monthSales.map((sale) => `Tháng ${sale.month}`) : [],
+    datasets: [
+      {
+        label: "Doanh thu theo tháng",
+        data: monthSales.length > 0 ? monthSales.map((sale) => sale.totalSales) : [],
+        fill: false,
+        borderColor: "rgba(75, 192, 192, 1)",
+        tension: 0.1,
+      },
+    ],
+  };
+
   const dataPieChart = {
     labels: topProducts.length > 0 ? topProducts.map((product) => product.productName) : [],
     datasets: [
@@ -118,9 +133,9 @@ export default function Chart({ startDate, endDate }) {
     <>
       <div className="row-chart">
         <div className="chart-col-vertical col-md-8">
-          <p className="fw-bold m-0">Tổng doanh thu</p>
+          <p className="fw-bold m-0">Tổng doanh thu </p>
           <div className="chart">
-            <Bar options={options} data={dataBarChart} />
+            <Line options={options} data={dataLineChart} />
           </div>
         </div>
         <div className="chart-col-pie col-md-4">
@@ -130,6 +145,12 @@ export default function Chart({ startDate, endDate }) {
           </div>
         </div>
       </div>
+      {/* <div className="chart-col-vertical col-md-8">
+        <p className="fw-bold m-0">Doanh thu theo tháng</p>
+        <div className="chart">
+          <Bar options={options} data={dataBarChart} />
+        </div>
+      </div> */}
     </>
   );
 }

@@ -94,7 +94,9 @@ export default function OrderUserInfo() {
             "Authorization": `Bearer ${token}`,
           },
         });
-        nav(response.data.url);
+        window.open(response.data.url, "_blank");
+        console.log("Order created:", response.data);
+
       } catch (error) {
         console.error("Error creating order:", error);
         toast.error("An error occurred while creating the order.");

@@ -85,7 +85,6 @@ export default function HeaderPage() {
 
   return (
     <div className="search-bar">
-      <ToastContainer />
       <div className="container">
         <div className="row justify-content-between align-items-center">
           <div
