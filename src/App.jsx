@@ -145,6 +145,9 @@ import EditVoucher from "./components/Staff/CreateVoucher/EditVoucher";
 import EditCategory from "./components/Staff/ManageCategory/EditCategory";
 import EditPost from "./components/Staff/ManagePosts/EditPost/EditPost";
 import ModalCreatePost from "./components/Staff/ManagePosts/ModalCreatePost/ModalCreatePost";
+import PurchaseHistory from "./components/UserAccount/UserProfile/PurchaseHistory";
+import UpdateInfo from "./components/UserAccount/UserProfile/UpdateInfo";
+
 function App() {
   useEffect(() => {
     // Function to handle the beforeunload event
@@ -214,6 +217,8 @@ function App() {
         {/* additional public routes */}
         <Route path="/cart" element={<Cart />} />
         <Route path="/customer-account" element={<CustomerProfile />} />
+        <Route path="/purchase-history" element={<PurchaseHistory />} />
+        <Route path="/update-info" element={<UpdateInfo />} />
         <Route path="/order-payment" element={<OrderPayment />} />
 
         {/* catch all */}
