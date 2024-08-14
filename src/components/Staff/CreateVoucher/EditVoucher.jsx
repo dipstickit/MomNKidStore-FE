@@ -114,7 +114,6 @@ const EditVoucher = () => {
 
     return (
         <>
-            <ToastContainer />
             <div className="edit-voucher">
                 <h2>Edit Voucher</h2>
                 {voucher ? (

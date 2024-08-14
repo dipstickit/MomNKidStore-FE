@@ -193,7 +193,6 @@ export default function ManageCategory() {
 
   return (
     <>
-      <ToastContainer />
       <div className="manage-category-btn">
         <button
           className="btn btn-primary"

@@ -3,11 +3,18 @@
   margin-top: 80px;
 
   .title {
-    padding-right: 10px;
-    padding-left: 10px;
-    margin-right: 10%;
-    margin-left: 10%;
-    margin-bottom: 10px;
+    padding: 10px;
+    margin: 0 auto 10px auto;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #333;
+    }
 
     .button-62 {
       background: linear-gradient(to bottom right, #ef4765, #ff9a5a);
@@ -27,17 +34,10 @@
       text-decoration: none;
       transition: box-shadow 0.2s ease-in-out;
       user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
       white-space: nowrap;
     }
 
-    .button-62:not([disabled]):focus {
-      box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.5),
-        -0.125rem -0.125rem 1rem rgba(239, 71, 101, 0.5),
-        0.125rem 0.125rem 1rem rgba(255, 154, 90, 0.5);
-    }
-
+    .button-62:not([disabled]):focus,
     .button-62:not([disabled]):hover {
       box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.5),
         -0.125rem -0.125rem 1rem rgba(239, 71, 101, 0.5),
@@ -46,9 +46,29 @@
   }
 
   .order-information {
-    padding-right: 10px;
-    padding-left: 10px;
-    margin-right: 10%;
-    margin-left: 10%;
+    display: flex;
+    gap: 20px;
+    /* Add space between the two columns */
+    justify-content: space-between;
+    padding: 0 10%;
+    margin-bottom: 40px;
+
+    .order-details {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      flex: 1;
+      /* Make this section take up the remaining space */
+    }
+
+    .order-user-info {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      flex: 0 0 35%;
+      /* Set a fixed width percentage for the user info section */
+    }
   }
 }

@@ -3,8 +3,7 @@ import axios from "axios";
 import { Spinner } from "react-bootstrap";
 import { jwtDecode } from "jwt-decode";
 import "./CustomerProfile.scss";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { MainAPI } from "../../API";
 import defaultAvatar from "../../../../public/assest/images/avatar/default-avatar.png"; 
 import HeaderPage from "../../../utils/Header/Header"; 
@@ -111,7 +110,6 @@ export default function CustomerProfile() {
     <div className="profile-page-wrapper">
       <HeaderPage /> {/* Add the HeaderPage component */}
       <div className="container profile-container">
-        <ToastContainer autoClose={2000} />
         <h2>Thông tin cá nhân</h2>
         <div className="profile-card">
           <div className="avatar-container">

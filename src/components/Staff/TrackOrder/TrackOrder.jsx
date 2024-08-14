@@ -1,27 +1,61 @@
 import React, { useEffect, useState } from "react";
-import "./TrackOrder.scss";
+import DataTable from "react-data-table-component";
+import { Spinner } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { MainAPI } from "../../API";
 import { convertSQLDate, formatVND } from "../../../utils/Format";
-import { Spinner } from "react-bootstrap";
+import "./TrackOrder.scss";
 
 export default function TrackOrder() {
   const [trackOrderList, setTrackOrderList] = useState([]);
+  const [customerNames, setCustomerNames] = useState({});
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage] = useState(10);
+  const token = JSON.parse(localStorage.getItem("accessToken"));
+  const navigate = useNavigate();
 
-  const fetchData = () => {
-    fetch(`${MainAPI}/staff/order`, {
+  const fetchCustomerName = (customerId) => {
+    return fetch(`${MainAPI}/Customer/${customerId}`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        "x-access-token": JSON.parse(localStorage.getItem("accessToken")),
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to fetch customer data for ID ${customerId}`);
+        return res.json();
+      })
+      .then((data) => data.userName)
+      .catch((error) => {
+        console.error("Error fetching customer data:", error);
+        return "Unknown Customer";
+      });
+  };
+
+  const fetchData = () => {
+    fetch(`${MainAPI}/Order`, {
+      method: "GET",
+      headers: {
+        "x-access-token": token,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch data get order");
         return res.json();
       })
-      .then((data) => {
+      .then(async (data) => {
         setTrackOrderList(data);
+
+        const customerIds = [...new Set(data.map((order) => order.customerId))];
+        const customerNamesMap = {};
+
+        for (let id of customerIds) {
+          customerNamesMap[id] = await fetchCustomerName(id);
+        }
+
+        setCustomerNames(customerNamesMap);
         setLoading(false);
       })
       .catch((error) => {
@@ -32,76 +66,85 @@ export default function TrackOrder() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [currentPage]);
 
   const getStatusClass = (status) => {
     if (!status) return "";
-    switch (status.toLowerCase()) {
-      case "cancelled":
-        return "status-cancel";
-      case "completed":
-        return "status-complete";
-      case "pending":
+    switch (status) {
+      case "0":
         return "status-pending";
-      case "delivered":
+      case "1":
+        return "status-competed";
+      case "2":
+        return "status-canceled";
+      case "3":
         return "status-delivered";
-      case "confirmed":
-        return "status-confirm";
-      case "paid":
-        return "status-paid";
+      case "4":
+        return "status-delivering";
+      case "5":
+        return "status-refund";
+      case "10":
+        return "status-preOrder";
+      case "11":
+        return "status-preOrderCompeleted";
+      case "12":
+        return "status-preOrderCanceled";
       default:
         return "";
     }
   };
 
-  return (
-    <div>
-      {
-        loading ? (
-          <>
-            <div className=" spinner-track">
-              <Spinner animation="border" role="status" />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="track">
-              <div className="track-th">
-                <table className="table-track-th">
-                  <thead>
-                    <tr>
-                      <th>Order ID</th>
-                      <th>Date</th>
-                      <th>Customer Name</th>
-                      <th>Status</th>
-                      <th>Amount</th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
+  const columns = [
+    { name: "Order ID", selector: (row) => row.orderId, sortable: true },
+    { name: "Order Date", selector: (row) => convertSQLDate(row.orderDate), sortable: true },
+    { name: "Customer Name", selector: (row) => customerNames[row.customerId] || "Loading..." },
+    {
+      name: "Status", selector: (row) => row.status, sortable: true, cell: (row) => (
+        <div className={getStatusClass(row.status)}>
+          <span className="status-dot"></span>
+          {row.status}
+        </div>
+      )
+    },
+    { name: "Total Price", selector: (row) => formatVND(row.totalPrice), sortable: true },
+    { name: "Voucher ID", selector: (row) => (row.voucherId ? row.voucherId : "N/A") },
+    { name: "Exchanged Points", selector: (row) => row.exchangedPoint },
+  ];
 
-              <div className="track-tb">
-                <table className="table-track-tb">
-                  <tbody>
-                    {trackOrderList.map((confirm) => (
-                      <tr key={confirm.order_id}>
-                        <td>{confirm.order_id}</td>
-                        <td>{convertSQLDate(confirm.order_date)}</td>
-                        <td>{confirm.username}</td>
-                        <td className={getStatusClass(confirm.status)}>
-                          <span className="status-dot"></span>
-                          {confirm.status}
-                        </td>
-                        <td>{formatVND(confirm.total_amount)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </>
-        )
-      }
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleRowClicked = (row) => {
+    navigate(`/staff/track_orders/detail/${row.orderId}`);
+  };
+
+  return (
+    <div className="trackOrder-container">
+      {loading ? (
+        <div className="spinner-track">
+          <Spinner animation="border" role="status" />
+        </div>
+      ) : (
+        <div className="content">
+          <h1>Track Orders</h1>
+          <DataTable
+            columns={columns}
+            data={trackOrderList.slice(
+              (currentPage - 1) * ordersPerPage,
+              currentPage * ordersPerPage
+            )}
+            pagination
+            paginationServer
+            paginationTotalRows={trackOrderList.length}
+            paginationPerPage={ordersPerPage}
+            onChangePage={handlePageChange}
+            highlightOnHover
+            pointerOnHover
+            onRowClicked={handleRowClicked}
+          />
+        </div>
+      )}
     </div>
   );
 }

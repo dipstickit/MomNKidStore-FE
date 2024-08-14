@@ -53,6 +53,26 @@
         }
       }
 
+      .filters {
+        display: flex;
+        gap: 10px;
+        margin-right: 1rem;
+
+        select {
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          padding: 0.5rem;
+          background-color: #f8f9fa;
+          color: #333;
+          transition: border-color 0.3s;
+
+          &:focus {
+            outline: none;
+            border-color: #1d4ed8;
+          }
+        }
+      }
+
       .button-group {
         display: flex;
         gap: 10px;
@@ -74,11 +94,11 @@
         }
 
         .add-btn {
-          background-color: #10b981; // Green color for 'Add Product'
+          background-color: #10b981;
         }
 
         .back-btn {
-          background-color: #ef4444; // Red color for 'Back to Admin'
+          background-color: #ef4444;
         }
       }
     }
@@ -95,6 +115,10 @@
         border-radius: 10px;
         overflow: hidden;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .react-switch {
+        margin: 0 auto;
       }
     }
   }

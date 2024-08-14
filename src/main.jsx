@@ -15,19 +15,15 @@ root.render(
     <AuthProvider>
       <CartProvider>
         <OrderProvider>
-          <App />
           <ToastContainer
             position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
+            autoClose={3000}
             closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
+            pauseOnHover={false}
+            theme="dark"
+            draggable={true}
           />
-          <ToastContainer />
+          <App />
         </OrderProvider>
       </CartProvider>
     </AuthProvider>

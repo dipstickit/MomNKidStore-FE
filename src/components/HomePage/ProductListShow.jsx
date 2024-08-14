@@ -1,17 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./Product.scss";
 import { FaShoppingCart } from "react-icons/fa";
-import { CartContext } from "../Cart/CartContext";
 import { formatVND } from "../../utils/Format";
 import { Spinner } from "react-bootstrap";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { MainAPI } from "../../components/API"; // Adjusted path
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
 export default function ProductListShow() {
-  const { handleAddToCart } = useContext(CartContext);
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
   const { brand_name } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPageAll, setTotalPageAll] = useState(0);
@@ -29,6 +30,7 @@ export default function ProductListShow() {
         setFilteredItems(Array.isArray(res.data.productList) ? res.data.productList : []);
         setTotalPageAll(res.data.totalPage);
         setLoading(false);
+
       })
       .catch((err) => {
         console.log(err);
@@ -49,9 +51,48 @@ export default function ProductListShow() {
       });
   }, []);
 
+  const handleAddToCart = async (selectedProduct) => {
+    console.log('Selected product:', selectedProduct);
+
+    const token = JSON.parse(localStorage.getItem("accessToken"));
+    if (!token) {
+      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      return;
+    }
+
+    const decodedToken = jwtDecode(token);
+    const customerId = decodedToken.customerId;
+
+    try {
+      const response = await axios.post(
+        `${MainAPI}/Cart`,
+        {
+          productId: selectedProduct.productId,
+          customerId: customerId,
+          cartQuantity: quantity,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
+      } else {
+        toast.error("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+    }
+  };
+
   const handleFilterButtonClick = (categoryId) => {
     setLoading(true);
-    setSelectedCategory(categoryId); // Update selected category
+    setSelectedCategory(categoryId);
     axios
       .get(`${MainAPI}/Product/get-all-products?CategoryId=${categoryId}&page=${currentPage}&pageSize=${itemsPerPage}`)
       .then((res) => {
@@ -61,7 +102,7 @@ export default function ProductListShow() {
       })
       .catch((err) => {
         console.log(err);
-        setFilteredItems([]); // Ensure filteredItems is an array even if there's an error
+        setFilteredItems([]);
         setLoading(false);
       });
   };
@@ -149,7 +190,7 @@ export default function ProductListShow() {
                       }}
                     >
                       <div>{formatVND(product.productPrice)}</div>
-                      <div className="icon_cart" onClick={() => handleAddToCart({ ...product, quantity: 1 })}>
+                      <div className="icon_cart" onClick={() => handleAddToCart({ ...product })}>
                         <FaShoppingCart />
                       </div>
                     </div>
