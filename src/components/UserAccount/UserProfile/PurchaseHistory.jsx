@@ -3,10 +3,10 @@ import axios from "axios";
 import { Spinner } from "react-bootstrap";
 import "./PurchaseHistory.scss";
 import { jwtDecode } from "jwt-decode";
-
 import { MainAPI } from "../../API";
 import { formatVND, formattedDate } from "../../../utils/Format";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import HeaderPage from "../../../utils/Header/Header"; // Import HeaderPage
 import FooterPage from "../../../utils/Footer/FooterPage"; // Import FooterPage
 
@@ -14,6 +14,8 @@ export default function PurchaseHistory() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState(null); // null means no filter
+  const navigate = useNavigate(); // Initialize useNavigate
+
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -49,6 +51,10 @@ export default function PurchaseHistory() {
     setFilterStatus(status);
   };
 
+  const handleOrderClick = (orderId) => {
+    navigate(`/order-detail/${orderId}`); // Navigate to the OrderDetail page
+  };
+
   if (loading) {
     return (
       <div className="text-center" style={{ marginTop: "120px" }}>
@@ -76,11 +82,16 @@ export default function PurchaseHistory() {
 
         <div className="order-list">
           {orders.map((order) => (
-            <div key={order.orderId} className="order-card">
-              <p>Order ID: {order.orderId}</p>
-              <p>Date: {formattedDate(new Date(order.orderDate))}</p>
-              <p>Total Price: {formatVND(order.totalPrice)}</p>
-              <p>Status: {getOrderStatusText(order.status)}</p>
+            <div
+              key={order.orderId}
+              className="order-card"
+              onClick={() => handleOrderClick(order.orderId)} // Handle order click
+              style={{ cursor: "pointer" }} // Make it clear that this is clickable
+            >
+              <p>Mã đơn hàng: {order.orderId}</p>
+              <p>Ngày: {formattedDate(new Date(order.orderDate))}</p>
+              <p>Tổng tiền: {formatVND(order.totalPrice)}</p>
+              <p>Trạng thái: {getOrderStatusText(order.status)}</p>
             </div>
           ))}
         </div>

@@ -86,7 +86,9 @@ const UpdateInfo = () => {
 
   return (
     <div className="update-info-page">
-      <HeaderPage /> {/* Integrate HeaderPage here */}
+       <div className="header-footer-wrapper">
+        <HeaderPage />
+      </div>
       <div className="update-info-container">
         <h2>Cập nhật thông tin</h2>
         <form onSubmit={handleSubmit} className="update-info-form">
@@ -133,7 +135,9 @@ const UpdateInfo = () => {
           <button type="submit" className="update-info-button">Save Changes</button>
         </form>
       </div>
-      <FooterPage /> {/* Integrate FooterPage here */}
+      <div className="header-footer-wrapper">
+        <FooterPage />
+      </div>
     </div>
   );
 };

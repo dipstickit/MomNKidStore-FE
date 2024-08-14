@@ -79,10 +79,10 @@ export default function CustomerProfile() {
         </div>
         <div className="profile-details">
           <h2>{customer.userName}</h2>
-          <p>Phone: {customer.phone}</p>
-          <p>Address: {customer.address}</p>
-          <p>Date of Birth: {formattedDate(new Date(customer.dob))}</p>
-          <p>Points: {customer.point}</p>
+          <p>Thông tin liên lạc: {customer.phone}</p>
+          <p>Địa chỉ thường trú: {customer.address}</p>
+          <p>Ngày tháng năm sinh: {formattedDate(new Date(customer.dob))}</p>
+          <p>Điểm tích lũy: {customer.point}</p>
         </div>
         <div className="menu-list">
           <div className="menu-item" onClick={handleViewHistory}>
