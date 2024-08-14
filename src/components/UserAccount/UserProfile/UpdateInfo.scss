@@ -1,0 +1,52 @@
+.update-info-page {
+
+    margin: 90px auto;
+    text-align: center;
+  
+    h2 {
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
+  
+    .update-info-form {
+        padding-left: 150px;
+        padding-bottom: 150px;
+        padding-right: 150px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+  
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        label {
+          margin-bottom: 5px;
+          font-weight: bold;
+        }
+  
+        input {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+      }
+  
+      .update-info-button {
+        padding: 10px;
+        font-size: 1rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+  
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+    }
+  }
+  
