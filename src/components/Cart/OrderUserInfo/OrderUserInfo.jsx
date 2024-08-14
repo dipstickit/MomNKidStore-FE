@@ -14,9 +14,40 @@ export default function OrderUserInfo() {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const { auth } = useAuth();
   const nav = useNavigate();
+
+  const fetchCartItems = async () => {
+    const token = JSON.parse(localStorage.getItem("accessToken"));
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const customerId = decodedToken.customerId;
+
+      try {
+        const response = await axios.get(`${MainAPI}/Cart`, {
+          params: {
+            CustomerId: customerId,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setCartItems(
+          response.data.cartItems.map((item) => ({
+            cartId: item.cartId,
+            customerId: item.customerId,
+            productId: item.productId,
+            quantity: item.cartQuantity,
+          }))
+        );
+        setTotalPrice(response.data.totalPrice); // Cập nhật giá trị tổng đơn hàng
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -27,30 +58,6 @@ export default function OrderUserInfo() {
         setProvinces(response.data);
       } catch (error) {
         console.error("Error fetching location data:", error);
-      }
-    };
-
-    const fetchCartItems = async () => {
-      const token = JSON.parse(localStorage.getItem("accessToken"));
-      if (token) {
-        const decodedToken = jwtDecode(token);
-        const customerId = decodedToken.customerId;
-
-        try {
-          const response = await axios.get(`${MainAPI}/Cart/${customerId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setCartItems(response.data.map(item => ({
-            cartId: item.cartId,
-            customerId: item.customerId,
-            productId: item.productId,
-            quantity: item.cartQuantity
-          })));
-        } catch (error) {
-          console.error("Error fetching cart data:", error);
-        }
       }
     };
 
@@ -78,10 +85,14 @@ export default function OrderUserInfo() {
       shippingAddress: Yup.string().required("Address is required"),
     }),
     onSubmit: async (values) => {
+      // Fetch lại dữ liệu giỏ hàng mới nhất trước khi tạo đơn hàng
+      await fetchCartItems();
+
       const token = JSON.parse(localStorage.getItem("accessToken"));
 
       const orderData = {
         cartItems: cartItems,
+        totalPrice: totalPrice, // Đảm bảo rằng giá trị tổng đơn hàng đã được cập nhật
         shippingAddress: `${values.shippingAddress}, ${values.ward}, ${values.district}, ${values.province}`,
         orderCustomerName: values.customerName,
         orderCustomerPhone: values.customerPhone,
@@ -91,7 +102,7 @@ export default function OrderUserInfo() {
       try {
         const response = await axios.post(`${MainAPI}/Order/create-order-in-cart`, orderData, {
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         window.open(response.data.url, "_blank");

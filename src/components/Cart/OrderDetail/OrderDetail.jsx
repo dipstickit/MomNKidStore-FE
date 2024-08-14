@@ -1,34 +1,56 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
-import "./OrderDetail.scss";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { CartContext } from "../CartContext";
 import { MainAPI } from "../../API";
+import "./OrderDetail.scss";
 
 export default function OrderDetail() {
   const [cartList, setCartList] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [vouchers, setVouchers] = useState([]);
+  const [selectedVoucherId, setSelectedVoucherId] = useState(null);
+  const [isExchangedPoint, setIsExchangedPoint] = useState(false);
   const token = JSON.parse(localStorage.getItem("accessToken"));
 
-  useEffect(() => {
+  const fetchCartData = () => {
     if (token) {
       const decodedToken = jwtDecode(token);
       const customerId = decodedToken.customerId;
 
       axios
-        .get(`${MainAPI}/Cart/${customerId}`, {
+        .get(`${MainAPI}/Cart`, {
+          params: {
+            CustomerId: customerId,
+            VoucherId: selectedVoucherId,
+            IsExchangedPoint: isExchangedPoint
+          },
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
-          setCartList(response.data);
+          setCartList(response.data.cartItems);
+          setTotalPrice(response.data.totalPrice);
         })
         .catch((error) => {
           console.error("Error fetching cart data:", error);
         });
     }
-  }, [token]);
+  };
+
+  useEffect(() => {
+    fetchCartData();
+
+    axios
+      .get(`${MainAPI}/VoucherOfShop`)
+      .then((response) => {
+        setVouchers(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching vouchers:", error);
+      });
+  }, [token, selectedVoucherId, isExchangedPoint]);
 
   const updateCartQuantity = async (cartId, newQuantity) => {
     try {
@@ -41,11 +63,7 @@ export default function OrderDetail() {
           },
         }
       );
-      setCartList((prevCartList) =>
-        prevCartList.map((item) =>
-          item.cartId === cartId ? { ...item, cartQuantity: newQuantity } : item
-        )
-      );
+      fetchCartData();
     } catch (error) {
       console.error("Error updating cart quantity:", error);
     }
@@ -70,13 +88,18 @@ export default function OrderDetail() {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      setCartList((prevCartList) =>
-        prevCartList.filter((item) => item.cartId !== cartItem.cartId)
-      );
+      fetchCartData();
     } catch (error) {
       console.error("Error deleting cart item:", error);
     }
+  };
+
+  const handleVoucherChange = (event) => {
+    setSelectedVoucherId(Number(event.target.value));
+  };
+
+  const handlePointChange = () => {
+    setIsExchangedPoint((prev) => !prev);
   };
 
   return (
@@ -156,9 +179,39 @@ export default function OrderDetail() {
               </div>
             ))}
           </div>
+          <div className="order-summary">
+            <div className="order-summary-total">
+              <span>Tổng đơn hàng:</span>{" "}
+              {totalPrice.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </div>
+            <div className="order-summary-vouchers">
+              <span>Danh sách voucher:</span>
+              <select onChange={handleVoucherChange} value={selectedVoucherId || ""}>
+                <option value="">Chọn mã giảm giá</option>
+                {vouchers.map((voucher) => (
+                  <option key={voucher.voucherId} value={voucher.voucherId}>
+                    Mã giảm giá {voucher.voucherValue}% (Áp dụng từ{" "}
+                    {voucher.startDate} đến {voucher.endDate})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="order-summary-points">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={isExchangedPoint}
+                  onChange={handlePointChange}
+                />
+                Sử dụng điểm thưởng
+              </label>
+            </div>
+          </div>
         </div>
       )}
     </>
   );
 }
-
