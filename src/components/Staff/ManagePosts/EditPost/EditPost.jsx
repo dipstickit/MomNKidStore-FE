@@ -114,7 +114,6 @@ const EditPost = () => {
 
   return (
     <div className="blog-detail-container">
-      <ToastContainer autoClose={2000} />
       <button className="back-button" onClick={() => navigate('/staff/manage_posts')}>
         <FaArrowLeft /> Back to Manage Blog
       </button>

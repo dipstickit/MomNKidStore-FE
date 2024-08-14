@@ -21,10 +21,9 @@ root.render(
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
+            pauseOnHover={false}
+            theme="dark"
+            draggable={true}
           />
           <App />
         </OrderProvider>

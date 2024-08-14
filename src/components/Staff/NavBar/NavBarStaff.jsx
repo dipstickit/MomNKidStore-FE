@@ -1,15 +1,11 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './NavBarStaff.scss'
-import { MainAPI } from '../../API';
-import AuthContext from '../../../context/AuthProvider';
 import { toast } from 'react-toastify';
-import axios from 'axios';
 
 export default function NavBarStaff() {
 
     const nav = useNavigate();
-
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('auth');
@@ -24,7 +20,7 @@ export default function NavBarStaff() {
             </div>
 
             <div className='user_name'>
-                {/* <p><span>User Name:</span>&nbsp; {getName}</p> */}
+                <p><span>Staff</span>&nbsp;</p>
             </div>
 
             <div>
@@ -48,9 +44,6 @@ export default function NavBarStaff() {
                 <div className='staff_playout'>
                     <Link to={'/staff/manage_pcategory'}>Manage ProductCategory</Link>
                 </div>
-                {/* <div className='staff_playout'>
-                    <Link to={'/staff/manage_users'}>Manage Users</Link>
-                </div> */}
                 <div className='staff_playout'>
                     <Link to={'/staff/create_voucher_codes'}>Manage Voucher</Link>
                 </div>

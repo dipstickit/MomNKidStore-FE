@@ -95,7 +95,6 @@ const EditCategory = () => {
 
     return (
         <>
-            <ToastContainer />
             <div className="edit-category">
                 <h2>Edit Category</h2>
                 {category ? (

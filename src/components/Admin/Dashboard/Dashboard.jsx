@@ -16,7 +16,6 @@ export default function Dashboard() {
   const [data, setData] = useState({});
   const [cancelOrder, setCancelOrder] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
-
   const [error, setError] = useState(null);
 
   const handleStartDateChange = (date) => {
@@ -26,25 +25,28 @@ export default function Dashboard() {
   const handleEndDateChange = (date) => {
     setEndDate(date);
   };
+  const token = JSON.parse(localStorage.getItem("accessToken"));
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${MainAPI}/admin/dashboard`, {
+        const response = await axios.get(`${MainAPI}/Admin/dashboard`, {
           params: {
             startDate: formattedDate(startDate),
             endDate: formattedDate(endDate),
           },
           headers: {
-            "x-access-token": JSON.parse(localStorage.getItem("accessToken")),
+            "Authorization": `Bearer ${token}`,
           },
         });
+
+        setCancelOrder(response.data.canceledOrdersPerMonth);
+        setTotalOrders(response.data.totalOrders);
         setData(response.data);
-        // setCancelOrder(response.data.canceledOrdersPerMonth);
-        setCancelOrder(30);
-        setTotalOrders(1200);
+
       } catch (err) {
         console.error(err);
+        setError("Failed to fetch data from the dashboard API.");
       }
     };
 
@@ -88,9 +90,9 @@ export default function Dashboard() {
                 <div className="col col-md-4">
                   <div className="card card-content m-0">
                     <div className="card-body col-10">
-                      <div className="card-title fw-bold">Số đơn hàng đã hủy</div>
+                      <div className="card-title fw-bold">Số sản phẩm đã bán</div>
                       <div className="d-flex justify-content-between m-0">
-                        <div>{cancelOrder}</div>
+                        <div>{data.totalSoldProduct}</div>
                         <div className="col-2 icon">
                           <BsBoxSeam />
                         </div>
@@ -116,7 +118,7 @@ export default function Dashboard() {
                     <div className="card-body col-10">
                       <div className="card-title fw-bold">Tổng số đơn hàng</div>
                       <div className="d-flex justify-content-between m-0">
-                        <div>{totalOrders}</div>
+                        <div>{data.totalOrder}</div>
                         <div className="col-2 icon">
                           <BsCart3 />
                         </div>

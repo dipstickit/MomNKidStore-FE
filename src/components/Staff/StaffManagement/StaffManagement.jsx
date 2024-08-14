@@ -9,6 +9,7 @@ import ManagePosts from '../ManagePosts/ManagePosts';
 import Report from '../Report/Report';
 import ManageUser from '../ManageUser/ManageUser';
 import ManageCategory from '../ManageCategory/ManageCategory';
+import TrackOrderDetail from '../TrackOrder/TrackOrderDetail';
 export default function StaffManagement() {
   return (
     <div className="container-fluid">
@@ -26,6 +27,7 @@ export default function StaffManagement() {
             <Route path="track_orders" element={<TrackOrder />} />
             <Route path="manage_posts" element={<ManagePosts />} />
             <Route path="report" element={<Report />} />
+            <Route path="track_orders/detail/:orderId" element={<TrackOrderDetail />} />
           </Routes>
         </div>
       </div>
