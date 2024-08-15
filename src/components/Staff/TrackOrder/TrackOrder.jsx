@@ -68,29 +68,28 @@ export default function TrackOrder() {
     fetchData();
   }, [currentPage]);
 
-  const getStatusClass = (status) => {
-    if (!status) return "";
+  const getStatusText = (status) => {
     switch (status) {
-      case "0":
-        return "status-pending";
-      case "1":
-        return "status-competed";
-      case "2":
-        return "status-canceled";
-      case "3":
-        return "status-delivered";
-      case "4":
-        return "status-delivering";
-      case "5":
-        return "status-refund";
-      case "10":
-        return "status-preOrder";
-      case "11":
-        return "status-preOrderCompeleted";
-      case "12":
-        return "status-preOrderCanceled";
+      case 0:
+        return "Pending";
+      case 1:
+        return "Completed";
+      case 2:
+        return "Canceled";
+      case 3:
+        return "Delivered";
+      case 4:
+        return "Delivering";
+      case 5:
+        return "Refund";
+      case 10:
+        return "Pre-order";
+      case 11:
+        return "Pre-order Completed";
+      case 12:
+        return "Pre-order Canceled";
       default:
-        return "";
+        return "Unknown";
     }
   };
 
@@ -100,9 +99,9 @@ export default function TrackOrder() {
     { name: "Customer Name", selector: (row) => customerNames[row.customerId] || "Loading..." },
     {
       name: "Status", selector: (row) => row.status, sortable: true, cell: (row) => (
-        <div className={getStatusClass(row.status)}>
+        <div className={getStatusText(row.status)}>
           <span className="status-dot"></span>
-          {row.status}
+          {getStatusText(row.status)}
         </div>
       )
     },
@@ -110,6 +109,7 @@ export default function TrackOrder() {
     { name: "Voucher ID", selector: (row) => (row.voucherId ? row.voucherId : "N/A") },
     { name: "Exchanged Points", selector: (row) => row.exchangedPoint },
   ];
+
 
   const handlePageChange = (page) => {
     setCurrentPage(page);

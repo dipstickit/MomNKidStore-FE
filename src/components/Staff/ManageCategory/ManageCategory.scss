@@ -108,10 +108,13 @@
     }
 
     button {
+        padding: 0.5rem;
         border: none;
-        background: none;
+        border-radius: 5px;
         cursor: pointer;
-        transition: color 0.3s ease;
+        font-size: 1.2rem;
+        transition: background-color 0.3s, transform 0.2s;
+        margin: 8px;
 
         &:hover {
             color: #00ccff;

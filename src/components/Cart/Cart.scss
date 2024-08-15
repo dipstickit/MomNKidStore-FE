@@ -2,6 +2,7 @@
   background-color: aliceblue;
   margin-top: 80px;
 
+
   .title {
     padding: 10px;
     margin: 0 auto 10px auto;
@@ -23,8 +24,7 @@
       color: #ffffff;
       cursor: pointer;
       display: inline-block;
-      font-family: -apple-system, system-ui, "Segoe UI", Roboto, Helvetica,
-        Arial, sans-serif;
+      font-family: -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-weight: 500;
       line-height: 2.5;
@@ -35,40 +35,37 @@
       transition: box-shadow 0.2s ease-in-out;
       user-select: none;
       white-space: nowrap;
-    }
 
-    .button-62:not([disabled]):focus,
-    .button-62:not([disabled]):hover {
-      box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.5),
-        -0.125rem -0.125rem 1rem rgba(239, 71, 101, 0.5),
-        0.125rem 0.125rem 1rem rgba(255, 154, 90, 0.5);
+      &:not([disabled]):focus,
+      &:not([disabled]):hover {
+        box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.5),
+          -0.125rem -0.125rem 1rem rgba(239, 71, 101, 0.5),
+          0.125rem 0.125rem 1rem rgba(255, 154, 90, 0.5);
+      }
     }
   }
 
   .order-information {
     display: flex;
-    gap: 20px;
-    /* Add space between the two columns */
     justify-content: space-between;
+    gap: 20px; // Add space between the two columns
     padding: 0 10%;
     margin-bottom: 40px;
 
     .order-details {
+      flex: 2; // Make OrderDetail take more space
       background-color: #fff;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      flex: 1;
-      /* Make this section take up the remaining space */
     }
 
     .order-user-info {
+      flex: 1; // Make OrderUserInfo take less space
       background-color: #fff;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      flex: 0 0 35%;
-      /* Set a fixed width percentage for the user info section */
     }
   }
 }

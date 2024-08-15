@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { jwtDecode } from "jwt-decode";
-import "./OrderUserInfo.scss";
-import { MainAPI } from "../../API";
-import useAuth from "../../../hooks/useAuth";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
+import { usePrice } from '../PriceContext';
+import './OrderUserInfo.scss';
+import { MainAPI } from '../../API';
+import useAuth from '../../../hooks/useAuth';
 
 export default function OrderUserInfo() {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [cartItems, setCartItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
 
+  const { totalPrice, updateTotalPrice, voucherID, isExchangedPoint } = usePrice();
   const { auth } = useAuth();
   const nav = useNavigate();
 
@@ -42,7 +43,7 @@ export default function OrderUserInfo() {
             quantity: item.cartQuantity,
           }))
         );
-        setTotalPrice(response.data.totalPrice); // Cập nhật giá trị tổng đơn hàng
+        updateTotalPrice(response.data.totalPrice);
       } catch (error) {
         console.error("Error fetching cart data:", error);
       }
@@ -85,14 +86,13 @@ export default function OrderUserInfo() {
       shippingAddress: Yup.string().required("Address is required"),
     }),
     onSubmit: async (values) => {
-      // Fetch lại dữ liệu giỏ hàng mới nhất trước khi tạo đơn hàng
-      await fetchCartItems();
-
       const token = JSON.parse(localStorage.getItem("accessToken"));
 
       const orderData = {
         cartItems: cartItems,
-        totalPrice: totalPrice, // Đảm bảo rằng giá trị tổng đơn hàng đã được cập nhật
+        totalPrice: totalPrice,
+        voucherID: voucherID,
+        isExchangedPoint: isExchangedPoint,
         shippingAddress: `${values.shippingAddress}, ${values.ward}, ${values.district}, ${values.province}`,
         orderCustomerName: values.customerName,
         orderCustomerPhone: values.customerPhone,
@@ -107,7 +107,6 @@ export default function OrderUserInfo() {
         });
         window.open(response.data.url, "_blank");
         console.log("Order created:", response.data);
-
       } catch (error) {
         console.error("Error creating order:", error);
         toast.error("An error occurred while creating the order.");
@@ -133,7 +132,6 @@ export default function OrderUserInfo() {
         (district) => district.Name === formik.values.district
       );
       setWards(districtData ? districtData.Wards : []);
-      formik.setFieldValue("ward", "");
     }
   }, [formik.values.district, districts]);
 

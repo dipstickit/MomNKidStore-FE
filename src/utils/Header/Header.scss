@@ -8,7 +8,7 @@
 
   .container {
     padding: 10px;
-    position: relative; // Đảm bảo các phần tử bên trong container có thể được định vị tương đối với nó
+    position: relative;
 
     .logo {
       width: 7%;
@@ -22,46 +22,67 @@
     }
 
     .search {
-      width: 400px;
-      height: 100%;
+      width: 100%;
+      max-width: 600px;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-right: 30px;
-      position: relative; // Để các gợi ý sản phẩm xuất hiện tương đối với search bar
+      margin: 0 auto;
+      position: relative;
 
       input {
-        width: 500px;
+        width: 100%;
+        max-width: 800px;
         height: 40px;
-        border: none; // Xóa border
-        border-radius: 5px 0 0 5px;
-        padding: 0 10px;
+        border: 2px solid #4caf50;
+        border-right: none;
+        border-radius: 20px 0 0 20px;
+        padding: 0 30px;
         font-size: 16px;
-        margin-left: 50px;
+        outline: none;
+        transition: all 0.3s ease;
+
+        &:focus {
+          border-color: #388e3c;
+        }
       }
 
       .btn {
         background-color: #4caf50;
-        margin-left: 0;
-        margin-right: 0;
         height: 40px;
-        width: 100px;
-        border: none; // Xóa border
-        border-radius: 0 5px 5px 0;
+        line-height: 36px;
+        width: 120px;
+        border: 2px solid #4caf50;
+        border-left: none;
+        border-radius: 0 20px 20px 0;
         color: white;
         cursor: pointer;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 0;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: #388e3c;
+          border-color: #388e3c;
+        }
       }
 
       .suggestions {
         position: absolute;
-        top: 100%; // Để danh sách gợi ý nằm ngay dưới thanh tìm kiếm
-        left: 50px; // Điều chỉnh vị trí của gợi ý
-        width: 500px; // Cùng kích thước với input
+        top: 100%;
+        /* Ensure the dropdown appears just below the input */
+        left: 0;
+        width: 100%;
+        max-width: 600px;
         background-color: white;
         border: 1px solid #ccc;
         border-radius: 0 0 5px 5px;
         box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
         z-index: 10;
+        max-height: 200px;
+        overflow-y: auto;
 
         ul {
           list-style: none;
@@ -69,8 +90,11 @@
           padding: 0;
 
           li {
-            padding: 8px 12px;
+            padding: 10px 15px;
             cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            /* Set text color to a visible color */
 
             &:hover {
               background-color: #f0f0f0;
@@ -94,7 +118,6 @@
       color: #000;
       text-decoration: none;
       transition: 0.3s ease;
-
 
       .detail {
         width: 100px;

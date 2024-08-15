@@ -18,10 +18,14 @@ root.render(
           <ToastContainer
             position="top-right"
             autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
             closeOnClick
-            pauseOnHover={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
             theme="dark"
-            draggable={true}
           />
           <App />
         </OrderProvider>
