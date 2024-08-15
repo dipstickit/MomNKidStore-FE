@@ -3,7 +3,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { MainAPI } from "../../API";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { MdModeEdit } from "react-icons/md";
+import { DeleteIcon } from "../../../utils/Icon/DeleteIcon";
 import { useNavigate } from "react-router-dom";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -244,11 +245,11 @@ export default function ManageCategory() {
                     <td>{category.productCategoryId}</td>
                     <td>{category.productCategoryName}</td>
                     <td>
-                      <button onClick={() => handleEditCategory(category.productCategoryId)}>
-                        <FaEdit />
-                      </button>
                       <button onClick={() => handleDeleteCategory(category.productCategoryId)}>
-                        <FaTrash />
+                        <DeleteIcon color="red" />
+                      </button>
+                      <button onClick={() => handleEditCategory(category.productCategoryId)}>
+                        <MdModeEdit color="green" />
                       </button>
                     </td>
                   </tr>

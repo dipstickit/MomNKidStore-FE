@@ -25,9 +25,10 @@ export default function UserManagement() {
         },
       });
 
+      // Đảm bảo rằng response.data bao gồm trạng thái ban/unban
       const updatedData = response.data.map(user => ({
         ...user,
-        isLocked: false,
+        isLocked: user.isLocked,  // giả sử server trả về isLocked
       }));
 
       setData(updatedData);
@@ -36,7 +37,6 @@ export default function UserManagement() {
       console.error("Fetch data error:", error);
     }
   };
-
 
 
   useEffect(() => {
@@ -69,6 +69,7 @@ export default function UserManagement() {
       console.error("Toggle account status error:", error);
     }
   };
+
 
 
 
@@ -136,7 +137,6 @@ export default function UserManagement() {
     <div className="userManage_container">
       <NavBar />
       <div className="content">
-        <ToastContainer />
         <h1 className="mt-0">User Management</h1>
         <div className="user_manage mt-4">
           <div className="search">

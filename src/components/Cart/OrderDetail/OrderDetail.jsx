@@ -1,16 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { usePrice } from '../PriceContext';
+import { jwtDecode } from 'jwt-decode';
+import { MainAPI } from '../../API';
+import './OrderDetail.scss';
 import { MdDelete } from "react-icons/md";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import { MainAPI } from "../../API";
-import "./OrderDetail.scss";
 
 export default function OrderDetail() {
+  const {
+    totalPrice,
+    updateTotalPrice,
+    voucherID,
+    updateVoucherID,
+    updateIsExchangedPoint
+  } = usePrice();
   const [cartList, setCartList] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
   const [vouchers, setVouchers] = useState([]);
-  const [selectedVoucherId, setSelectedVoucherId] = useState(null);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [isExchangedPoint, setIsExchangedPoint] = useState(false);
+  const [selectedVoucherId, setSelectedVoucherId] = useState(null);
   const token = JSON.parse(localStorage.getItem("accessToken"));
 
   const fetchCartData = () => {
@@ -31,7 +39,8 @@ export default function OrderDetail() {
         })
         .then((response) => {
           setCartList(response.data.cartItems);
-          setTotalPrice(response.data.totalPrice);
+          updateTotalPrice(response.data.totalPrice);
+          updateVoucherID(selectedVoucherId);
         })
         .catch((error) => {
           console.error("Error fetching cart data:", error);
@@ -52,10 +61,25 @@ export default function OrderDetail() {
       });
   }, [token, selectedVoucherId, isExchangedPoint]);
 
-  const updateCartQuantity = async (cartId, newQuantity) => {
+  const handleVoucherChange = (event) => {
+    const selectedId = Number(event.target.value);
+    setSelectedVoucherId(selectedId);
+    updateVoucherID(selectedId);
+
+    const voucher = vouchers.find(voucher => voucher.voucherId === selectedId);
+    setSelectedVoucher(voucher || null);
+  };
+
+  const handlePointChange = () => {
+    setIsExchangedPoint((prev) => !prev);
+    updateIsExchangedPoint(!isExchangedPoint);
+  };
+
+  const handleIncreaseQuantity = async (cartItem) => {
+    const newQuantity = cartItem.cartQuantity + 1;
     try {
       await axios.put(
-        `${MainAPI}/Cart/update-quantity?CartId=${cartId}&Quantity=${newQuantity}`,
+        `${MainAPI}/Cart/update-quantity?CartId=${cartItem.cartId}&Quantity=${newQuantity}`,
         {},
         {
           headers: {
@@ -69,15 +93,23 @@ export default function OrderDetail() {
     }
   };
 
-  const handleIncreaseQuantity = (cartItem) => {
-    const newQuantity = cartItem.cartQuantity + 1;
-    updateCartQuantity(cartItem.cartId, newQuantity);
-  };
-
-  const handleDecreaseQuantity = (cartItem) => {
+  const handleDecreaseQuantity = async (cartItem) => {
     if (cartItem.cartQuantity > 1) {
       const newQuantity = cartItem.cartQuantity - 1;
-      updateCartQuantity(cartItem.cartId, newQuantity);
+      try {
+        await axios.put(
+          `${MainAPI}/Cart/update-quantity?CartId=${cartItem.cartId}&Quantity=${newQuantity}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        fetchCartData();
+      } catch (error) {
+        console.error("Error updating cart quantity:", error);
+      }
     }
   };
 
@@ -92,14 +124,6 @@ export default function OrderDetail() {
     } catch (error) {
       console.error("Error deleting cart item:", error);
     }
-  };
-
-  const handleVoucherChange = (event) => {
-    setSelectedVoucherId(Number(event.target.value));
-  };
-
-  const handlePointChange = () => {
-    setIsExchangedPoint((prev) => !prev);
   };
 
   return (

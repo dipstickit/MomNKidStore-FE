@@ -1,154 +1,175 @@
 .trackOrder-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: #f4f6f8; // Light background color for a modern look
     padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    .spinner-track {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    }
 
     .content {
+        width: 100%;
         max-width: 1200px;
-        margin: auto;
-        background-color: #ffffff;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); // Soft shadow for a clean card look
-        border-radius: 8px;
+        margin-left: 0;
+        margin-right: auto;
         padding: 20px;
 
         h1 {
-            font-size: 24px;
+            font-size: 2rem;
             color: #333;
-            text-align: center;
             margin-bottom: 20px;
+            text-align: center;
         }
 
-        .rdt_Table {
-            border: none;
-
-            .rdt_TableHead {
-                background-color: #2563eb;
-                color: black;
-
-                .rdt_TableCol {
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    padding: 12px;
-
-                    &:nth-child(1) {
-                        border-top-left-radius: 8px;
-                    }
-
-                    &:nth-child(7) {
-                        border-top-right-radius: 8px;
-                    }
-                }
-            }
-
-            .rdt_TableBody {
-                .rdt_TableRow {
-                    transition: background-color 0.3s;
-
-                    &:nth-child(even) {
-                        background-color: #f8f9fa; // Light alternating row background color
-                    }
-
-                    &:hover {
-                        background-color: #e5e7eb; // Row hover color
-                    }
-
-                    .rdt_TableCell {
-                        padding: 12px;
-                        border-bottom: 1px solid #ddd;
-
-                        .status-dot {
-                            height: 10px;
-                            width: 10px;
-                            border-radius: 50%;
-                            display: inline-block;
-                            margin-right: 8px;
-                        }
-
-                        .status-cancel {
-                            color: #dc3545;
-
-                            .status-dot {
-                                background-color: #dc3545;
-                            }
-                        }
-
-                        .status-complete {
-                            color: #28a745;
-
-                            .status-dot {
-                                background-color: #28a745;
-                            }
-                        }
-
-                        .status-pending {
-                            color: #ffc107;
-
-                            .status-dot {
-                                background-color: #ffc107;
-                            }
-                        }
-
-                        .status-delivered {
-                            color: #17a2b8;
-
-                            .status-dot {
-                                background-color: #17a2b8;
-                            }
-                        }
-
-                        .status-confirm {
-                            color: #007bff;
-
-                            .status-dot {
-                                background-color: #007bff;
-                            }
-                        }
-
-                        .status-paid {
-                            color: #6f42c1;
-
-                            .status-dot {
-                                background-color: #6f42c1;
-                            }
-                        }
-                    }
-                }
-            }
-
-            .rdt_Pagination {
-                background-color: #fff;
-                border-top: 1px solid #ddd;
-                padding: 10px;
-
-                .pagination-btn {
-                    background-color: #007bff;
-                    color: white;
-                    border: none;
-                    padding: 8px 16px;
-                    margin: 0 5px;
-                    border-radius: 5px;
-                    cursor: pointer;
-                    transition: background-color 0.3s;
-
-                    &:disabled {
-                        background-color: #cccccc;
-                        cursor: not-allowed;
-                    }
-
-                    &:hover:not(:disabled) {
-                        background-color: #0056b3;
-                    }
-                }
-            }
-        }
-
-        .spinner-track {
+        .filters {
             display: flex;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
+            gap: 15px;
+            margin-bottom: 20px;
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+
+                label {
+                    font-weight: bold;
+                    margin-bottom: 5px;
+                    color: #555;
+                }
+
+                select {
+                    padding: 8px;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                    font-size: 1rem;
+                    width: 300px;
+                }
+
+                .react-datepicker-wrapper {
+                    width: 220px;
+
+                    .react-datepicker__input-container input {
+                        padding: 8px;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                        font-size: 1rem;
+                        width: 100%;
+                        box-sizing: border-box;
+                    }
+                }
+            }
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+
+            &.pending {
+                color: #ffc107;
+            }
+
+            &.completed {
+                color: #28a745;
+            }
+
+            &.canceled {
+                color: #dc3545;
+            }
+
+            &.delivered {
+                color: #17a2b8;
+            }
+
+            &.delivering {
+                color: #007bff;
+            }
+
+            &.refund {
+                color: #fd7e14;
+            }
+
+            &.pre-order {
+                color: #6f42c1;
+            }
+
+            &.pre-order-completed {
+                color: #20c997;
+            }
+
+            &.pre-order-canceled {
+                color: #e83e8c;
+            }
+
+            .status-dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                margin-right: 8px;
+                background-color: currentColor;
+            }
+
+            .status-text {
+                font-weight: bold;
+            }
+        }
+
+        .dataTable-wrapper {
+            .rdt_Table {
+                .rdt_TableHead {
+                    background-color: #f1f1f1;
+                }
+
+                .rdt_TableBody {
+                    .rdt_TableRow {
+                        &:hover {
+                            background-color: #f5f5f5;
+                        }
+
+                        &.selected {
+                            background-color: #e2e6ea;
+                        }
+                    }
+                }
+            }
+
+            .pagination {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+
+                .page-item {
+                    &.active .page-link {
+                        background-color: #007bff;
+                        border-color: #007bff;
+                    }
+
+                    .page-link {
+                        color: #007bff;
+                        border: 1px solid #ddd;
+                        margin: 0 3px;
+                        border-radius: 50%;
+                        width: 36px;
+                        height: 36px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+            }
+        }
+
+        .dropdown-menu {
+            min-width: 160px;
+            white-space: nowrap;
         }
     }
 }

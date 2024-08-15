@@ -97,6 +97,12 @@ export default function HeaderPage() {
     }
   };
 
+  const handleSuggestionClick = (item) => {
+    setSearchValue(item.name);
+    setSuggestions([]);
+    nav(`/product/${item.id}`);
+  };
+
   return (
     <div className="search-bar">
       <div className="container">
@@ -128,11 +134,7 @@ export default function HeaderPage() {
               <div className="suggestions">
                 <ul>
                   {suggestions.map((item) => (
-                    <li key={item.id} onClick={() => {
-                      setSearchValue(item.name);
-                      setSuggestions([]);
-                      nav(`/product/${item.id}`);
-                    }}>
+                    <li key={item.id} onClick={() => handleSuggestionClick(item)}>
                       {item.name}
                     </li>
                   ))}
