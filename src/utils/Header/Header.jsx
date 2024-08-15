@@ -28,6 +28,20 @@ export default function HeaderPage() {
   const myParam = searchParams.get("search_query");
 
   useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "//js-na1.hs-scripts.com/47077339.js";
+    script.async = true;
+    script.defer = true;
+    script.id = "hs-script-loader";
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup the script when the component unmounts
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  useEffect(() => {
     if (token) {
       const decodedToken = jwtDecode(token);
       const customerId = decodedToken.customerId;
