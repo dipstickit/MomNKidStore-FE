@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Dropdown } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { MainAPI } from "../../API";
 import { convertSQLDate, formatVND } from "../../../utils/Format";
 import "./ConfirmOrder.scss";
@@ -12,21 +15,18 @@ export default function TrackOrder() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [ordersPerPage] = useState(10);
+  const [statusFilter, setStatusFilter] = useState(""); // Filter by status
+  const [dateFilter, setDateFilter] = useState(null); // Filter by date
   const token = JSON.parse(localStorage.getItem("accessToken"));
   const navigate = useNavigate();
 
   const fetchCustomerName = (customerId) => {
-    return fetch(`${MainAPI}/Customer/${customerId}`, {
-      method: "GET",
+    return axios.get(`${MainAPI}/Customer/${customerId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Failed to fetch customer data for ID ${customerId}`);
-        return res.json();
-      })
-      .then((data) => data.userName)
+      .then((response) => response.data.userName)
       .catch((error) => {
         console.error("Error fetching customer data:", error);
         return "Unknown Customer";
@@ -34,18 +34,14 @@ export default function TrackOrder() {
   };
 
   const fetchData = () => {
-    fetch(`${MainAPI}/Order`, {
-      method: "GET",
+    axios.get(`${MainAPI}/Order`, {
       headers: {
         "x-access-token": token,
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch data get order");
-        return res.json();
-      })
-      .then(async (data) => {
+      .then(async (response) => {
+        const data = response.data;
         setTrackOrderList(data);
 
         const customerIds = [...new Set(data.map((order) => order.customerId))];
@@ -67,6 +63,26 @@ export default function TrackOrder() {
   useEffect(() => {
     fetchData();
   }, [currentPage]);
+
+  const updateOrderStatus = (orderId, newStatus) => {
+    axios.put(`${MainAPI}/Order`, null, {
+      params: {
+        orderId: orderId,
+        status: newStatus
+      },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        console.log("Order status updated successfully:", response.data);
+        fetchData(); // Refresh the data after update
+      })
+      .catch((error) => {
+        console.error("Error updating order status:", error);
+      });
+  };
 
   const getStatusText = (status) => {
     switch (status) {
@@ -93,21 +109,68 @@ export default function TrackOrder() {
     }
   };
 
+  const statusOptions = [
+    { label: "Pending", value: 0 },
+    { label: "Completed", value: 1 },
+    { label: "Canceled", value: 2 },
+    { label: "Delivered", value: 3 },
+    { label: "Delivering", value: 4 },
+    { label: "Refund", value: 5 },
+    { label: "Pre-order", value: 10 },
+    { label: "Pre-order Completed", value: 11 },
+    { label: "Pre-order Canceled", value: 12 },
+  ];
+
+  const filterOrders = (orders) => {
+    let filteredOrders = orders;
+
+    if (statusFilter) {
+      filteredOrders = filteredOrders.filter((order) => order.status === parseInt(statusFilter));
+    }
+
+    if (dateFilter) {
+      const formattedDate = dateFilter.toLocaleDateString('en-CA');
+      filteredOrders = filteredOrders.filter((order) => {
+        const orderDate = new Date(order.orderDate).toLocaleDateString('en-CA');
+        return orderDate === formattedDate;
+      });
+    }
+    return filteredOrders;
+  };
+
   const columns = [
     { name: "Order ID", selector: (row) => row.orderId, sortable: true },
     { name: "Order Date", selector: (row) => convertSQLDate(row.orderDate), sortable: true },
     { name: "Customer Name", selector: (row) => customerNames[row.customerId] || "Loading..." },
     {
       name: "Status", selector: (row) => row.status, sortable: true, cell: (row) => (
-        <div className={getStatusText(row.status)}>
+        <div className={`status ${getStatusText(row.status).toLowerCase().replace(/\s+/g, '-')}`}>
           <span className="status-dot"></span>
-          {getStatusText(row.status)}
+          <span className="status-text">{getStatusText(row.status)}</span>
         </div>
       )
     },
     { name: "Total Price", selector: (row) => formatVND(row.totalPrice), sortable: true },
+    {
+      name: "Action", cell: (row) => (
+        <Dropdown>
+          <Dropdown.Toggle className="btn-status" id={`dropdown-basic-${row.orderId}`}>
+            Change Status
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            {statusOptions.map(option => (
+              <Dropdown.Item
+                key={option.value}
+                onClick={() => updateOrderStatus(row.orderId, option.value)}
+              >
+                {option.label}
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      )
+    }
   ];
-
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -116,6 +179,8 @@ export default function TrackOrder() {
   const handleRowClicked = (row) => {
     navigate(`/staff/track_orders/detail/${row.orderId}`);
   };
+
+  const filteredData = filterOrders(trackOrderList);
 
   return (
     <div className="trackOrder-container">
@@ -126,15 +191,42 @@ export default function TrackOrder() {
       ) : (
         <div className="content">
           <h1>Confirm Orders</h1>
+          <div className="filters">
+            <div className="form-group">
+              <label>Status Filter</label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="">All Statuses</option>
+                {statusOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Date Filter (YYYY-MM-DD)</label>
+              <DatePicker
+                selected={dateFilter}
+                onChange={(date) => setDateFilter(date)}
+                dateFormat="yyyy-MM-dd"
+                placeholderText="Order date"
+              />
+            </div>
+          </div>
+
           <DataTable
             columns={columns}
-            data={trackOrderList.slice(
+            data={filteredData.slice(
               (currentPage - 1) * ordersPerPage,
               currentPage * ordersPerPage
             )}
             pagination
             paginationServer
-            paginationTotalRows={trackOrderList.length}
+            paginationTotalRows={filteredData.length}
             paginationPerPage={ordersPerPage}
             onChangePage={handlePageChange}
             highlightOnHover
