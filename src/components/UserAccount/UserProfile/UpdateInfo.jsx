@@ -132,7 +132,7 @@ const UpdateInfo = () => {
               required 
             />
           </div>
-          <button type="submit" className="update-info-button">Save Changes</button>
+          <button type="submit" className="update-info-button">Cập nhật</button>
         </form>
       </div>
       <div className="header-footer-wrapper">
