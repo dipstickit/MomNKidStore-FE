@@ -62,7 +62,7 @@ export default function Post() {
                       <div className="home-product-detail-img-container mb-2">
                         {product.images && product.images.length > 0 ? (
                           <img
-                            src={product.images[0].images || "https://via.placeholder.com/150"}
+                            src={product.images[0].imageProduct1 || "https://via.placeholder.com/150"}
                             alt={product.productName || "Placeholder"}
                           />
                         ) : (

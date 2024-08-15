@@ -1,59 +1,91 @@
-.purchase-history-wrapper {
+// .purchase-history-wrapper {
   
 
-    margin: 0 auto;
-  }
+//     margin: 0 auto;
+//   }
   
-  .container {
-    margin-top: 50px;
-  }
+//   .container {
+//     margin-top: 50px;
+//   }
   
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+//   h2 {
+//     text-align: center;
+//     margin-bottom: 20px;
+//   }
   
-  .filter-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    margin-top: 70px;
+//   .filter-buttons {
+//     display: flex;
+//     justify-content: center;
+//     gap: 10px;
+//     margin-bottom: 20px;
+//     margin-top: 70px;
   
-    button {
-      padding: 10px 20px;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
+//     button {
+//       padding: 10px 20px;
+//       border: none;
+//       background-color: #007bff;
+//       color: white;
+//       border-radius: 5px;
+//       cursor: pointer;
+//       transition: background-color 0.3s;
+//     }
   
-    button:hover {
-      background-color: #0056b3;
-    }
+//     button:hover {
+//       background-color: #0056b3;
+//     }
   
-    button.active {
-      background-color: #0056b3;
-    }
-  }
+//     button.active {
+//       background-color: #0056b3;
+//     }
+//   }
   
-  .order-list {
-    display: flex;
-    margin: 50px;
-    flex-direction: column;
-    gap: 15px;
-  }
+//   .order-list {
+//     display: flex;
+//     margin: 50px;
+//     flex-direction: column;
+//     gap: 15px;
+//   }
   
-  .order-card {
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-  }
+//   .order-card {
+//     padding: 15px;
+//     border: 1px solid #ccc;
+//     border-radius: 5px;
+//     background-color: #f9f9f9;
+//   }
   
-  .order-card p {
-    margin: 5px 0;
-  }
+//   .order-card p {
+//     margin: 5px 0;
+//   }
   
+
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-indicator.pending {
+  background-color: #ff9900;
+}
+
+.status-indicator.paid {
+  background-color: #28a745;
+}
+
+.status-indicator.cancelled {
+  background-color: #dc3545;
+}
+
+.status-indicator.shipped {
+  background-color: #17a2b8;
+}
+
+.status-indicator.delivered {
+  background-color: #007bff;
+}
+
+.status-indicator.refunded {
+  background-color: #ffc107;
+}
