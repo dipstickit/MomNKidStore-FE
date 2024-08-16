@@ -115,7 +115,7 @@
 
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "./App.css";
+import "./App.scss";
 import Dashboard from "./components/Admin/Dashboard/Dashboard";
 import Edit from "./components/Admin/Edit/Edit";
 import NavBar from "./components/Admin/NavBar/NavBar";
@@ -131,7 +131,6 @@ import StaffManagement from "./components/Staff/StaffManagement/StaffManagement"
 import UserAccount from "./components/UserAccount/UserAccount";
 import CustomerProfile from "./components/UserAccount/UserProfile/CustomerProfile";
 import Unauthorized from "./components/Unauthorized/Unauthorized";
-import OrderPayment from "./components/OrderPayment/OrderPayment";
 import SearchPage from "./components/HomePage/Search/SearchPage";
 import Trackorder from "./components/UserAccount/Sidebar/ScreenCustomerAccount/TrackingOrder/Trackorder";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
@@ -147,7 +146,7 @@ import EditPost from "./components/Staff/ManagePosts/EditPost/EditPost";
 import ModalCreatePost from "./components/Staff/ManagePosts/ModalCreatePost/ModalCreatePost";
 import PurchaseHistory from "./components/UserAccount/UserProfile/PurchaseHistory";
 import OrderDetail from "./components/UserAccount/UserProfile/OrderDetail"; // Import OrderDetail
-
+import Contact from "./components/Contact/Contact";
 import UpdateInfo from "./components/UserAccount/UserProfile/UpdateInfo";
 
 function App() {
@@ -198,6 +197,7 @@ function App() {
         <Route path="/home/productdetail/:productId" element={<ProductDetail />} />
         <Route path="/blogs/post/:id" element={<Post />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/contact" element={<Contact />} />
 
         {/* admin routes */}
         <Route path="/admin" element={<NavBar />} />
@@ -222,7 +222,6 @@ function App() {
         <Route path="/purchase-history" element={<PurchaseHistory />} />
         <Route path="/update-info" element={<UpdateInfo />} />
         <Route path="/order-detail/:orderId" element={<OrderDetail />} /> {/* Add OrderDetail route */}
-        <Route path="/order-payment" element={<OrderPayment />} />
 
         {/* catch all */}
         <Route path="*" element={<div>Không có gì ở đây</div>} />

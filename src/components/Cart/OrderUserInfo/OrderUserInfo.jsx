@@ -9,12 +9,14 @@ import { usePrice } from '../PriceContext';
 import './OrderUserInfo.scss';
 import { MainAPI } from '../../API';
 import useAuth from '../../../hooks/useAuth';
+import PaymentOptions from '../PaymentOptions/PaymentOptions'; // Import PaymentOptions component
 
 export default function OrderUserInfo() {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [cartItems, setCartItems] = useState([]);
+  const [selectedMethod, setSelectedMethod] = useState("VNPAY"); // State for selected payment method
 
   const { totalPrice, updateTotalPrice, voucherID, isExchangedPoint } = usePrice();
   const { auth } = useAuth();
@@ -96,6 +98,7 @@ export default function OrderUserInfo() {
         shippingAddress: `${values.shippingAddress}, ${values.ward}, ${values.district}, ${values.province}`,
         orderCustomerName: values.customerName,
         orderCustomerPhone: values.customerPhone,
+        paymentMethod: selectedMethod, // Include selected payment method
       };
       console.log(JSON.stringify(orderData, null, 2));
 
@@ -137,7 +140,8 @@ export default function OrderUserInfo() {
 
   return (
     <div className="order-user-info">
-      <h2>Shipping Information</h2>
+      <h2>Thông tin đặt hàng</h2>
+      <PaymentOptions setSelectedMethod={setSelectedMethod} />
       <form onSubmit={formik.handleSubmit}>
         <div className="form-group">
           <label htmlFor="customerName">Name</label>

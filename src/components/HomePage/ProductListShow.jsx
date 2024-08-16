@@ -30,7 +30,6 @@ export default function ProductListShow() {
         setFilteredItems(Array.isArray(res.data.productList) ? res.data.productList : []);
         setTotalPageAll(res.data.totalPage);
         setLoading(false);
-
       })
       .catch((err) => {
         console.log(err);
@@ -93,8 +92,14 @@ export default function ProductListShow() {
   const handleFilterButtonClick = (categoryId) => {
     setLoading(true);
     setSelectedCategory(categoryId);
+    let apiUrl = `${MainAPI}/Product/get-all-products?page=${currentPage}&pageSize=${itemsPerPage}`;
+
+    if (categoryId !== null) {
+      apiUrl += `&CategoryId=${categoryId}`;
+    }
+
     axios
-      .get(`${MainAPI}/Product/get-all-products?CategoryId=${categoryId}&page=${currentPage}&pageSize=${itemsPerPage}`)
+      .get(apiUrl)
       .then((res) => {
         setFilteredItems(Array.isArray(res.data.productList) ? res.data.productList : []);
         setTotalPageAll(res.data.totalPage);
@@ -129,6 +134,14 @@ export default function ProductListShow() {
         <div className="category">
           <p className="m-0">Loại Sữa:</p>
           <div style={{ marginLeft: "25px" }}>
+            <div className="cate">
+              <button
+                onClick={() => handleFilterButtonClick(null)} // Xử lý khi chọn "Tất cả"
+                className={`btn ${selectedCategory === null ? "active" : ""}`}
+              >
+                Tất cả
+              </button>
+            </div>
             {categories.map((cate) => (
               <div className="cate" key={cate.productCategoryId}>
                 <button
@@ -215,5 +228,3 @@ export default function ProductListShow() {
     </div>
   );
 }
-
-
