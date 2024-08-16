@@ -7,6 +7,31 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
 
+  .customer-info {
+    .btn {
+      padding: 8px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+
+      &.btn-primaryy {
+        width: 45%;
+        background-color: #10b981;
+      }
+
+      &.btn-secondaryy {
+        margin-right: 10px;
+        background-color: rgb(166, 165, 165);
+      }
+
+    }
+
+  }
+
   h2 {
     text-align: center;
     margin-bottom: 30px;
@@ -34,7 +59,7 @@
         border: 1px solid #ccc;
         border-radius: 8px;
         box-sizing: border-box;
-        transition: border-color 0.3s, box-shadow 0.3s;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
         &:focus {
           border-color: #007bff;
@@ -70,7 +95,7 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
+      transition: background-color 0.3s ease, transform 0.2s ease;
 
       &:hover {
         background-color: #0056b3;
@@ -83,7 +108,8 @@
       }
 
       &.btn-primary {
-        background-color: #007bff;
+        background-color: #10b981;
+        margin-bottom: 20px;
       }
 
       &:disabled {
@@ -93,13 +119,10 @@
     }
   }
 
-  /* Style for PaymentOptions component */
   .payment-options {
     margin-bottom: 30px;
     border-bottom: 1px solid #ccc;
-    /* Adds a separator line */
     padding-bottom: 20px;
-    /* Space below the payment options */
 
     h5 {
       margin-bottom: 20px;
@@ -112,7 +135,6 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      /* Space between payment option buttons */
     }
 
     .payment-option-button {
@@ -122,7 +144,7 @@
       border: 1px solid #ddd;
       border-radius: 8px;
       background-color: #fff;
-      transition: border-color 0.3s, box-shadow 0.3s;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
       &.selected {
         border-color: #007bff;
@@ -131,11 +153,11 @@
 
       .icon {
         margin-right: 15px;
-      }
 
-      img {
-        width: 50px;
-        height: auto;
+        img {
+          width: 50px;
+          height: auto;
+        }
       }
 
       .details {
