@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { MainAPI } from '../../API';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { MainAPI } from "../../API";
+import { FaImage, FaPlus, FaArrowLeft } from "react-icons/fa";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './EditProduct.scss';
+
 
 const validationSchema = Yup.object({
     productName: Yup.string().required("Product Name is required"),
@@ -18,11 +20,7 @@ const validationSchema = Yup.object({
         .positive("Product Quantity must be greater than 0")
         .required("Product Quantity is required"),
     productCategoryId: Yup.number().required('Category is required'),
-    images: Yup.array().of(
-        Yup.object({
-            imageProduct1: Yup.string().url('Invalid URL').required('Image URL is required')
-        })
-    ).optional(),
+    images: Yup.array().min(1, "At least one image is required"),
     productStatus: Yup.string().required('Product status is required'),
 });
 
@@ -44,6 +42,7 @@ const uploadImageToCloudinary = async (file) => {
         return response.data.secure_url;
     } catch (error) {
         console.error("Error uploading image to Cloudinary:", error.response?.data || error.message);
+        toast.error("Error uploading image.");
         return null;
     }
 };
@@ -53,12 +52,12 @@ const EditProduct = () => {
     const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [categories, setCategories] = useState([]);
-    const [selectedImages, setSelectedImages] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
 
+    const token = JSON.parse(localStorage.getItem('accessToken'));
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const token = JSON.parse(localStorage.getItem('accessToken'));
                 const response = await axios.get(`${MainAPI}/Product/get-product-by-id/${productId}`, {
                     headers: {
                         'x-access-token': token,
@@ -67,8 +66,9 @@ const EditProduct = () => {
                 });
 
                 setProduct(response.data);
+
                 const imageUrls = response.data.images.map(img => img.imageProduct1);
-                setSelectedImages(imageUrls);
+                setImagePreviews(imageUrls);
 
                 formik.setValues({
                     productName: response.data.productName,
@@ -81,10 +81,9 @@ const EditProduct = () => {
                 });
             } catch (error) {
                 console.error('Error fetching product:', error);
-                toast.error('Error fetching product: ' + (error?.response?.data?.message || error.message));
+                toast.error('Error fetching product.');
             }
         };
-        console.log("Selected Images:", selectedImages);
 
         const fetchCategories = async () => {
             try {
@@ -92,7 +91,7 @@ const EditProduct = () => {
                 setCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
-                toast.error('Error fetching categories: ' + (error?.response?.data?.message || error.message));
+                toast.error('Error fetching categories.');
             }
         };
 
@@ -104,17 +103,15 @@ const EditProduct = () => {
         initialValues: {
             productName: '',
             productInfor: '',
-            productPrice: '',
-            productQuantity: '',
+            productPrice: 0,
+            productQuantity: 0,
             productCategoryId: '',
             images: [],
-            productStatus: 'available'
+            productStatus: 'available',
         },
         validationSchema,
         onSubmit: async (values) => {
             try {
-                const token = JSON.parse(localStorage.getItem('accessToken'));
-
                 const imageUrls = await Promise.all(values.images.map(async (file) => {
                     if (file instanceof File) {
                         const imageUrl = await uploadImageToCloudinary(file);
@@ -124,85 +121,79 @@ const EditProduct = () => {
                 }));
 
                 const imagesFormatted = imageUrls.filter(Boolean).map((url, index) => ({
-                    "imageProduct1": url,
+                    [`imageProduct${index + 1}`]: url,
                 }));
 
-                const requestData = {
-                    productCategoryId: Number(values.productCategoryId),
+                const productPayload = {
                     productName: values.productName,
                     productInfor: values.productInfor,
                     productPrice: values.productPrice,
                     productQuantity: values.productQuantity,
-                    productStatus: values.productStatus === 'available',
+                    productCategoryId: Number(values.productCategoryId),
                     images: imagesFormatted,
+                    productStatus: values.productStatus === 'available',
                 };
-                console.log(requestData);
-                console.log("Image URLs:", imageUrls);
-                await axios.put(`${MainAPI}/Product/update-product/${productId}`, requestData, {
+
+                if (!token) {
+                    console.error("No access token found.");
+                    toast.error("No access token found.");
+                    return;
+                }
+
+                await axios.put(`${MainAPI}/Product/update-product/${productId}`, productPayload, {
                     headers: {
-                        'x-access-token': token,
+                        "x-access-token": token,
                         Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json',
                     },
                 });
-
-                toast.success('Product updated successfully!');
-                navigate('/staff/manage_product');
+                toast.success("Product updated successfully!");
+                navigate("/staff/manage_product");
             } catch (error) {
-                console.error('Error updating product:', error?.response?.data || error.message);
-                toast.error('Error updating product: ' + (error?.response?.data?.message || error.message));
+                console.error('Error updating product:', error);
+                toast.error('Error updating product.');
             }
-        }
+        },
     });
 
     const handleImageChange = (event) => {
         const files = Array.from(event.currentTarget.files);
-        const imagePreviews = files.map(file => URL.createObjectURL(file));
+        const newImagePreviews = files.map(file => URL.createObjectURL(file));
 
-        setSelectedImages(imagePreviews);
-
-        const fileObjects = files.map(file => ({
-            imageProduct1: file
-        }));
-        formik.setFieldValue("images", fileObjects);
+        setImagePreviews(prev => [...prev, ...newImagePreviews]);
+        formik.setFieldValue("images", files);
     };
 
-
-    if (!product) return <div>Loading...</div>;
-
     return (
-        <div className="edit-product-container">
-            <button className="back-button" onClick={() => navigate(-1)}>Back</button>
-            <h1>Edit Product</h1>
+        <div className="editProduct_container">
             <ToastContainer autoClose={2000} />
-            <form onSubmit={formik.handleSubmit} className="edit-product-form">
+            <h1>Edit Product</h1>
+            <form onSubmit={formik.handleSubmit} className="form">
                 <div className="form-group">
                     <label htmlFor="productName">Product Name</label>
                     <input
                         id="productName"
                         name="productName"
                         type="text"
-                        value={formik.values.productName || ''}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        value={formik.values.productName}
                     />
                     {formik.touched.productName && formik.errors.productName ? (
-                        <div className="error-message">{formik.errors.productName}</div>
+                        <div className="error">{formik.errors.productName}</div>
                     ) : null}
                 </div>
 
                 <div className="form-group">
                     <label htmlFor="productInfor">Product Information</label>
-                    <input
+                    <textarea
                         id="productInfor"
                         name="productInfor"
-                        type="text"
-                        value={formik.values.productInfor || ''}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        value={formik.values.productInfor}
                     />
                     {formik.touched.productInfor && formik.errors.productInfor ? (
-                        <div className="error-message">{formik.errors.productInfor}</div>
+                        <div className="error">{formik.errors.productInfor}</div>
                     ) : null}
                 </div>
 
@@ -212,12 +203,12 @@ const EditProduct = () => {
                         id="productPrice"
                         name="productPrice"
                         type="number"
-                        value={formik.values.productPrice || ''}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        value={formik.values.productPrice}
                     />
                     {formik.touched.productPrice && formik.errors.productPrice ? (
-                        <div className="error-message">{formik.errors.productPrice}</div>
+                        <div className="error">{formik.errors.productPrice}</div>
                     ) : null}
                 </div>
 
@@ -227,68 +218,65 @@ const EditProduct = () => {
                         id="productQuantity"
                         name="productQuantity"
                         type="number"
-                        value={formik.values.productQuantity || ''}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        value={formik.values.productQuantity}
                     />
                     {formik.touched.productQuantity && formik.errors.productQuantity ? (
-                        <div className="error-message">{formik.errors.productQuantity}</div>
+                        <div className="error">{formik.errors.productQuantity}</div>
                     ) : null}
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="productCategoryId">Category</label>
+                    <label htmlFor="productCategoryId">Product Category</label>
                     <select
                         id="productCategoryId"
                         name="productCategoryId"
-                        value={formik.values.productCategoryId || ''}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        value={formik.values.productCategoryId}
                     >
-                        <option value="">Select a category</option>
-                        {categories.map(category => (
-                            <option key={category.productCategoryId} value={category.productCategoryId}>{category.productCategoryName}</option>
+                        <option value="">Select Category</option>
+                        {categories.map((category) => (
+                            <option key={category.productCategoryId} value={category.productCategoryId}>
+                                {category.productCategoryName}
+                            </option>
                         ))}
                     </select>
                     {formik.touched.productCategoryId && formik.errors.productCategoryId ? (
-                        <div className="error-message">{formik.errors.productCategoryId}</div>
+                        <div className="error">{formik.errors.productCategoryId}</div>
                     ) : null}
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="images">Images</label>
+                    <label htmlFor="images">
+                        <FaImage /> Product Images
+                    </label>
                     <input
                         id="images"
                         name="images"
                         type="file"
+                        accept="image/*"
                         multiple
                         onChange={handleImageChange}
                     />
                     {formik.touched.images && formik.errors.images ? (
-                        <div className="error-message">{formik.errors.images}</div>
+                        <div className="error">{formik.errors.images}</div>
                     ) : null}
                 </div>
 
                 <div className="image-previews">
-                    {selectedImages.map((img, index) => (
-                        <img key={index} src={img} alt={`Preview ${index}`} />
+                    {imagePreviews.map((imageSrc, index) => (
+                        <img key={index} src={imageSrc} alt={`Preview ${index}`} className="preview-img" />
                     ))}
                 </div>
-                {selectedImages.length > 0 && (
-                    <div className="image-previews">
-                        {selectedImages.map((image, index) => (
-                            <img key={index} src={image} alt={`Preview ${index}`} />
-                        ))}
-                    </div>
-                )}
-
 
                 <div className="form-group">
                     <label htmlFor="productStatus">Status</label>
                     <select
                         id="productStatus"
                         name="productStatus"
-                        value={formik.values.productStatus || ''}
+                        value={formik.values.productStatus}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                     >
@@ -296,11 +284,21 @@ const EditProduct = () => {
                         <option value="unavailable">Unavailable</option>
                     </select>
                     {formik.touched.productStatus && formik.errors.productStatus ? (
-                        <div className="error-message">{formik.errors.productStatus}</div>
+                        <div className="error">{formik.errors.productStatus}</div>
                     ) : null}
                 </div>
 
-                <button type="submit" className="submit-button">Update Product</button>
+                <button type="submit" className="btn submit-btn">
+                    Update Product
+                </button>
+
+                <button
+                    type="button"
+                    className="btn back-btn"
+                    onClick={() => navigate("/staff/manage_product")}
+                >
+                    <FaArrowLeft /> Back
+                </button>
             </form>
         </div>
     );

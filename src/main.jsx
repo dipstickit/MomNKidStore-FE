@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+import "./index.scss";
 import App from "./App";
 import { AuthProvider } from "./context/AuthProvider";
 import { CartProvider } from "./components/Cart/CartContext";
@@ -15,7 +15,7 @@ root.render(
     <AuthProvider>
       <CartProvider>
         <OrderProvider>
-        <ToastContainer
+          <ToastContainer
             position="top-right"
             autoClose={2000}
             hideProgressBar={false}

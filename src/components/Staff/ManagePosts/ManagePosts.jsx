@@ -150,8 +150,8 @@ export default function ManagePosts() {
             columns={columns}
             data={filteredBlogs}
             pagination
-            paginationPerPage={5}
-            paginationRowsPerPageOptions={[5, 10]}
+            paginationPerPage={10}
+            paginationRowsPerPageOptions={[10, 20, 30, 40, 50, 60, 70, 80]}
           />
         </div>
       </div>

@@ -7,9 +7,10 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
     h1 {
-        font-size: 24px;
+        font-size: 28px;
         color: #333;
         margin-bottom: 20px;
+        font-weight: bold;
     }
 
     .order-info {
@@ -17,43 +18,103 @@
             margin: 10px 0;
             font-size: 16px;
             color: #555;
+            line-height: 1.6;
 
             strong {
                 color: #333;
+                font-weight: bold;
             }
+        }
+
+        .status {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            color: #fff;
+        }
+
+        .pending {
+            color: #ffc107;
+        }
+
+        .completed {
+            color: #28a745;
+        }
+
+        .canceled {
+            color: #dc3545;
+        }
+
+        .delivered {
+            color: #17a2b8;
+        }
+
+        .delivering {
+            color: #007bff;
+        }
+
+        .refund {
+            color: #fd7e14;
+        }
+
+        .preorder {
+            color: #6f42c1;
+        }
+
+        .preorder-completed {
+            color: #20c997;
+        }
+
+        .preorder-canceled {
+            color: #e83e8c;
+        }
+
+        .unknown {
+            color: #999;
         }
     }
 
     h2 {
         margin-top: 30px;
-        font-size: 20px;
+        font-size: 22px;
         color: #333;
+        font-weight: bold;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 10px;
     }
 
     .order-items {
         .order-item {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 20px;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
 
             .product-image {
-                width: 100px;
-                height: 100px;
+                width: 120px;
+                height: 120px;
                 object-fit: cover;
                 border-radius: 8px;
                 margin-right: 20px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             }
 
             .item-info {
+                flex: 1;
+
                 p {
                     margin: 5px 0;
                     font-size: 16px;
                     color: #555;
+                    line-height: 1.6;
 
                     strong {
                         color: #333;
+                        font-weight: bold;
                     }
                 }
             }

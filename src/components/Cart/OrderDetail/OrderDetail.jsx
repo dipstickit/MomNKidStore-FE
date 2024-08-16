@@ -19,6 +19,7 @@ export default function OrderDetail() {
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [isExchangedPoint, setIsExchangedPoint] = useState(false);
   const [selectedVoucherId, setSelectedVoucherId] = useState(null);
+  const [data, setData] = useState([]);
   const token = JSON.parse(localStorage.getItem("accessToken"));
 
   const fetchCartData = () => {
@@ -41,6 +42,7 @@ export default function OrderDetail() {
           setCartList(response.data.cartItems);
           updateTotalPrice(response.data.totalPrice);
           updateVoucherID(selectedVoucherId);
+          setData(response.data);
         })
         .catch((error) => {
           console.error("Error fetching cart data:", error);
@@ -211,6 +213,21 @@ export default function OrderDetail() {
                 currency: "VND",
               })}
             </div>
+
+            <div className="order-summary-points">
+              <div className="points-display">
+                Điểm thưởng của bạn: {data.point.toLocaleString("vi-VN")} điểm
+              </div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={isExchangedPoint}
+                  onChange={handlePointChange}
+                />
+                Sử dụng điểm thưởng
+              </label>
+            </div>
+
             <div className="order-summary-vouchers">
               <span>Danh sách voucher:</span>
               <select onChange={handleVoucherChange} value={selectedVoucherId || ""}>
@@ -223,17 +240,8 @@ export default function OrderDetail() {
                 ))}
               </select>
             </div>
-            <div className="order-summary-points">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={isExchangedPoint}
-                  onChange={handlePointChange}
-                />
-                Sử dụng điểm thưởng
-              </label>
-            </div>
           </div>
+
         </div>
       )}
     </>

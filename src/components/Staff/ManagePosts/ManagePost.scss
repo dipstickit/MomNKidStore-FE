@@ -1,15 +1,27 @@
 $dark: #2a2d2f;
+$primary-color: #1d4ed8;
+$success-color: #10b981;
+$danger-color: #ef4444;
+$background-light: #f9f9f9;
+$table-border-color: #ddd;
 
 .blogManagement-container {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 40px 20px;
+
   .content {
+    background-color: #ffffff;
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
     h1 {
       text-align: center;
       margin-bottom: 20px;
-      color: $dark; // Adjust according to your design
+      color: $dark;
     }
 
     .blog-management {
@@ -25,13 +37,20 @@ $dark: #2a2d2f;
         label {
           margin-right: 10px;
           font-weight: bold;
+          color: $dark;
         }
 
         input {
-          padding: 8px;
+          padding: 8px 15px;
           border: 1px solid #ccc;
           border-radius: 4px;
-          width: 500px;
+          width: 400px;
+          transition: border-color 0.3s;
+
+          &:focus {
+            outline: none;
+            border-color: $primary-color;
+          }
         }
       }
 
@@ -42,13 +61,17 @@ $dark: #2a2d2f;
           border-radius: 4px;
           cursor: pointer;
           font-size: 1rem;
+          transition: background-color 0.3s, transform 0.2s;
+          display: flex;
+          align-items: center;
 
           &.add-btn {
-            background-color: #10B981;
+            background-color: $success-color;
             color: #fff;
 
             &:hover {
-              background-color: #07ba7f;
+              background-color: darken($success-color, 10%);
+              transform: translateY(-2px);
             }
           }
         }
@@ -59,53 +82,70 @@ $dark: #2a2d2f;
       .rdt_Table {
         border-collapse: collapse;
         width: 100%;
+        border: 1px solid $table-border-color;
+        border-radius: 8px;
+        overflow: hidden;
 
         .rdt_TableHead {
-          background-color: #f8f9fa;
+          background-color: $background-light;
+          font-weight: bold;
+          font-size: 1rem;
 
           th {
-            padding: 10px;
+            padding: 12px 15px;
             text-align: left;
+            color: $dark;
           }
         }
 
         .rdt_TableBody {
           td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 12px 15px;
+            border-bottom: 1px solid $table-border-color;
+            vertical-align: middle;
           }
         }
 
         .rdt_TableRow {
           &:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: $background-light;
+          }
+
+          &:hover {
+            background-color: lighten($background-light, 5%);
           }
         }
       }
     }
   }
-}
 
-.action {
-  display: flex;
-  align-items: center;
-
-  .action-btn {
-    cursor: pointer;
-    margin-right: 10px;
+  .action {
     display: flex;
     align-items: center;
 
-    &:last-child {
-      margin-right: 0;
-    }
+    .action-btn {
+      cursor: pointer;
+      margin-right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      transition: background-color 0.3s, transform 0.2s;
 
-    svg {
-      font-size: 1.5rem;
-    }
+      &:last-child {
+        margin-right: 0;
+      }
 
-    &:hover {
-      opacity: 0.7;
+      svg {
+        font-size: 1.2rem;
+      }
+
+      &:hover {
+        background-color: $background-light;
+        transform: translateY(-2px);
+      }
     }
   }
 }

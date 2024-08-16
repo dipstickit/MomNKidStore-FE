@@ -8,11 +8,11 @@ import "./TrackOrderDetail.scss";
 export default function OrderDetail() {
     const { orderId } = useParams();
     const [order, setOrder] = useState(null);
-    const [customerName, setCustomerName] = useState("");
+    const [customer, setCustomer] = useState(null);
     const [loading, setLoading] = useState(true);
     const token = JSON.parse(localStorage.getItem("accessToken"));
 
-    const fetchCustomerName = async (customerId) => {
+    const fetchCustomerDetails = async (customerId) => {
         try {
             const res = await fetch(`${MainAPI}/Customer/${customerId}`, {
                 method: "GET",
@@ -20,12 +20,12 @@ export default function OrderDetail() {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            if (!res.ok) throw new Error(`Failed to fetch customer data for ID ${customerId}`);
+            if (!res.ok) throw new Error(`Failed to fetch customer details for ID ${customerId}`);
             const data = await res.json();
-            return data.userName;
+            setCustomer(data);
         } catch (error) {
-            console.error("Error fetching customer data:", error);
-            return "Unknown Customer";
+            console.error("Error fetching customer details:", error);
+            setCustomer({});
         }
     };
 
@@ -43,8 +43,9 @@ export default function OrderDetail() {
                 const data = await res.json();
                 setOrder(data);
 
-                const customerName = await fetchCustomerName(data.customerId);
-                setCustomerName(customerName);
+                if (data.customerId) {
+                    await fetchCustomerDetails(data.customerId);
+                }
 
                 setLoading(false);
             } catch (error) {
@@ -68,15 +69,46 @@ export default function OrderDetail() {
         return <div>Order not found</div>;
     }
 
+    const getStatusClass = (status) => {
+        switch (status) {
+            case 0:
+                return "Pending";
+            case 1:
+                return "Completed";
+            case 2:
+                return "Canceled";
+            case 3:
+                return "Delivered";
+            case 4:
+                return "Delivering";
+            case 5:
+                return "Refund";
+            case 10:
+                return "Preorder";
+            case 11:
+                return "Preorder-completed";
+            case 12:
+                return "Preorder-canceled";
+            default:
+                return "Unknown";
+        }
+    };
+
     return (
         <div className="orderDetail-container">
             <h1>Order Detail - #{order.orderId}</h1>
             <div className="order-info">
                 <p><strong>Order Date:</strong> {convertSQLDate(order.orderDate)}</p>
-                <p><strong>Customer Name:</strong> {customerName}</p>
-                <p><strong>Status:</strong> {order.status}</p>
+                {customer && (
+                    <>
+                        <p><strong>Customer Name:</strong> {customer.userName}</p>
+                        <p><strong>Address:</strong> {customer.address}</p>
+                        <p><strong>Phone:</strong> {customer.phone}</p>
+                    </>
+                )}
+                <p><strong>Status:</strong> <span className={`status ${getStatusClass(order.status).toLowerCase().replace(/\s+/g, '-')}`}>{getStatusClass(order.status).replace(/-/g, ' ')}</span></p>
                 <p><strong>Total Price:</strong> {formatVND(order.totalPrice)}</p>
-                <p><strong>Voucher ID:</strong> {order.voucherId ? order.voucherId : "N/A"}</p>
+                <p><strong>Voucher ID:</strong> {order.voucherId || "N/A"}</p>
                 <p><strong>Exchanged Points:</strong> {order.exchangedPoint}</p>
             </div>
 

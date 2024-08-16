@@ -6,6 +6,9 @@ import axios from "axios";
 import { MainAPI } from "../../API";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { MdModeEdit } from "react-icons/md";
+import { DeleteIcon } from "../../../utils/Icon/DeleteIcon";
+import * as Yup from "yup";
 
 export default function ManageVoucher() {
   const [vouchers, setVouchers] = useState([]);
@@ -60,65 +63,85 @@ export default function ManageVoucher() {
     fetchData();
   }, []);
 
-  const handleAddVoucher = async () => {
-    if (!voucherValue || !quantity || !startDate || !exDate) {
-      toast.error("Please fill in all fields before creating a voucher.");
-      return;
-    }
-    const token = JSON.parse(localStorage.getItem("accessToken"));
+  const voucherSchema = Yup.object().shape({
+    voucherValue: Yup.number()
+      .positive("Voucher value must be greater than 0")
+      .required("Voucher value is required"),
+    quantity: Yup.number()
+      .positive("Quantity must be greater than 0")
+      .required("Quantity is required"),
+    startDate: Yup.date()
+      .min(new Date().toISOString().split("T")[0], "Start date must be today or later")
+      .required("Start date is required"),
+    exDate: Yup.date()
+      .min(Yup.ref("startDate"), "Expiration date must be after the start date")
+      .required("Expiration date is required"),
+  });
 
-    if (!token) {
-      toast.error("No access token found. Please log in again.");
-      return;
-    }
+  const handleAddVoucher = async () => {
+    const formData = {
+      voucherValue,
+      quantity,
+      startDate,
+      exDate,
+    };
 
     try {
+      // Validate the form data
+      await voucherSchema.validate(formData, { abortEarly: false });
+
+      const token = JSON.parse(localStorage.getItem("accessToken"));
+
+      if (!token) {
+        toast.error("No access token found. Please log in again.");
+        return;
+      }
+
       const response = await axios.post(
         `${MainAPI}/VoucherOfShop`,
         {
           voucherValue: Number(voucherValue),
           voucherQuantity: Number(quantity),
           startDate: startDate,
-          endDate: exDate
+          endDate: exDate,
         },
         {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
-      if (response.data.status === 200) {
-        fetchData();
-        setShowAdd(false);
-        setExDate("");
-        setVoucherValue("");
-        setQuantity("");
-        setStartDate("");
-        toast.success("Voucher added successfully");
-      } else {
-        if (response.data.errors && Array.isArray(response.data.errors)) {
-          toast.error(response.data.errors[0]?.message || "An error occurred. Please try again.");
-        } else {
-          toast.error("An error occurred. Please try again later.");
-        }
-      }
+      fetchData();
+      setShowAdd(false);
+      setExDate("");
+      setVoucherValue("");
+      setQuantity("");
+      setStartDate("");
+      toast.success("Voucher added successfully");
+
     } catch (error) {
-      console.error("Error adding voucher:", error);
-      if (error.response) {
-        switch (error.response.status) {
-          case 401:
-            toast.error("Unauthorized request. Please check your credentials.");
-            break;
-          case 403:
-            toast.error("Forbidden request. You don't have permission.");
-            break;
-          default:
-            toast.error("An error occurred. Please try again later.");
-        }
+      if (error.name === "ValidationError") {
+        error.inner.forEach((err) => {
+          toast.error(err.message);
+        });
       } else {
-        toast.error("Network error or no response from server.");
+        console.error("Error adding voucher:", error);
+        if (error.response) {
+          switch (error.response.status) {
+            case 401:
+              toast.error("Unauthorized request. Please check your credentials.");
+              break;
+            case 403:
+              toast.error("Forbidden request. You don't have permission.");
+              break;
+            default:
+              toast.error("An error occurred. Please try again later.");
+          }
+        } else {
+          toast.error("Network error or no response from server.");
+        }
       }
     }
   };
@@ -177,6 +200,7 @@ export default function ManageVoucher() {
 
   return (
     <>
+      <ToastContainer autoClose={2000} />
       <div className="manage-voucher-container">
         <div className="content">
           <h1>Voucher Management</h1>
@@ -250,11 +274,11 @@ export default function ManageVoucher() {
                       <td>{voucher.startDate}</td>
                       <td>{voucher.endDate}</td>
                       <td>
+                        {/* <button className="action-btn" onClick={() => handleDeleteVoucher(voucher.voucherId)}>
+                          <DeleteIcon color="red" />
+                        </button> */}
                         <button className="action-btn" onClick={() => handleEditVoucher(voucher.voucherId)}>
-                          <FaEdit />
-                        </button>
-                        <button className="action-btn" onClick={() => handleDeleteVoucher(voucher.voucherId)}>
-                          <FaTrash />
+                          <MdModeEdit color="green" />
                         </button>
                       </td>
                     </tr>
