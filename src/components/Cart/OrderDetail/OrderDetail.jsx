@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import { MainAPI } from '../../API';
 import './OrderDetail.scss';
 import { MdDelete } from "react-icons/md";
+import { toast } from "react-toastify";
 
 export default function OrderDetail() {
   const {
@@ -52,7 +53,6 @@ export default function OrderDetail() {
 
   useEffect(() => {
     fetchCartData();
-
     axios
       .get(`${MainAPI}/VoucherOfShop`)
       .then((response) => {
@@ -90,6 +90,7 @@ export default function OrderDetail() {
         }
       );
       fetchCartData();
+      toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
     } catch (error) {
       console.error("Error updating cart quantity:", error);
     }
@@ -109,6 +110,7 @@ export default function OrderDetail() {
           }
         );
         fetchCartData();
+        toast.success("Cập nhật số lượng sản phẩm thành công!");
       } catch (error) {
         console.error("Error updating cart quantity:", error);
       }
@@ -123,6 +125,7 @@ export default function OrderDetail() {
         },
       });
       fetchCartData();
+      toast.success("Đã xóa sản phẩm khỏi giỏ hàng!");
     } catch (error) {
       console.error("Error deleting cart item:", error);
     }
@@ -216,7 +219,7 @@ export default function OrderDetail() {
 
             <div className="order-summary-points">
               <div className="points-display">
-                Điểm thưởng của bạn: {data.point.toLocaleString("vi-VN")} điểm
+                Điểm thưởng của bạn: {data.point ? data.point.toLocaleString("vi-VN") : "0"} điểm
               </div>
               <label>
                 <input

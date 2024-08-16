@@ -9,12 +9,13 @@ import { formatVND } from "../../utils/Format";
 import { CartContext } from "../Cart/CartContext";
 import { FaShoppingCart } from "react-icons/fa";
 import { Spinner } from "react-bootstrap";
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
 export default function Post() {
   const { id } = useParams();
   const [blog, setBlog] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
-  const { handleAddToCart } = useContext(CartContext);
   const [loading, setLoading] = useState(true);
   const quantity = 1;
 
@@ -30,7 +31,44 @@ export default function Post() {
         console.log(err);
       });
   }, [id]);
+  const handleAddToCart = async (selectedProduct) => {
+    console.log('Selected product:', selectedProduct);
 
+    const token = JSON.parse(localStorage.getItem("accessToken"));
+    if (!token) {
+      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      return;
+    }
+
+    const decodedToken = jwtDecode(token);
+    const customerId = decodedToken.customerId;
+
+    try {
+      const response = await axios.post(
+        `${MainAPI}/Cart`,
+        {
+          productId: selectedProduct.productId,
+          customerId: customerId,
+          cartQuantity: quantity,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
+      } else {
+        toast.error("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+    }
+  };
   return (
     <div style={{ backgroundColor: "#f5f7fd" }}>
       <HeaderPage />
@@ -80,7 +118,7 @@ export default function Post() {
                     </Link>
                     <div
                       className="icon_cart mt-2"
-                      onClick={() => handleAddToCart({ ...product, quantity })}
+                      onClick={() => handleAddToCart({ ...product })}
                     >
                       <FaShoppingCart />
                     </div>
