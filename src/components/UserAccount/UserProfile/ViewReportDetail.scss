@@ -1,0 +1,60 @@
+.report-detail-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 85px auto;
+
+    .back-button {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &:hover {
+            background-color: #5a6268;
+        }
+    }
+
+    .report-detail {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #f9f9f9;
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .report-image-container {
+            margin: 20px 0;
+
+            img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px;
+            }
+        }
+    }
+
+    .spinner-report {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+}

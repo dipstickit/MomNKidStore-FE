@@ -99,7 +99,7 @@ export default function PurchaseHistory() {
           className="btn btn-success"
           onClick={() => handleOrderClick(row.orderId)}
         >
-          Xem thông tin
+          Xem chi tiết
         </button>
       ),
     },
