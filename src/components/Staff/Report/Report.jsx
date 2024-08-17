@@ -1,81 +1,87 @@
-import React, { useEffect, useState } from 'react'
-import './Report.scss'
-import { MainAPI } from '../../API';
-import { convertSQLDate } from '../../../utils/Format';
+import React, { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+import { MdModeEdit } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { MainAPI } from "../../API";
+import { formattedDate } from '../../../utils/Format'; 
 import { Spinner } from "react-bootstrap";
+import "./Report.scss"; 
 
 export default function Report() {
+    const nav = useNavigate();
+    const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [reports, setReport] = useState([])
 
-    const fetchData = () => {
-        fetch(`${MainAPI}/staff/show-all-report`, {
-            method: "GET",
-            headers: { "x-access-token": JSON.parse(localStorage.getItem("accessToken")) }
-        })
-            .then(res => {
-                if (!res.ok) throw new Error("Failed to fetch data get report");
-                return res.json();
-            })
-            .then(data => {
-                setReport(data);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error("Error fetching data report:", error);
-                setLoading(false);
+    const fetchReports = async () => {
+        try {
+            const token = JSON.parse(localStorage.getItem("accessToken"));
+            const response = await axios.get(`${MainAPI}/Report/GetAllReports`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
             });
+            setReports(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching report data:", error);
+            toast.error("Error fetching report data.");
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-        fetchData();
+        fetchReports();
     }, []);
 
-    console.log(reports)
+    const columns = [
+        { name: "ID", selector: (row) => row.reportId, sortable: true },
+        { name: "Date", selector: (row) => formattedDate(new Date(row.createAt)), sortable: true },
+        { name: "Description", selector: (row) => row.reportContent },
+        { name: "User Name", selector: (row) => row.customerName },
+        { name: "Image", cell: (row) => (row.reportImage ? <img src={row.reportImage} alt="Report" className="report-image" /> : 'No Image') },
+        { name: "Update At", selector: (row) => formattedDate(new Date(row.updateAt)), sortable: true },
+        { name: "Status", selector: (row) => (row.status ? "Active" : "Inactive") },
+        {
+            name: "Actions",
+            cell: (row) => (
+                <div className="action">
+                    <span className="action-btn" onClick={() => nav(`/detail-report/${row.reportId}`)}>
+                        <MdModeEdit color="green" />
+                    </span>
+                </div>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        },
+    ];
 
     return (
-        <>
-            {
-                loading ? (
-                    <>
-                        <div className=" spinner-report">
+        <div className="reportManagement-container">
+            <div className="content">
+                <h1>Report Management</h1>
+                <div className="report-management">
+                    {loading ? (
+                        <div className="spinner-report">
                             <Spinner animation="border" role="status" />
                         </div>
-                    </>
-                ) : (
-                    <div className='report'>
-                        <div className='report-th'>
-                            <table className='table-report-th'>
-                                <thead>
-                                    <tr>
-                                        <th>Report ID</th>
-                                        <th>Date</th>
-                                        <th>Description</th>
-                                        <th>User Name</th>
-                                        <th>Product Name</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                    ) : (
+                        <div className="table">
+                            <DataTable
+                                columns={columns}
+                                data={reports}
+                                pagination
+                                paginationPerPage={10}
+                                paginationRowsPerPageOptions={[10, 20, 30, 40, 50, 60, 70, 80]}
+                            />
                         </div>
-
-                        <div className='report-tb'>
-                            <table className='table-report-tb'>
-                                <tbody>
-                                    {reports.map((report) => (
-                                        <tr key={report.report_id}>
-                                            <td>{report.report_id}</td>
-                                            <td>{convertSQLDate(report.report_date)}</td>
-                                            <td>{report.report_description}</td>
-                                            <td>{report.username}</td>
-                                            <td>{report.product_name}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div >
-                )
-            }
-        </>
-    )
+                    )}
+                </div>
+            </div>
+        </div>
+    );
 }

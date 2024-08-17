@@ -11,7 +11,7 @@ import FooterPage from "../../../utils/Footer/FooterPage";
 import { useNavigate } from "react-router-dom";
 import { formattedDate } from "../../../utils/Format";
 // Import React Icons
-import { FaHistory, FaEdit } from 'react-icons/fa';
+import { FaHistory, FaEdit, FaFileAlt } from 'react-icons/fa';  // Import icon mới
 
 export default function CustomerProfile() {
   const [customer, setCustomer] = useState(null);
@@ -58,6 +58,10 @@ export default function CustomerProfile() {
     navigate('/purchase-history'); // Navigate to the purchase history page
   };
 
+  const handleViewReports = () => {
+    navigate('/product-reports'); // Navigate to the product reports page
+  };
+
   if (loading) {
     return (
       <div className="text-center" style={{ marginTop: "120px" }}>
@@ -92,6 +96,10 @@ export default function CustomerProfile() {
           <div className="menu-item" onClick={handleEditClick}>
             <FaEdit style={{ marginRight: '10px' }} />
             Cập nhật thông tin
+          </div>
+          <div className="menu-item" onClick={handleViewReports}>  {/* Mục mới cho báo cáo sản phẩm */}
+            <FaFileAlt style={{ marginRight: '10px' }} />
+            Báo cáo sản phẩm
           </div>
         </div>
       </div>

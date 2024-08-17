@@ -1,0 +1,26 @@
+.view-report-wrapper {
+    .container {
+      max-width: auto;
+      margin: 0 auto;
+    }
+  
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+  
+    .btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+  
+      &:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+      }
+    }
+  
+    .text-center {
+      margin-top: 120px;
+    }
+  }
+  
