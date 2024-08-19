@@ -35,6 +35,7 @@ export default function PurchaseHistory() {
             Authorization: `Bearer ${token}`,
           },
         });
+        console.log(response.data);
 
         let filteredOrders = response.data;
 

@@ -89,7 +89,7 @@ export default function TrackOrder() {
       case 0:
         return "Pending";
       case 1:
-        return "Completed";
+        return "Paid";
       case 2:
         return "Canceled";
       case 3:
@@ -98,12 +98,6 @@ export default function TrackOrder() {
         return "Delivering";
       case 5:
         return "Refund";
-      case 10:
-        return "Pre-order";
-      case 11:
-        return "Pre-order Completed";
-      case 12:
-        return "Pre-order Canceled";
       default:
         return "Unknown";
     }
@@ -111,14 +105,11 @@ export default function TrackOrder() {
 
   const statusOptions = [
     { label: "Pending", value: 0 },
-    { label: "Completed", value: 1 },
+    { label: "Paid", value: 1 },
     { label: "Canceled", value: 2 },
     { label: "Delivered", value: 3 },
     { label: "Delivering", value: 4 },
     { label: "Refund", value: 5 },
-    { label: "Pre-order", value: 10 },
-    { label: "Pre-order Completed", value: 11 },
-    { label: "Pre-order Canceled", value: 12 },
   ];
 
   const filterOrders = (orders) => {
