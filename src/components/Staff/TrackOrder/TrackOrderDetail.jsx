@@ -74,7 +74,7 @@ export default function OrderDetail() {
             case 0:
                 return "Pending";
             case 1:
-                return "Completed";
+                return "Paid";
             case 2:
                 return "Canceled";
             case 3:
