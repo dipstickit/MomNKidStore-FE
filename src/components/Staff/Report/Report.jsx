@@ -7,8 +7,10 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { MainAPI } from "../../API";
 import { formattedDate } from '../../../utils/Format';
-import { Spinner } from "react-bootstrap";
+import { Spinner, Dropdown } from "react-bootstrap";
+import { createPopper } from '@popperjs/core'; // Import Popper.js
 import "./Report.scss";
+
 export default function Report() {
     const nav = useNavigate();
     const [reports, setReports] = useState([]);
@@ -32,9 +34,67 @@ export default function Report() {
         }
     };
 
+    const updateReportStatus = async (reportId, newStatus, orderId) => {
+        try {
+            const token = JSON.parse(localStorage.getItem("accessToken"));
+            const authData = JSON.parse(localStorage.getItem("auth"));
+            const accountId = authData ? authData.role : null;
+    
+            if (!accountId) {
+                throw new Error("accountId is missing in localStorage");
+            }
+    
+            const response = await axios.put(`${MainAPI}/Report/UpdateReportStatus`, 
+            {
+                accountId: accountId,
+                reportId: reportId,
+                orderId: orderId,
+                status: newStatus,
+                responseContent: "Status Updated"
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+    
+            // Check for a successful response (HTTP status 200)
+            if (response.status === 200 && response.data === "Update successfully") {
+                toast.success("Status updated successfully.");
+                fetchReports();
+            } else {
+                toast.error("Failed to update status.");
+            }
+        } catch (error) {
+            console.error("Error updating report status:", error);
+            toast.error("Error updating report status.");
+        }
+    };
+    
+
     useEffect(() => {
         fetchReports();
     }, []);
+
+    const getStatusText = (status) => {
+        switch (status) {
+            case 0:
+                return "Pending";
+            case 1:
+                return "Processing";
+            case 2:
+                return "Cancelled";
+            default:
+                return "Unknown";
+        }
+    };
+
+    const statusOptions = [
+        { value: 0, label: "Pending" },
+        { value: 1, label: "Processing" },
+        { value: 2, label: "Cancelled" }
+    ];
 
     const columns = [
         { name: "ID", selector: (row) => row.reportId, sortable: true },
@@ -43,7 +103,46 @@ export default function Report() {
         { name: "Description", selector: (row) => row.reportContent },
         { name: "User Name", selector: (row) => row.customerName },
         { name: "Update At", selector: (row) => formattedDate(new Date(row.updateAt)), sortable: true },
-        { name: "Status", selector: (row) => (row.status ? "Active" : "Inactive") },
+        { 
+            name: "Status", 
+            selector: (row) => row.status, 
+            sortable: true, 
+            cell: (row) => (
+                <Dropdown>
+                    <Dropdown.Toggle className="btn-status" id={`dropdown-button-${row.reportId}`} ref={(ref) => ref && createPopper(ref, document.querySelector(`#dropdown-menu-${row.reportId}`), {
+                        placement: 'bottom-start',
+                        modifiers: [
+                            {
+                                name: 'preventOverflow',
+                                options: {
+                                    boundary: 'viewport',
+                                },
+                            },
+                            {
+                                name: 'offset',
+                                options: {
+                                    offset: [0, 8], // Tạo khoảng cách giữa nút và menu dropdown
+                                },
+                            },
+                        ],
+                    })}>
+                        {getStatusText(row.status)}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu
+                        id={`dropdown-menu-${row.reportId}`}
+                        className="dropdown-menu-custom"
+                    >
+                        {statusOptions.map(option => (
+                            <Dropdown.Item 
+                                key={option.value} 
+                                onClick={() => updateReportStatus(row.reportId, option.value, row.orderId)}>
+                                {option.label}
+                            </Dropdown.Item>
+                        ))}
+                    </Dropdown.Menu>
+                </Dropdown>
+            )
+        },
         {
             name: "Actions",
             cell: (row) => (
@@ -61,7 +160,7 @@ export default function Report() {
 
     return (
         <div className="reportManagement-container">
-
+            <ToastContainer />
             <div className="content">
                 <h1>Report Management</h1>
                 <div className="report-management">
