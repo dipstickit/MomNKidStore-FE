@@ -6,6 +6,7 @@ import { formattedDate } from '../../../utils/Format';
 import { Spinner } from "react-bootstrap";
 import "./ReportDetail.scss";
 import { FaArrowLeft } from "react-icons/fa";
+
 export default function ReportDetail() {
     const { reportId } = useParams();
     const navigate = useNavigate();
@@ -33,6 +34,19 @@ export default function ReportDetail() {
         fetchReportDetail();
     }, [reportId]);
 
+    const getStatusText = (status) => {
+        switch (status) {
+            case 0:
+                return "Pending";
+            case 1:
+                return "Processing";
+            case 2:
+                return "Cancelled";
+            default:
+                return "Unknown";
+        }
+    };
+
     if (loading) {
         return (
             <div className="spinner-report">
@@ -56,7 +70,7 @@ export default function ReportDetail() {
                     <p><strong>Description:</strong> {report.reportContent || "No Description Provided"}</p>
                     <p><strong>Date Created:</strong> {formattedDate(new Date(report.createAt))}</p>
                     <p><strong>Last Updated:</strong> {report.updateAt ? formattedDate(new Date(report.updateAt)) : "Not Updated"}</p>
-                    <p><strong>Status:</strong> {report.status ? "Active" : "Inactive"}</p>
+                    <p><strong>Status:</strong> {getStatusText(report.status)}</p>
                     <div className="report-image-container">
                         <img src={report.reportImage || placeholderImage} alt="Report" />
                     </div>
