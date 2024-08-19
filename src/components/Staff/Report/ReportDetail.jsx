@@ -6,7 +6,6 @@ import { formattedDate } from '../../../utils/Format';
 import { Spinner } from "react-bootstrap";
 import "./ReportDetail.scss";
 import { FaArrowLeft } from "react-icons/fa";
-
 export default function ReportDetail() {
     const { reportId } = useParams();
     const navigate = useNavigate();
@@ -42,7 +41,7 @@ export default function ReportDetail() {
         );
     }
 
-    const placeholderImage = "https://via.placeholder.com/150"; // URL placeholder image
+    const placeholderImage = "https://via.placeholder.com/150";
 
     return (
         <div className="report-detail-container">
