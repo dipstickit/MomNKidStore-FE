@@ -1,137 +1,103 @@
 .reportManagement-container {
-    background-color: #f8f9fa;
-    min-height: 100vh;
-    padding: 40px 20px;
-  }
-  
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 10px;
+
   .content {
+    flex-grow: 1;
+    padding: 1rem;
     background-color: #ffffff;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .content h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #2a2d2f;
-  }
-  
-  .table .rdt_Table {
-    border-collapse: collapse;
-    width: 100%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
+    margin-left: 5px;
+
+    h1 {
+      font-size: 1.5rem;
+      color: #333;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .report-management {
+      .spinner-report {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        height: 200px;
+      }
+
+      .table {
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+
+        .rdt_Table {
+          background-color: #fff;
+          border-radius: 4px;
+          box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+          margin-left: 0;
+
+          .rdt_TableHead {
+            background-color: #e0e0e0;
+            text-align: center;
+
+            .rdt_TableCol {
+              font-weight: bold;
+              padding: 4px; // Reduced padding to minimize the spacing
+              border-bottom: 1px solid #dcdcdc; // Reduced border thickness
+            }
+          }
+
+          .rdt_TableBody {
+            .rdt_TableRow {
+              &:nth-child(odd) {
+                background-color: #f9f9f9;
+              }
+
+              &:nth-child(even) {
+                background-color: #fff;
+              }
+
+              .rdt_TableCell {
+                padding: 5px;
+                border-bottom: 1px solid #e0e0e0;
+
+                img.report-image {
+                  width: 40px;
+                  height: 40px;
+                  object-fit: cover;
+                  border-radius: 50%;
+                }
+
+                .action {
+                  display: flex;
+                  justify-content: flex-start;
+
+                  .action-btn {
+                    cursor: pointer;
+                    margin: 0 3px;
+                    transition: background-color 0.3s;
+
+                    &:hover {
+                      background-color: #f0f0f0;
+                      border-radius: 4px;
+                    }
+
+                    svg {
+                      font-size: 16px;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
-  
-  .rdt_TableHead {
-    background-color: #f9f9f9;
-    font-weight: bold;
-    font-size: 1rem;
-  }
-  
-  .rdt_TableHead th {
-    padding: 12px 15px;
-    text-align: left;
-    color: #2a2d2f;
-  }
-  
-  .rdt_TableBody td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #ddd;
-    vertical-align: middle;
-  }
-  
-  .rdt_TableRow:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .rdt_TableRow:hover {
-    background-color: lighten(#f9f9f9, 5%);
-  }
-  
-  .action {
-    display: flex;
-    align-items: center;
-  }
-  
-  .action-btn {
-    cursor: pointer;
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-  
-  .action-btn:last-child {
-    margin-right: 0;
-  }
-  
-  .action-btn svg {
-    font-size: 1.2rem;
-  }
-  
-  .action-btn:hover {
-    background-color: #f9f9f9;
-    transform: translateY(-2px);
-  }
-  
-  .spinner-report {
-    margin-top: 30%;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .custom-ui {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .custom-ui h1 {
-    margin-bottom: 20px;
-  }
-  
-  .custom-ui p {
-    margin-bottom: 20px;
-  }
-  
-  .button-group {
-    display: flex;
-    margin-top: 20px;
-  }
-  
-  .button-group .btn {
-    padding: 8px 40px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  
-  .button-group .btn.yes-btn {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  .button-group .btn.no-btn {
-    background-color: #dc3545;
-    color: #fff;
-  }
-  
-  .report-image {
-    width: 150px;
-    height: 150px;
-    border-radius: 5px;
-  }
-  
+}

@@ -6,10 +6,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { MainAPI } from "../../API";
-import { formattedDate } from '../../../utils/Format'; 
+import { formattedDate } from '../../../utils/Format';
 import { Spinner } from "react-bootstrap";
-import "./Report.scss"; 
-
+import "./Report.scss";
 export default function Report() {
     const nav = useNavigate();
     const [reports, setReports] = useState([]);
@@ -39,10 +38,10 @@ export default function Report() {
 
     const columns = [
         { name: "ID", selector: (row) => row.reportId, sortable: true },
+        { name: "Image", cell: (row) => (row.reportImage ? <img src={row.reportImage} alt="Report" className="report-image" /> : 'No Image') },
         { name: "Date", selector: (row) => formattedDate(new Date(row.createAt)), sortable: true },
         { name: "Description", selector: (row) => row.reportContent },
         { name: "User Name", selector: (row) => row.customerName },
-        { name: "Image", cell: (row) => (row.reportImage ? <img src={row.reportImage} alt="Report" className="report-image" /> : 'No Image') },
         { name: "Update At", selector: (row) => formattedDate(new Date(row.updateAt)), sortable: true },
         { name: "Status", selector: (row) => (row.status ? "Active" : "Inactive") },
         {
@@ -62,6 +61,7 @@ export default function Report() {
 
     return (
         <div className="reportManagement-container">
+
             <div className="content">
                 <h1>Report Management</h1>
                 <div className="report-management">
