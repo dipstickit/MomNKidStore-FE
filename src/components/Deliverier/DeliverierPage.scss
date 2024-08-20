@@ -1,0 +1,119 @@
+.deliverierManagement-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+
+  .content {
+    flex-grow: 1;
+    padding: 2rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-left: 15px;
+
+    h1 {
+      font-size: 1.75rem;
+      color: #333;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .deliverier-management {
+      .spinner-deliverier {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+      }
+
+      .table {
+        margin-top: 1rem;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: relative;
+
+        .rdt_Table {
+          background-color: #fff;
+          border-radius: 8px;
+          box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+          position: relative;
+
+          .rdt_TableHead {
+            background-color: #e0e0e0;
+            text-align: center;
+
+            .rdt_TableCol {
+              font-weight: bold;
+              padding: 8px;
+              border-bottom: 2px solid #dcdcdc;
+            }
+          }
+
+          .rdt_TableBody {
+            .rdt_TableRow {
+              &:nth-child(odd) {
+                background-color: #f9f9f9;
+              }
+
+              &:nth-child(even) {
+                background-color: #fff;
+              }
+
+              .rdt_TableCell {
+                padding: 12px;
+                text-align: center;
+                max-width: 200px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                position: relative;
+                
+                img.report-image {
+                  width: 40px;
+                  height: 40px;
+                  object-fit: cover;
+                  border-radius: 50%;
+                }
+
+                .action {
+                  display: flex;
+                  justify-content: center;
+
+                  .action-btn {
+                    cursor: pointer;
+                    margin: 0 5px;
+                    transition: background-color 0.3s;
+
+                    &:hover {
+                      background-color: #f0f0f0;
+                      border-radius: 4px;
+                    }
+
+                    svg {
+                      font-size: 18px;
+                    }
+                  }
+                }
+
+                .btn-status {
+                  position: relative;
+                  z-index: 1000;
+                }
+
+                .dropdown-menu {
+                  z-index: 1100;
+                  position: absolute;
+                  will-change: transform;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -59,10 +59,10 @@ export default function CreateReport() {
     <div className="create-report-wrapper">
       <HeaderPage />
       <div className="container create-report-container">
-        <h1>Create Report for Order ID: {orderId}</h1>
+        <h1>Báo cáo sản phẩm cho mã đơn hàng: {orderId}</h1>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Report Title</label>
+            <label>Tiêu đề báo cáo:</label>
             <input
               type="text"
               className="form-control"
@@ -72,7 +72,7 @@ export default function CreateReport() {
             />
           </div>
           <div className="form-group">
-            <label>Report Content</label>
+            <label>Nội dung báo cáo:</label>
             <textarea
               className="form-control"
               value={reportContent}
@@ -82,7 +82,7 @@ export default function CreateReport() {
             />
           </div>
           <div className="form-group">
-            <label>Report Image URL</label>
+            <label>URL ảnh</label>
             <input
               type="text"
               className="form-control"
@@ -91,7 +91,7 @@ export default function CreateReport() {
             />
           </div>
           <button type="submit" className="btn btn-primary mt-3">
-            Submit Report
+            Xác nhận
           </button>
         </form>
       </div>

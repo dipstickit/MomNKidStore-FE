@@ -90,7 +90,11 @@ function Login() {
         } else if (role === "3") {
           toast.success("Login User successfully");
           nav("/");
-        } else {
+        } else if (role === "4") {
+          toast.success("Login Deliverier successfully");
+          nav("/deliverier");
+        }
+        else {
           nav(from, { replace: true });
         }
 

@@ -26,6 +26,30 @@
   background-color: #007bff;
 }
 
-.status-indicator.refunded {
+.status-indicator.processing {
   background-color: #ffc107;
+}
+
+.status-indicator.exchange-processing {
+  background-color: #252525;
+}
+
+.status-indicator.exchanged {
+  background-color: #044a79;
+}
+
+.status-indicator.refunded {
+  background-color: #17ff07;
+}
+
+.status-indicator.pre-order {
+  background-color: #3473d7;
+}
+
+.status-indicator.pre-order-completed {
+  background-color: #b9e51d;
+}
+
+.status-indicator.pre-order-canceled {
+  background-color: #ff0707;
 }

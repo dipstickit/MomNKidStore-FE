@@ -321,6 +321,11 @@ export default function PurchaseHistory() {
             <option value="3">Giao hàng thành công</option>
             <option value="4">Đang vận chuyển</option>
             <option value="5">Hoàn tiền</option>
+            <option value="10">Đơn đặt trước</option>
+            <option value="11">Đặt trước thành công</option>
+            <option value="12">Hủy đặt trước</option>
+            <option value="20">Đang xử lý đơn hàng đổi trả</option>
+            <option value="21">Đã đổi trả</option>
           </select>
           <input
             type="date"
@@ -356,6 +361,16 @@ const getOrderStatusText = (status) => {
       return "Delivered";
     case 5:
       return "Refunded";
+    case 10:
+      return "Pre-order"
+    case 11:
+      return "Pre-order Completed"
+    case 12:
+      return "Pre-order Canceled"
+    case 20:
+      return "Exchange-Processing";
+    case 21:
+      return "Exchanged";
     default:
       return "Unknown";
   }
