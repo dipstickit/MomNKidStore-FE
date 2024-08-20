@@ -48,25 +48,25 @@ export default function FooterPage() {
             </div>
 
             <div className='col-md-2 lg-2 xl-2 mx-auto mb-4'>
-              <h6 className='text-uppercase fw-bold mb-4'>Chăm Sóc Khách Hàng</h6>
+              <h6 className='text-uppercase fw-bold mb-4'>Customer Care</h6>
               <p>
                 <a href='#!' className='text-reset'>
-                  Hướng dẫn thanh toán
+                  Payment instructions
                 </a>
               </p>
               <p>
                 <a href='#!' className='text-reset'>
-                  Hướng dẫn mua hàng
+                  Buying Guide
                 </a>
               </p>
               <p>
                 <a href='#!' className='text-reset'>
-                  Chính sách đổi trả
+                  Return policy
                 </a>
               </p>
               <p>
                 <a href='#!' className='text-reset'>
-                  Chính sách bảo mật
+                  Privacy Policy
                 </a>
               </p>
             </div>
@@ -99,9 +99,9 @@ export default function FooterPage() {
               <h6 className='text-uppercase fw-bold mb-4'>Contact</h6>
               <p>
                 <MdHome color='secondary' className='me-2' />
-                Đại học FPT Thành phố Hồ Chí Minh
+                FPT University Ho Chi Minh City
 
-                Địa chỉ: Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Thành phố Hồ Chí Minh
+                Address: Lot E2a-7, Road D1, Long Thanh My, Thu Duc City, Ho Chi Minh City
               </p>
               <p>
                 <MdEmail color='secondary' className='me-3' />

@@ -71,7 +71,7 @@ export default function HeaderPage() {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('auth');
-    toast.success('Đăng xuất thành công');
+    toast.success('Logout successfully');
     nav('/login');
   };
 
@@ -120,12 +120,12 @@ export default function HeaderPage() {
             <form className="d-flex" onSubmit={handleSearch}>
               <input
                 type="text"
-                placeholder="Tìm kiếm loại sữa phù hợp"
+                placeholder="Find the right milk"
                 value={searchValue}
                 onChange={handleSearchInputChange}
               />
               <button type="submit" className="btn" name="submit-search">
-                Tìm kiếm
+                Find
               </button>
             </form>
 
@@ -166,7 +166,7 @@ export default function HeaderPage() {
                   <div className="acc_icon">
                     <RiLogoutBoxLine />
                   </div>
-                  <div className="detail">Đăng xuất</div>
+                  <div className="detail">Logout</div>
                 </div>
               </>
             ) : (
@@ -180,7 +180,7 @@ export default function HeaderPage() {
                   <div className="acc_icon">
                     <MdLogin />
                   </div>
-                  <div className="detail">Đăng Nhập</div>
+                  <div className="detail">Login</div>
                 </div>
               </>
             )}
