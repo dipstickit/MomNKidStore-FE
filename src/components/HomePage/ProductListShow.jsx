@@ -55,7 +55,7 @@ export default function ProductListShow() {
 
     const token = JSON.parse(localStorage.getItem("accessToken"));
     if (!token) {
-      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      toast.error("You need to login to add products to cart.");
       return;
     }
 
@@ -63,7 +63,7 @@ export default function ProductListShow() {
     const customerId = decodedToken.customerId;
 
     if (selectedProduct.productQuantity <= 0) {
-      toast.error("Sản phẩm đã hết, vui lòng đặt trước.");
+      toast.error("Product is out of stock, please pre-order.");
       return;
     }
 
@@ -83,13 +83,13 @@ export default function ProductListShow() {
       );
 
       if (response.status === 200 || response.status === 201) {
-        toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
+        toast.success("Product has been added to cart!");
       } else {
-        toast.error("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+        toast.error("An error occurred while adding the product to the cart.");
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
-      toast.error("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+      toast.error("An error occurred while adding the product to the cart.");
     }
   };
 
@@ -137,14 +137,14 @@ export default function ProductListShow() {
     <div className={brand_name !== undefined ? "filterBrand" : "fillter_container"}>
       <div className="type">
         <div className="category">
-          <p className="m-0">Loại Sữa:</p>
+          <p className="m-0">Milk Type:</p>
           <div style={{ marginLeft: "25px" }}>
             <div className="cate">
               <button
                 onClick={() => handleFilterButtonClick(null)} // Xử lý khi chọn "Tất cả"
                 className={`btn ${selectedCategory === null ? "active" : ""}`}
               >
-                Tất cả
+                All
               </button>
             </div>
             {categories.map((cate) => (
@@ -169,7 +169,7 @@ export default function ProductListShow() {
         ) : (
           <>
             {filteredItems.length === 0 ? (
-              <div className="no-products">Không có sản phẩm nào</div>
+              <div className="no-products">No products available</div>
             ) : (
               <div className="row row-cols-4 cardRow">
                 {filteredItems.map((product) => (

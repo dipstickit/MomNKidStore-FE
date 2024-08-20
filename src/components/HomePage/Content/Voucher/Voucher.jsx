@@ -27,7 +27,7 @@ export default function Voucher() {
 
   return (
     <div className="voucher-container p-4">
-      <h2 className="voucher-title">Nhận voucher</h2>
+      <h2 className="voucher-title">Get voucher</h2>
       {loading ? (
         <div className="text-center">
           <Spinner animation="border" role="status" />
@@ -61,7 +61,7 @@ export default function Voucher() {
                 <p>{voucher.voucherValue}%</p>
               </div>
               <div className="second-part">
-                <p>Tất cả sản phẩm</p>
+                <p>All products</p>
                 <p>HSD: {voucher.endDate}</p>
               </div>
             </div>

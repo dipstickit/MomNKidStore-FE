@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Productinfo.scss";
 import { FaFacebookSquare, FaInstagramSquare, FaHeart } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { formatVND } from "../../../utils/Format";
 import axios from "axios";
 import { MainAPI } from "../../API";
@@ -14,6 +14,8 @@ export default function ProductInfo() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const nav = useNavigate();
+  const token = JSON.parse(localStorage.getItem("accessToken"));
 
   useEffect(() => {
     axios
@@ -37,15 +39,18 @@ export default function ProductInfo() {
   };
 
   const handleAddToCart = async () => {
-    const token = JSON.parse(localStorage.getItem("accessToken"));
     if (!token) {
-      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+      toast.error("You need to login to add products to cart.");
       return;
     }
 
     const decodedToken = jwtDecode(token);
     const customerId = decodedToken.customerId;
 
+    if (product.productQuantity <= 0) {
+      toast.error("Product is out of stock, please pre-order.");
+      return;
+    }
     try {
       const response = await axios.post(
         `${MainAPI}/Cart`,
@@ -63,21 +68,27 @@ export default function ProductInfo() {
       console.log(response);
 
       if (response.status === 200 || response.status === 201) {
-        toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
+        toast.success("Product has been added to cart!");
       } else {
-        toast.error("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+        toast.error("An error occurred while adding the product to the cart.");
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
-      toast.error("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+      toast.error("An error occurred while adding the product to the cart.");
     }
   };
 
   const handlePreOrder = () => {
+    if (!token) {
+      toast.error("You need to login to pre-order");
+      return;
+    }
+
     if (product) {
-      window.location.href = `/pre-order/${product.productId}`;
+      nav(`/pre-order/${product.productId}`);
     }
   };
+
 
   if (loading) {
     return (

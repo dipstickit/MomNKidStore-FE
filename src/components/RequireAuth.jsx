@@ -5,21 +5,14 @@ const RequireAuth = ({ allowedRoles }) => {
   const { auth } = useAuth();
   const location = useLocation();
 
-  if (!auth?.user) {
-    // User is not authenticated
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  if (!allowedRoles.includes(auth.role)) {
-    // User is authenticated but does not have the required role
-    localStorage.removeItem("accessToken");
-    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
-  }
-
-  // User is authenticated and has the required role
-  return <Outlet />;
+  return auth?.role === allowedRoles ? (
+    <Outlet />
+  ) : auth?.user ? (
+    (localStorage.removeItem("accessToken"),
+      (<Navigate to="/unauthorized" state={{ from: location }} replace />))
+  ) : (
+    <Navigate to="/login" state={{ from: location }} replace />
+  );
 };
 
 export default RequireAuth;
-
-
