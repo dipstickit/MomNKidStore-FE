@@ -38,7 +38,11 @@ import Contact from "./components/Contact/Contact";
 import UpdateInfo from "./components/UserAccount/UserProfile/UpdateInfo";
 import ViewReport from "./components/UserAccount/UserProfile/ViewReport";
 import ViewReportDetail from "./components/UserAccount/UserProfile/ViewReportDetail";
+
 import PreOrderPage from "./components/ProductInfo/PreOrderPage/PreOrderPage";
+
+import CreateReport from "./components/UserAccount/UserProfile/CreateReport"
+
 function App() {
   useEffect(() => {
     // Function to handle the beforeunload event
@@ -117,6 +121,8 @@ function App() {
         <Route path="/order-detail/:orderId" element={<OrderDetail />} /> {/* Add OrderDetail route */}
         <Route path="/product-reports" element={<ViewReport />} />
         <Route path="/customer/report-detail/:reportId" element={<ViewReportDetail />} />
+        <Route path="/create-report/:orderId" element={<CreateReport />} />
+
         {/* catch all */}
         <Route path="*" element={<div>Không có gì ở đây</div>} />
       </Routes>
