@@ -9,7 +9,6 @@ import { Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
-
 export default function ProductInfo() {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
@@ -74,6 +73,11 @@ export default function ProductInfo() {
     }
   };
 
+  const handlePreOrder = () => {
+    if (product) {
+      window.location.href = `/pre-order/${product.productId}`;
+    }
+  };
 
   if (loading) {
     return (
@@ -169,6 +173,11 @@ export default function ProductInfo() {
               <span>
                 <button className="btn_add" onClick={handleAddToCart}>
                   Add To Cart
+                </button>
+              </span>
+              <span>
+                <button className="btn_pre_order" onClick={handlePreOrder}>
+                  Pre-order
                 </button>
               </span>
             </div>

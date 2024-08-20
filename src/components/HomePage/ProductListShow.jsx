@@ -62,6 +62,11 @@ export default function ProductListShow() {
     const decodedToken = jwtDecode(token);
     const customerId = decodedToken.customerId;
 
+    if (selectedProduct.productQuantity <= 0) {
+      toast.error("Sản phẩm đã hết, vui lòng đặt trước.");
+      return;
+    }
+
     try {
       const response = await axios.post(
         `${MainAPI}/Cart`,
@@ -76,7 +81,6 @@ export default function ProductListShow() {
           },
         }
       );
-      console.log(response);
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
@@ -88,6 +92,7 @@ export default function ProductListShow() {
       toast.error("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
     }
   };
+
 
   const handleFilterButtonClick = (categoryId) => {
     setLoading(true);
