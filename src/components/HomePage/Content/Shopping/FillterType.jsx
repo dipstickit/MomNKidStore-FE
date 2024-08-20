@@ -6,19 +6,6 @@ export default function FillterType() {
   const [allProductList, setAllProductList] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
-  // useEffect(() => {
-  //   axios
-  //     .get(`${MainAPI}/Product/get-all-products?page=${page}&pageSize=10`)
-  //     .then((res) => {
-  //       console.log("API Response:", res.data);
-  //       setAllProductList(Array.isArray(res.data.productList) ? res.data.productList : []);
-  //       setTotalPage(res.data.totalPage);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       setAllProductList([]);
-  //     });
-  // }, [page]);
   return (
     <ProductListShow
       productList={allProductList}

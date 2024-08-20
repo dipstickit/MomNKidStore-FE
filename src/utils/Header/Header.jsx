@@ -9,8 +9,7 @@ import AuthContext from "../../context/AuthProvider";
 import useOrder from "../../hooks/useOrder";
 import { MdLogin } from "react-icons/md";
 import { RiLogoutBoxLine } from "react-icons/ri";
-import { CartContext } from "../../components/Cart/CartContext";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { jwtDecode } from "jwt-decode";
 
@@ -20,7 +19,7 @@ export default function HeaderPage() {
   const { setAuth } = useContext(AuthContext);
   const { setOrderInfomation } = useOrder();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { cartList } = useContext(CartContext);
+  // const { cartList } = useContext(CartContext);
   const [suggestions, setSuggestions] = useState([]);
 
   const token = JSON.parse(localStorage.getItem("accessToken"));

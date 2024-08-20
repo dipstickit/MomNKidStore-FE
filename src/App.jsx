@@ -1,5 +1,7 @@
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./App.scss";
 import Dashboard from "./components/Admin/Dashboard/Dashboard";
 import Edit from "./components/Admin/Edit/Edit";
@@ -36,6 +38,7 @@ import Contact from "./components/Contact/Contact";
 import UpdateInfo from "./components/UserAccount/UserProfile/UpdateInfo";
 import ViewReport from "./components/UserAccount/UserProfile/ViewReport";
 import ViewReportDetail from "./components/UserAccount/UserProfile/ViewReportDetail";
+import PreOrderPage from "./components/ProductInfo/PreOrderPage/PreOrderPage";
 function App() {
   useEffect(() => {
     // Function to handle the beforeunload event
@@ -85,6 +88,7 @@ function App() {
         <Route path="/blogs/post/:id" element={<Post />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/pre-order/:productId" element={<PreOrderPage />} />
 
         {/* admin routes */}
         <Route path="/admin" element={<NavBar />} />
@@ -116,6 +120,7 @@ function App() {
         {/* catch all */}
         <Route path="*" element={<div>Không có gì ở đây</div>} />
       </Routes>
+      <ToastContainer />
     </BrowserRouter>
   );
 }

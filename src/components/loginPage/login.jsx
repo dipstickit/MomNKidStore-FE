@@ -82,10 +82,13 @@ function Login() {
         localStorage.setItem("auth", JSON.stringify({ role, accessToken }));
 
         if (role === "1") {
+          toast.success("Login Admin successfully");
           nav("/admin");
         } else if (role === "2") {
+          toast.success("Login Staff successfully");
           nav("/staff");
         } else if (role === "3") {
+          toast.success("Login User successfully");
           nav("/");
         } else {
           nav(from, { replace: true });
@@ -105,7 +108,6 @@ function Login() {
   return (
     <>
       <div className="login-container">
-        <ToastContainer autoClose={2000} />
         <div className="login-form">
           <h2>Đăng nhập</h2>
           <form onSubmit={formik.handleSubmit}>
