@@ -46,21 +46,16 @@ import RequireAuth from "./components/RequireAuth";
 
 function App() {
   useEffect(() => {
-    // Function to handle the beforeunload event
     const handleBeforeUnload = (event) => {
       if (document.visibilityState === "hidden") {
-        // Clear localStorage if the page is hidden (indicating close)
         localStorage.clear();
       }
     };
 
-    // Function to handle the visibilitychange event
     const handleVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
-        // Set a flag in sessionStorage to indicate the page is hidden
         sessionStorage.setItem("isPageHidden", "true");
       } else {
-        // Remove the flag if the page is visible
         sessionStorage.removeItem("isPageHidden");
       }
     };
@@ -68,7 +63,6 @@ function App() {
     window.addEventListener("beforeunload", handleBeforeUnload);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    // Cleanup the event listeners on component unmount
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
@@ -107,7 +101,10 @@ function App() {
 
 
         {/* Deliverier routes */}
-        <Route path="/deliverier/*" element={<DeliverierManagement />} />
+        <Route element={<RequireAuth allowedRoles={"4"} />}>
+          <Route path="/deliverier/*" element={<DeliverierManagement />} />
+        </Route>
+
 
         {/* staff routes */}
         <Route element={<RequireAuth allowedRoles={"2"} />}>
