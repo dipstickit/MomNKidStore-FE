@@ -9,13 +9,12 @@ export default function NavBarStaff() {
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('auth');
-        toast.success('Logout successfully');
+        toast.success('Logout successful');
         nav('/login');
     };
 
     return (
         <div className='staff'>
-            <ToastContainer />
             <div className='logo_staff'>
                 <img src='https://res.cloudinary.com/dmyyf65yy/image/upload/v1722845760/fresh-milk-with-text-banner_1308-6819.jpg_nefazw.jpg' />
             </div>
