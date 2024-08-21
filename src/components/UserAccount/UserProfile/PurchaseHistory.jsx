@@ -356,9 +356,9 @@ const getOrderStatusText = (status) => {
     case 2:
       return "Cancelled";
     case 3:
-      return "Shipped";
-    case 4:
       return "Delivered";
+    case 4:
+      return "Delivering";
     case 5:
       return "Refunded";
     case 10:

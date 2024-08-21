@@ -1,90 +1,188 @@
+.layout-container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.navbar-staff {
+    width: 220px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.content-container {
+    flex: 1;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
 .createProduct_container {
-    max-width: 600px;
+    max-width: 1000px; /* Increased max-width to allow more space for form fields */
     margin: 0 auto;
     padding: 20px;
-    background-color: #f7f7f7;
+    background-color: #ffffff;
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
     h1 {
         text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
     }
 
     .form {
         display: flex;
         flex-direction: column;
+        gap: 15px;
 
         .form-group {
-            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
 
             label {
-                margin-bottom: 5px;
-                display: block;
+                font-weight: bold;
+                font-size: 16px;
+                color: #333;
             }
 
             input,
             textarea,
             select {
-                width: 100%;
-                padding: 8px;
+                width: 100%;  /* Ensures full width of input fields */
+                padding: 12px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
+                font-size: 16px;
+                transition: border-color 0.3s;
+                box-sizing: border-box; /* Include padding and border in element's width */
+            }
+
+            input:focus,
+            textarea:focus,
+            select:focus {
+                outline: none;
+                border-color: #007bff;
             }
 
             .error {
-                color: red;
-                font-size: 0.875em;
+                color: #dc3545;
+                font-size: 14px;
+                margin-top: 5px;
             }
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
-            font-size: 1em;
+            justify-content: center;
+            padding: 12px 20px;
+            font-size: 16px;
             font-weight: bold;
-            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
 
             &.submit-btn {
                 background-color: #28a745;
                 color: white;
-                padding: 10px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
 
                 &:hover {
                     background-color: #218838;
+                    transform: translateY(-2px);
                 }
             }
 
             &.back-btn {
                 background-color: #e0e4e8;
                 color: black;
-                padding: 10px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
                 margin-top: 10px;
 
                 &:hover {
                     background-color: #5a6268;
+                    color: white;
+                    transform: translateY(-2px);
                 }
             }
         }
+
+        .image-previews {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+
+            .preview-img {
+                max-width: 100px;
+                max-height: 100px;
+                object-fit: cover;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+        }
+    }
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .createProduct_container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .createProduct_container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    .form-group label {
+        font-size: 12px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 12px;
     }
 
     .image-previews {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin: 10px;
-
+        justify-content: center;
 
         .preview-img {
-            max-width: 100px;
-            max-height: 100px;
-            object-fit: cover;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            max-width: 80px;
+            max-height: 80px;
         }
     }
 }

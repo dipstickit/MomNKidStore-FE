@@ -27,8 +27,8 @@ export default function CreateReport() {
       const response = await axios.post(
         `${MainAPI}/Report/CreateReport`,
         {
-          orderId: orderId,
-          customerId: customerId,
+          orderId: Number(orderId),
+          customerId: Number(customerId),
           reportTitle: reportTitle,
           reportContent: reportContent,
           reportImage: reportImage,

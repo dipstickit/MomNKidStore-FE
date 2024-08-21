@@ -103,6 +103,7 @@ function App() {
         {/* Deliverier routes */}
         <Route element={<RequireAuth allowedRoles={"4"} />}>
           <Route path="/deliverier/*" element={<DeliverierManagement />} />
+          {/* <Route path="/detail-report/:reportId" element={<ReportDetail />} /> */}
         </Route>
 
 

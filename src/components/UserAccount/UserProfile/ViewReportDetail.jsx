@@ -69,9 +69,9 @@ export default function ViewReportDetail() {
 
         try {
             const token = JSON.parse(localStorage.getItem("accessToken"));
-            await axios.put(`${MainAPI}/Report/UpdateReport`, 
+            await axios.put(`${MainAPI}/Report/UpdateReport?reportId=${reportId}`, 
             {
-                reportId: report.reportId,
+                
                 orderId: report.orderId,
                 customerId: report.customerId,
                 reportTitle: editData.reportTitle,

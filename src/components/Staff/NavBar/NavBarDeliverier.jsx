@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './NavBarDeliverier.scss'
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function NavBarStaff() {
 
@@ -37,6 +37,12 @@ export default function NavBarStaff() {
             <div className='staff_nav'>
                 <div className='staff_playout'>
                     <Link to={'manage_transport'}>Manage Transport </Link>
+                </div>
+            </div>
+
+            <div className='staff_nav'>
+                <div className='staff_playout'>
+                    <Link to={'confirm_order'}>Confirm Order </Link>
                 </div>
             </div>
         </div>
