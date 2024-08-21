@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { MdModeEdit } from "react-icons/md";
 import { DeleteIcon } from "../../../utils/Icon/DeleteIcon";
@@ -7,7 +7,6 @@ import { MainAPI } from "../../API";
 import { FaUserAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "./Review.scss";
-
 export default function Review() {
   const { productId } = useParams();
   const [feedbacks, setFeedbacks] = useState([]);
@@ -287,7 +286,7 @@ export default function Review() {
           <div className="row">
             <div className="col-md-12">
               <p className="login-prompt">
-                Bạn cần <a href="/login">đăng nhập</a> để viết đánh giá.
+                Bạn cần <Link to="/login">đăng nhập</Link> để viết đánh giá.
               </p>
             </div>
           </div>
