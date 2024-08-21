@@ -5,13 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { MainAPI } from "../../API";
-import { formattedDate } from '../../../utils/Format';
+import { jwtDecode } from "jwt-decode";
+import { MainAPI } from "../API";
+import { formattedDate } from '../../utils/Format';
 import { Spinner, Dropdown } from "react-bootstrap";
 import { createPopper } from '@popperjs/core'; // Import Popper.js
-import "./Report.scss";
+import "./DeliverierPage.scss";
 
-export default function Report() {
+export default function DeliverierPage() {
     const nav = useNavigate();
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -35,43 +36,51 @@ export default function Report() {
     };
 
     const updateReportStatus = async (reportId, newStatus, orderId) => {
-        try {
-            const token = JSON.parse(localStorage.getItem("accessToken"));
-            const authData = JSON.parse(localStorage.getItem("auth"));
-            const accountId = authData ? authData.role : null;
-
-            if (!accountId) {
-                throw new Error("accountId is missing in localStorage");
-            }
-
-            const response = await axios.put(`${MainAPI}/Report/UpdateReportStatus`,
-                {
-                    accountId: accountId,
-                    reportId: reportId,
-                    orderId: orderId,
-                    status: newStatus,
-                    responseContent: "Cảm ơn báo cáo của bạn chúng tôi đang xử lý"
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
-
-            // Check for a successful response (HTTP status 200)
-            if (response.status === 200 && response.data === "Update successfully") {
-                toast.success("Status updated successfully.");
-                fetchReports();
-            } else {
-                toast.error("Failed to update status.");
-            }
-        } catch (error) {
-            console.error("Error updating report status:", error);
-            toast.error("Error updating report status.");
-        }
-    };
-
+      try {
+          const token = JSON.parse(localStorage.getItem("accessToken"));
+          if (!token) {
+              throw new Error("Token is missing in localStorage");
+          }
+  
+          // Decode the token to get the payload
+          const decodedToken = jwtDecode(token);
+          const accountId = decodedToken.accountId;  // Ensure your token contains accountId in its payload
+  
+          console.log('Decoded Token:', decodedToken);
+          console.log('Account ID:', accountId);
+  
+          if (!accountId) {
+              throw new Error("accountId is missing in token payload");
+          }
+  
+          const response = await axios.put(`${MainAPI}/Report/UpdateReportStatus`, 
+          {
+              accountId: accountId,
+              reportId: reportId,
+              orderId: orderId,
+              status: newStatus,
+              responseContent: "Cảm ơn báo cáo của bạn chúng tôi đang xử lý"
+          },
+          {
+              headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`
+              }
+          });
+  
+          if (response.status === 200) {
+              toast.success("Status updated successfully.");
+              fetchReports(); // Fetch the reports again to refresh the status
+          } else {
+              toast.error("Failed to update status.");
+          }
+      } catch (error) {
+          console.error("Error updating report status:", error);
+          toast.error("Error updating report status.");
+      }
+  };
+  
+  
 
     useEffect(() => {
         fetchReports();
@@ -84,7 +93,7 @@ export default function Report() {
             case 1:
                 return "Processing";
             case 2:
-                return "Cancelled";
+                return "Canceled";
             case 3:
                 return "Exchanged";
             default:
@@ -93,9 +102,8 @@ export default function Report() {
     };
 
     const statusOptions = [
-        { value: 0, label: "Pending" },
-        { value: 1, label: "Processing" },
-        { value: 2, label: "Cancelled" }
+        { value: 2, label: "Canceled" },
+        { value: 3, label: "Exchanged" }
     ];
 
     const columns = [
@@ -105,10 +113,10 @@ export default function Report() {
         { name: "Description", selector: (row) => row.reportContent },
         { name: "User Name", selector: (row) => row.customerName },
         { name: "Update At", selector: (row) => formattedDate(new Date(row.updateAt)), sortable: true },
-        {
-            name: "Status",
-            selector: (row) => row.status,
-            sortable: true,
+        { 
+            name: "Status", 
+            selector: (row) => row.status, 
+            sortable: true, 
             cell: (row) => (
                 <Dropdown>
                     <Dropdown.Toggle className="btn-status" id={`dropdown-button-${row.reportId}`} ref={(ref) => ref && createPopper(ref, document.querySelector(`#dropdown-menu-${row.reportId}`), {
@@ -123,7 +131,7 @@ export default function Report() {
                             {
                                 name: 'offset',
                                 options: {
-                                    offset: [0, 8], // Tạo khoảng cách giữa nút và menu dropdown
+                                    offset: [0, 8],
                                 },
                             },
                         ],
@@ -135,8 +143,8 @@ export default function Report() {
                         className="dropdown-menu-custom"
                     >
                         {statusOptions.map(option => (
-                            <Dropdown.Item
-                                key={option.value}
+                            <Dropdown.Item 
+                                key={option.value} 
                                 onClick={() => updateReportStatus(row.reportId, option.value, row.orderId)}>
                                 {option.label}
                             </Dropdown.Item>
@@ -161,13 +169,13 @@ export default function Report() {
     ];
 
     return (
-        <div className="reportManagement-container">
+        <div className="deliverierManagement-container">
             <ToastContainer />
             <div className="content">
-                <h1>Report Management</h1>
-                <div className="report-management">
+                <h1>Transport Report Management</h1>
+                <div className="deliverier-management">
                     {loading ? (
-                        <div className="spinner-report">
+                        <div className="spinner-deliverier">
                             <Spinner animation="border" role="status" />
                         </div>
                     ) : (

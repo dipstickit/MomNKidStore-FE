@@ -241,6 +241,18 @@ const getOrderStatusText = (status) => {
       return "Giao hàng thành công";
     case 5:
       return "Hoàn tiền";
+
+    case 10:
+      return "Đơn đặt trước"
+    case 11:
+      return "Đặt trước thành công"
+    case 12:
+      return "Hủy đặt trước"
+
+    case 20:
+      return "Đang xử lý đơn đổi trả";
+    case 21:
+      return "Đổi trả thành công";
     default:
       return "Unknown";
   }

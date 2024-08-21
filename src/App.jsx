@@ -15,6 +15,7 @@ import Post from "./components/Post/Post";
 import ProductDetail from "./components/ProductInfo/ProductDetail";
 import Register from "./components/Register/Register";
 import StaffManagement from "./components/Staff/StaffManagement/StaffManagement";
+import DeliverierManagement from "./components/Deliverier/DeliverierManagement";
 import UserAccount from "./components/UserAccount/UserAccount";
 import CustomerProfile from "./components/UserAccount/UserProfile/CustomerProfile";
 import Unauthorized from "./components/Unauthorized/Unauthorized";
@@ -104,6 +105,10 @@ function App() {
           <Route path="/admin/dashboard" element={<Dashboard />} />
         </Route>
 
+
+        {/* Deliverier routes */}
+        <Route path="/deliverier/*" element={<DeliverierManagement />} />
+
         {/* staff routes */}
         <Route element={<RequireAuth allowedRoles={"2"} />}>
           <Route path="/staff/*" element={<StaffManagement />} />
@@ -115,6 +120,7 @@ function App() {
           <Route path="/edit-blog/:blogId" element={<EditPost />} />
           <Route path="/detail-report/:reportId" element={<ReportDetail />} />
         </Route>
+
 
 
         {/* additional public routes */}
