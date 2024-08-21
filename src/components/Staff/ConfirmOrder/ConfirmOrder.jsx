@@ -42,6 +42,7 @@ export default function TrackOrder() {
     })
       .then(async (response) => {
         const data = response.data;
+        data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
         setTrackOrderList(data);
 
         const customerIds = [...new Set(data.map((order) => order.customerId))];
@@ -104,6 +105,10 @@ export default function TrackOrder() {
         return "Pre-order Completed";
       case 12:
         return "Pre-order Canceled";
+      case 20:
+        return "Returning";
+      case 21:
+        return "Have Returned";
       default:
         return "Unknown";
     }
@@ -115,10 +120,11 @@ export default function TrackOrder() {
     { label: "Canceled", value: 2 },
     { label: "Delivered", value: 3 },
     { label: "Delivering", value: 4 },
-    { label: "Refund", value: 5 },
     { label: "Pre-order", value: 10 },
     { label: "Pre-order Completed", value: 11 },
     { label: "Pre-order Canceled", value: 12 },
+    { label: "Returning", value: 20 },
+    { label: "Have Returned", value: 21 }
 
   ];
 

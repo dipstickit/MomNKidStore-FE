@@ -96,23 +96,24 @@ export default function OrderDetail() {
 
     return (
         <div className="orderDetail-container">
-            <h1>Order Detail - #{order.orderId}</h1>
-            <div className="order-info">
-                <p><strong>Order Date:</strong> {convertSQLDate(order.orderDate)}</p>
+            <div className="order-summary">
+                <h1>Order Detail - #{order.orderId}</h1>
+                <div className="order-info">
+                    <p><strong>Mã đơn hàng:</strong> {order.orderId}</p>
+                    <p><strong>Ngày:</strong> {convertSQLDate(order.orderDate)}</p>
+                    <p><strong>Tổng tiền:</strong> {formatVND(order.totalPrice)}</p>
+                    <p><strong>Trạng thái:</strong> <span className={`status ${getStatusClass(order.status).toLowerCase().replace(/\s+/g, '-')}`}>{getStatusClass(order.status).replace(/-/g, ' ')}</span></p>
+                </div>
                 {customer && (
-                    <>
-                        <p><strong>Customer Name:</strong> {customer.userName}</p>
-                        <p><strong>Address:</strong> {customer.address}</p>
+                    <div className="customer-info">
+                        <p><strong>Tên khách hàng:</strong> {customer.userName}</p>
+                        <p><strong>Địa chỉ:</strong> {customer.address}</p>
                         <p><strong>Phone:</strong> {customer.phone}</p>
-                    </>
+                    </div>
                 )}
-                <p><strong>Status:</strong> <span className={`status ${getStatusClass(order.status).toLowerCase().replace(/\s+/g, '-')}`}>{getStatusClass(order.status).replace(/-/g, ' ')}</span></p>
-                <p><strong>Total Price:</strong> {formatVND(order.totalPrice)}</p>
-                <p><strong>Voucher ID:</strong> {order.voucherId || "N/A"}</p>
-                <p><strong>Exchanged Points:</strong> {order.exchangedPoint}</p>
             </div>
 
-            <h2>Order Items</h2>
+            <h2>Sản phẩm đơn hàng</h2>
             <div className="order-items">
                 {order.orderDetails.map((item, index) => (
                     <div key={index} className="order-item">
@@ -122,11 +123,10 @@ export default function OrderDetail() {
                             className="product-image"
                         />
                         <div className="item-info">
-                            <p><strong>Product Name:</strong> {item.product.productName}</p>
-                            <p><strong>Product Info:</strong> {item.product.productInfor}</p>
-                            <p><strong>Quantity:</strong> {item.orderQuantity}</p>
-                            <p><strong>Price:</strong> {formatVND(item.productPrice)}</p>
-                            <p><strong>Total:</strong> {formatVND(item.orderQuantity * item.productPrice)}</p>
+                            <p><strong>Tên sản phẩm:</strong> {item.product.productName}</p>
+                            <p><strong>Số lượng:</strong> {item.orderQuantity}</p>
+                            <p><strong>Giá:</strong> {formatVND(item.productPrice)}</p>
+                            <p><strong>Tổng:</strong> {formatVND(item.orderQuantity * item.productPrice)}</p>
                         </div>
                     </div>
                 ))}

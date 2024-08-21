@@ -1,1 +1,1 @@
-export const MainAPI = "http://20.191.144.89/api/v1";
+export const MainAPI = "https://milkstyle.id.vn/api/v1";
