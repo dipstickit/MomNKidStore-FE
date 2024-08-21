@@ -122,7 +122,7 @@ export default function CreateProduct() {
 
     return (
         <div className="layout-container">
-            <NavbarStaff /> {/* Add the Navbar on the left side */}
+            <NavbarStaff />
             <div className="content-container">
                 <div className="createProduct_container">
                     <h1>Create Product</h1>

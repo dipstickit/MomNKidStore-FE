@@ -8,7 +8,7 @@ import { FaImage, FaPlus, FaArrowLeft } from "react-icons/fa";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './EditProduct.scss';
-
+import NavbarStaff from "../NavBar/NavBarStaff"
 
 const validationSchema = Yup.object({
     productName: Yup.string().required("Product Name is required"),
@@ -164,142 +164,145 @@ const EditProduct = () => {
     };
 
     return (
-        <div className="editProduct_container">
-            <ToastContainer autoClose={2000} />
-            <h1>Edit Product</h1>
-            <form onSubmit={formik.handleSubmit} className="form">
-                <div className="form-group">
-                    <label htmlFor="productName">Product Name</label>
-                    <input
-                        id="productName"
-                        name="productName"
-                        type="text"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.productName}
-                    />
-                    {formik.touched.productName && formik.errors.productName ? (
-                        <div className="error">{formik.errors.productName}</div>
-                    ) : null}
-                </div>
+        <div className="editProduct_page">
+            <NavbarStaff />
+            <div className="editProduct_container">
+                <ToastContainer autoClose={2000} />
+                <h1>Edit Product</h1>
+                <form onSubmit={formik.handleSubmit} className="form">
+                    <div className="form-group">
+                        <label htmlFor="productName">Product Name</label>
+                        <input
+                            id="productName"
+                            name="productName"
+                            type="text"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.productName}
+                        />
+                        {formik.touched.productName && formik.errors.productName ? (
+                            <div className="error">{formik.errors.productName}</div>
+                        ) : null}
+                    </div>
 
-                <div className="form-group">
-                    <label htmlFor="productInfor">Product Information</label>
-                    <textarea
-                        id="productInfor"
-                        name="productInfor"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.productInfor}
-                    />
-                    {formik.touched.productInfor && formik.errors.productInfor ? (
-                        <div className="error">{formik.errors.productInfor}</div>
-                    ) : null}
-                </div>
+                    <div className="form-group">
+                        <label htmlFor="productInfor">Product Information</label>
+                        <textarea
+                            id="productInfor"
+                            name="productInfor"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.productInfor}
+                        />
+                        {formik.touched.productInfor && formik.errors.productInfor ? (
+                            <div className="error">{formik.errors.productInfor}</div>
+                        ) : null}
+                    </div>
 
-                <div className="form-group">
-                    <label htmlFor="productPrice">Product Price</label>
-                    <input
-                        id="productPrice"
-                        name="productPrice"
-                        type="number"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.productPrice}
-                    />
-                    {formik.touched.productPrice && formik.errors.productPrice ? (
-                        <div className="error">{formik.errors.productPrice}</div>
-                    ) : null}
-                </div>
+                    <div className="form-group">
+                        <label htmlFor="productPrice">Product Price</label>
+                        <input
+                            id="productPrice"
+                            name="productPrice"
+                            type="number"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.productPrice}
+                        />
+                        {formik.touched.productPrice && formik.errors.productPrice ? (
+                            <div className="error">{formik.errors.productPrice}</div>
+                        ) : null}
+                    </div>
 
-                <div className="form-group">
-                    <label htmlFor="productQuantity">Product Quantity</label>
-                    <input
-                        id="productQuantity"
-                        name="productQuantity"
-                        type="number"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.productQuantity}
-                    />
-                    {formik.touched.productQuantity && formik.errors.productQuantity ? (
-                        <div className="error">{formik.errors.productQuantity}</div>
-                    ) : null}
-                </div>
+                    <div className="form-group">
+                        <label htmlFor="productQuantity">Product Quantity</label>
+                        <input
+                            id="productQuantity"
+                            name="productQuantity"
+                            type="number"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.productQuantity}
+                        />
+                        {formik.touched.productQuantity && formik.errors.productQuantity ? (
+                            <div className="error">{formik.errors.productQuantity}</div>
+                        ) : null}
+                    </div>
 
-                <div className="form-group">
-                    <label htmlFor="productCategoryId">Product Category</label>
-                    <select
-                        id="productCategoryId"
-                        name="productCategoryId"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.productCategoryId}
-                    >
-                        <option value="">Select Category</option>
-                        {categories.map((category) => (
-                            <option key={category.productCategoryId} value={category.productCategoryId}>
-                                {category.productCategoryName}
-                            </option>
+                    <div className="form-group">
+                        <label htmlFor="productCategoryId">Product Category</label>
+                        <select
+                            id="productCategoryId"
+                            name="productCategoryId"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.productCategoryId}
+                        >
+                            <option value="">Select Category</option>
+                            {categories.map((category) => (
+                                <option key={category.productCategoryId} value={category.productCategoryId}>
+                                    {category.productCategoryName}
+                                </option>
+                            ))}
+                        </select>
+                        {formik.touched.productCategoryId && formik.errors.productCategoryId ? (
+                            <div className="error">{formik.errors.productCategoryId}</div>
+                        ) : null}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="images">
+                            <FaImage /> Product Images
+                        </label>
+                        <input
+                            id="images"
+                            name="images"
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleImageChange}
+                        />
+                        {formik.touched.images && formik.errors.images ? (
+                            <div className="error">{formik.errors.images}</div>
+                        ) : null}
+                    </div>
+
+                    <div className="image-previews">
+                        {imagePreviews.map((imageSrc, index) => (
+                            <img key={index} src={imageSrc} alt={`Preview ${index}`} className="preview-img" />
                         ))}
-                    </select>
-                    {formik.touched.productCategoryId && formik.errors.productCategoryId ? (
-                        <div className="error">{formik.errors.productCategoryId}</div>
-                    ) : null}
-                </div>
+                    </div>
 
-                <div className="form-group">
-                    <label htmlFor="images">
-                        <FaImage /> Product Images
-                    </label>
-                    <input
-                        id="images"
-                        name="images"
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={handleImageChange}
-                    />
-                    {formik.touched.images && formik.errors.images ? (
-                        <div className="error">{formik.errors.images}</div>
-                    ) : null}
-                </div>
+                    <div className="form-group">
+                        <label htmlFor="productStatus">Status</label>
+                        <select
+                            id="productStatus"
+                            name="productStatus"
+                            value={formik.values.productStatus}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                        >
+                            <option value="available">Available</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+                        {formik.touched.productStatus && formik.errors.productStatus ? (
+                            <div className="error">{formik.errors.productStatus}</div>
+                        ) : null}
+                    </div>
 
-                <div className="image-previews">
-                    {imagePreviews.map((imageSrc, index) => (
-                        <img key={index} src={imageSrc} alt={`Preview ${index}`} className="preview-img" />
-                    ))}
-                </div>
+                    <button type="submit" className="btn submit-btn">
+                        Update Product
+                    </button>
 
-                <div className="form-group">
-                    <label htmlFor="productStatus">Status</label>
-                    <select
-                        id="productStatus"
-                        name="productStatus"
-                        value={formik.values.productStatus}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
+                    <button
+                        type="button"
+                        className="btn back-btn"
+                        onClick={() => navigate("/staff/manage_product")}
                     >
-                        <option value="available">Available</option>
-                        <option value="unavailable">Unavailable</option>
-                    </select>
-                    {formik.touched.productStatus && formik.errors.productStatus ? (
-                        <div className="error">{formik.errors.productStatus}</div>
-                    ) : null}
-                </div>
-
-                <button type="submit" className="btn submit-btn">
-                    Update Product
-                </button>
-
-                <button
-                    type="button"
-                    className="btn back-btn"
-                    onClick={() => navigate("/staff/manage_product")}
-                >
-                    <FaArrowLeft /> Back
-                </button>
-            </form>
+                        <FaArrowLeft /> Back
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };
