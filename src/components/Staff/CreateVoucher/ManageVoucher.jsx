@@ -17,13 +17,14 @@ export default function ManageVoucher() {
   const [voucherValue, setVoucherValue] = useState("");
   const [quantity, setQuantity] = useState("");
   const [startDate, setStartDate] = useState("");
-  const [currentPage, setCurrentPage] = useState(1); // Track the current page
-  const pageSize = 10; // Number of vouchers per page
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortType, setSortType] = useState("newest");
+  const pageSize = 10;
   const navigate = useNavigate();
 
+  const token = JSON.parse(localStorage.getItem("accessToken"));
+
   const fetchData = async () => {
-    const token = JSON.parse(localStorage.getItem("accessToken"));
 
     if (!token) {
       console.error("No access token found.");
@@ -38,7 +39,7 @@ export default function ManageVoucher() {
         },
       });
 
-      setVouchers(response.data); // Assuming response.data is the array of vouchers
+      setVouchers(response.data);
       console.log("Vouchers:", response.data);
     } catch (error) {
       console.error("Error fetching data voucher:", error);
@@ -87,10 +88,8 @@ export default function ManageVoucher() {
     };
 
     try {
-      // Validate the form data
       await voucherSchema.validate(formData, { abortEarly: false });
 
-      const token = JSON.parse(localStorage.getItem("accessToken"));
 
       if (!token) {
         toast.error("No access token found. Please log in again.");
@@ -151,7 +150,6 @@ export default function ManageVoucher() {
   };
 
   const handleDeleteVoucher = async (voucherId) => {
-    const token = JSON.parse(localStorage.getItem("accessToken"));
 
     if (!token) {
       toast.error("No access token found. Please log in again.");
@@ -187,9 +185,24 @@ export default function ManageVoucher() {
     }
   };
 
-  const totalPages = Math.ceil(vouchers.length / pageSize);
+  const sortVouchers = (vouchers, sortType) => {
+    switch (sortType) {
+      case "voucherValue":
+        return [...vouchers].sort((a, b) => b.voucherValue - a.voucherValue);
+      case "startDate":
+        return [...vouchers].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+      case "newest":
+        return [...vouchers].sort((a, b) => b.voucherId - a.voucherId);
+      default:
+        return vouchers;
+    }
+  };
 
-  const currentVouchers = vouchers.slice(
+  const sortedVouchers = sortVouchers(vouchers, sortType);
+
+  const totalPages = Math.ceil(sortedVouchers.length / pageSize);
+
+  const currentVouchers = sortedVouchers.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -209,6 +222,15 @@ export default function ManageVoucher() {
               <button className="btn add-btn" onClick={() => setShowAdd(true)}>
                 Create Voucher
               </button>
+            </div>
+
+            <div className="sort-options">
+              <label>Sort by: </label>
+              <select onChange={(e) => setSortType(e.target.value)} value={sortType}>
+                <option value="newest">Newest</option>
+                <option value="voucherValue">Voucher Value</option>
+                <option value="startDate">Start Date</option>
+              </select>
             </div>
           </div>
 
@@ -269,16 +291,16 @@ export default function ManageVoucher() {
                   currentVouchers.map((voucher) => (
                     <tr key={voucher.voucherId}>
                       <td>{voucher.voucherId}</td>
-                      <td>{voucher.voucherValue}</td>
+                      <td>{voucher.voucherValue}%</td>
                       <td>{voucher.voucherQuantity}</td>
                       <td>{voucher.startDate}</td>
                       <td>{voucher.endDate}</td>
                       <td>
-                        {/* <button className="action-btn" onClick={() => handleDeleteVoucher(voucher.voucherId)}>
-                          <DeleteIcon color="red" />
-                        </button> */}
                         <button className="action-btn" onClick={() => handleEditVoucher(voucher.voucherId)}>
                           <MdModeEdit color="green" />
+                        </button>
+                        <button className="action-btn" onClick={() => handleDeleteVoucher(voucher.voucherId)}>
+                          <DeleteIcon color="red" />
                         </button>
                       </td>
                     </tr>

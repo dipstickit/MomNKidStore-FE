@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { MainAPI } from "../../../API";
-import NavbarStaff from "../../NavBar/NavBarStaff"; // Import the Navbar component
+import NavbarStaff from "../../NavBar/NavBarStaff";
 import "./CreatePost.scss";
 
 const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/dmyyf65yy/image/upload";
@@ -29,8 +29,8 @@ const ModalCreatePost = () => {
 
   const fetchProductOptions = async () => {
     try {
-      const response = await axios.get( `${MainAPI}/Product/get-all-products`);
-      const products = response.data.map(product => ({
+      const response = await axios.get(`${MainAPI}/Product/get-all-products`);
+      const products = response.data.productList.map(product => ({
         id: product.productId,
         name: product.productName,
       }));

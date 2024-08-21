@@ -10,10 +10,8 @@ import { MainAPI } from "../../../API";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
 import NavbarStaff from "../../NavBar/NavBarStaff";
 
-// Cloudinary URL
 const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/dmyyf65yy/image/upload";
 
-// Validation schema
 const validationSchema = Yup.object({
   blogTitle: Yup.string().required("Title is required"),
   blogContent: Yup.string().required("Content is required"),
@@ -46,6 +44,8 @@ const EditPost = () => {
   const fetchProductOptions = async () => {
     try {
       const response = await axios.get(`${MainAPI}/Product/get-all-products`);
+      console.log("Product API response:", response.data);
+
       const products = response.data.productList.map(product => ({
         id: product.productId,
         name: product.productName,
@@ -111,7 +111,7 @@ const EditPost = () => {
 
   return (
     <div className="layout-container">
-      <NavbarStaff /> {/* Add the Navbar on the left side */}
+      <NavbarStaff />
       <div className="content-container">
         <div className="blog-detail-container">
           <button className="back-button" onClick={() => navigate('/staff/manage_posts')}>
@@ -139,29 +139,34 @@ const EditPost = () => {
                 >
                   {({ setFieldValue }) => (
                     <Form className="edit-form">
-                      <label>
-                        Title:
+                      <div className="form-group">
+                        <label htmlFor="blogTitle">Title:</label>
                         <Field
                           type="text"
                           name="blogTitle"
+                          id="blogTitle"
                           className="form-field"
                         />
                         <ErrorMessage name="blogTitle" component="div" className="error" />
-                      </label>
-                      <label>
-                        Content:
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="blogContent">Content:</label>
                         <Field
                           as="textarea"
                           name="blogContent"
+                          id="blogContent"
                           className="form-field"
                         />
                         <ErrorMessage name="blogContent" component="div" className="error" />
-                      </label>
-                      <label>
-                        Image:
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="blogImage">Image:</label>
                         <input
                           type="file"
                           accept="image/*"
+                          id="blogImage"
                           onChange={async (event) => {
                             if (event.currentTarget.files.length > 0) {
                               const file = event.currentTarget.files[0];
@@ -172,10 +177,11 @@ const EditPost = () => {
                           className="form-field"
                         />
                         <ErrorMessage name="blogImage" component="div" className="error" />
-                      </label>
-                      <label>
-                        Product:
-                        <Field as="select" name="productId" className="form-field">
+                      </div>
+
+                      <div className="form-group">
+                        <label htmlFor="productId">Product:</label>
+                        <Field as="select" name="productId" id="productId" className="form-field">
                           <option value="">Select a product</option>
                           {productOptions.map(product => (
                             <option key={product.id} value={product.id}>
@@ -184,12 +190,14 @@ const EditPost = () => {
                           ))}
                         </Field>
                         <ErrorMessage name="productId" component="div" className="error" />
-                      </label>
+                      </div>
+
                       <div className="button-container">
                         <button type="submit" className="save-button"> <FaSave /> Save</button>
                         <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>Cancel</button>
                       </div>
                     </Form>
+
                   )}
                 </Formik>
               ) : (

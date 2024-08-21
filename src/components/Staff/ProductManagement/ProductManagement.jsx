@@ -19,7 +19,7 @@ export const formatVND = (number) => {
   }).format(number);
 };
 
-export default function UserManagement() {
+export default function ProductManagement() {
   const nav = useNavigate();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState({});
@@ -28,6 +28,7 @@ export default function UserManagement() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const token = JSON.parse(localStorage.getItem("accessToken"));
 
   const fetchCategoryName = async (categoryId) => {
     try {
@@ -60,8 +61,40 @@ export default function UserManagement() {
     return categoryMap;
   };
 
+  const searchProducts = async (query, page = 1) => {
+
+    if (!token) {
+      console.error("No access token found.");
+      return [];
+    }
+
+    try {
+      const response = await axios.get(`${MainAPI}/Product/search-product/${query}`, {
+        params: {
+          page: page,
+          pageSize: 10,
+        },
+        headers: {
+          "x-access-token": token,
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return {
+        productsList: response.data.productList || [],
+        totalPages: response.data.totalPage,
+      };
+    } catch (error) {
+      console.error("Error searching for products:", error);
+      toast.error("Failed to search for products.");
+      return {
+        productsList: [],
+        totalPages: 0,
+      };
+    }
+  };
+
   const fetchData = async (page = 1) => {
-    const token = JSON.parse(localStorage.getItem("accessToken"));
 
     if (!token) {
       console.error("No access token found.");
@@ -69,14 +102,67 @@ export default function UserManagement() {
     }
 
     try {
-      const response = await axios.get(`${MainAPI}/Product/get-all-products?page=${page}&pageSize=10`, {
-        headers: {
-          "x-access-token": token,
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      let productsList = [];
+      let totalPages = 0;
 
-      const productsList = Array.isArray(response.data.productList) ? response.data.productList : [];
+      if (selectedCategory) {
+        const categoryId = Object.keys(categories).find(
+          key => categories[key] === selectedCategory
+        );
+
+        const categoryResponse = await axios.get(`${MainAPI}/Product/get-all-products`, {
+          params: {
+            CategoryId: categoryId,
+            page: page,
+            pageSize: 10,
+          },
+          headers: {
+            "x-access-token": token,
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        productsList = categoryResponse.data.productList || [];
+        totalPages = categoryResponse.data.totalPage;
+      }
+      else {
+        const response = await axios.get(`${MainAPI}/Product/get-all-products`, {
+          params: {
+            page: page,
+            pageSize: 10,
+          },
+          headers: {
+            "x-access-token": token,
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        productsList = response.data.productList || [];
+        totalPages = response.data.totalPage;
+      }
+
+      if (selectedStatus) {
+        const statusResponse = await axios.get(`${MainAPI}/Product/get-all-products-with-status`, {
+          params: {
+            ProductStatus: selectedStatus === "Available" ? 1 : 0,
+            page: page,
+            pageSize: 10,
+          },
+          headers: {
+            "x-access-token": token,
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(statusResponse);
+        productsList = statusResponse.data.productList || [];
+      }
+
+      if (searchProducts) {
+        productsList = productsList.filter(product =>
+          product.productName.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
       const categoryMap = await fetchCategories(productsList);
 
       const productsWithCategories = productsList.map((product) => ({
@@ -85,7 +171,7 @@ export default function UserManagement() {
       }));
 
       setProducts(productsWithCategories);
-      setTotalPages(response.data.totalPage);
+      setTotalPages(totalPages);
     } catch (error) {
       console.error("Error fetching product data:", error);
       if (error.response) {
@@ -105,9 +191,11 @@ export default function UserManagement() {
     }
   };
 
+
+
   useEffect(() => {
     fetchData(currentPage);
-  }, [currentPage]);
+  }, [currentPage, selectedCategory, selectedStatus, searchQuery]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -190,40 +278,36 @@ export default function UserManagement() {
   };
 
   const handleStatusChange = async (productId, currentStatus) => {
-    const newStatus = currentStatus ? 0 : 1; // Toggle status
+    const newStatus = currentStatus ? 0 : 1;
     const token = JSON.parse(localStorage.getItem("accessToken"));
 
     try {
-      await axios.put(`${MainAPI}/Product/update-status?id=${productId}&status=${newStatus}`, {}, {
+      const response = await axios.put(`${MainAPI}/Product/update-status?id=${productId}&status=${newStatus}`, {}, {
         headers: {
           "x-access-token": token,
           Authorization: `Bearer ${token}`,
         },
       });
 
-      setProducts((prevProducts) =>
-        prevProducts.map((product) =>
-          product.productId === productId
-            ? { ...product, productStatus: newStatus }
-            : product
-        )
-      );
+      if (response.status === 200) {
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product.productId === productId
+              ? { ...product, productStatus: newStatus }
+              : product
+          )
+        );
 
-      toast.success(`Product status updated successfully`);
+        toast.success(`Product status updated successfully`);
+      } else {
+        throw new Error("Failed to update status");
+      }
     } catch (error) {
       console.error("Error updating product status:", error);
       toast.error("Failed to update product status.");
     }
   };
 
-  const filteredProducts = products
-    .filter((product) => {
-      return (
-        product.productName.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        (selectedCategory ? product.categoryName === selectedCategory : true) &&
-        (selectedStatus ? (selectedStatus === "Available" ? product.productStatus : !product.productStatus) : true)
-      );
-    });
 
   const columns = [
     { name: "ID", selector: (row) => row.productId, sortable: true },
@@ -281,10 +365,10 @@ export default function UserManagement() {
   ];
 
   return (
-    <div className="userManagement-container">
+    <div className="productManagement-container">
       <div className="content">
         <h1>Product Management</h1>
-        <div className="user-management">
+        <div className="product-management">
           <div className="search">
             <label htmlFor="searchInput">Search: </label>
             <input
@@ -298,7 +382,10 @@ export default function UserManagement() {
           <div className="filters">
             <select
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              onChange={(e) => {
+                setSelectedCategory(e.target.value);
+                setCurrentPage(1); // Reset to page 1 when filters change
+              }}
             >
               <option value="">All Categories</option>
               {Object.keys(categories).map((categoryId) => (
@@ -309,7 +396,10 @@ export default function UserManagement() {
             </select>
             <select
               value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
+              onChange={(e) => {
+                setSelectedStatus(e.target.value);
+                setCurrentPage(1); // Reset to page 1 when filters change
+              }}
             >
               <option value="">All Statuses</option>
               <option value="Available">Available</option>
@@ -325,7 +415,7 @@ export default function UserManagement() {
         <div className="table">
           <DataTable
             columns={columns}
-            data={filteredProducts}
+            data={products}
             pagination
             paginationServer
             paginationTotalRows={totalPages * 10}

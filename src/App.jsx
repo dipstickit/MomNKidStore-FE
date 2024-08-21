@@ -103,7 +103,7 @@ function App() {
         {/* Deliverier routes */}
         <Route element={<RequireAuth allowedRoles={"4"} />}>
           <Route path="/deliverier/*" element={<DeliverierManagement />} />
-          {/* <Route path="/detail-report/:reportId" element={<ReportDetail />} /> */}
+          <Route path="/deliverier/detail-report/:reportId" element={<ReportDetail />} />
         </Route>
 
 
@@ -116,8 +116,11 @@ function App() {
           <Route path="/create-product" element={<CreateProduct />} />
           <Route path="/create-blog" element={<ModalCreatePost />} />
           <Route path="/edit-blog/:blogId" element={<EditPost />} />
-          <Route path="/detail-report/:reportId" element={<ReportDetail />} />
+          <Route path="/staff/detail-report/:reportId" element={<ReportDetail />} />
+
+
         </Route>
+
 
 
 

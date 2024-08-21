@@ -149,7 +149,7 @@ export default function Report() {
             name: "Actions",
             cell: (row) => (
                 <div className="action">
-                    <span className="action-btn" onClick={() => nav(`/detail-report/${row.reportId}`)}>
+                    <span className="action-btn" onClick={() => nav(`/staff/detail-report/${row.reportId}`)}>
                         <MdModeEdit color="green" />
                     </span>
                 </div>
