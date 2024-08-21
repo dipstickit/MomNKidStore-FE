@@ -69,6 +69,9 @@ export default function TrackOrder() {
         return res.json();
       })
       .then(async (data) => {
+        // const data = response.data;
+        data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+
         setTrackOrderList(data);
 
         const customerIds = [...new Set(data.map((order) => order.customerId))];
@@ -79,7 +82,6 @@ export default function TrackOrder() {
           customerNamesMap[id] = await fetchCustomerName(id);
         }
 
-        // Fetch voucher values
         const voucherIds = [...new Set(data.map((order) => order.voucherId).filter(Boolean))];
         for (let id of voucherIds) {
           voucherValuesMap[id] = await fetchVoucherValue(id);
@@ -119,6 +121,10 @@ export default function TrackOrder() {
         return "Pre-order Completed";
       case 12:
         return "Pre-order Canceled";
+      case 20:
+        return "Returning";
+      case 21:
+        return "Have Returned";
       default:
         return "Unknown";
     }
