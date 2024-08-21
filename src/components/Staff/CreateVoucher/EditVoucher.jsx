@@ -8,6 +8,7 @@ import { FaArrowLeft, FaSave } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 import "./EditVoucher.scss";
 import { MainAPI } from "../../API";
+import NavbarStaff from "../NavBar/NavBarStaff";
 
 const EditVoucher = () => {
     const { voucherId } = useParams();
@@ -77,7 +78,7 @@ const EditVoucher = () => {
         onSubmit: async (values) => {
             const token = JSON.parse(localStorage.getItem("accessToken"));
 
-            if (!token) {
+           if (!token) {
                 toast.error("No access token found. Please log in again.");
                 return;
             }
@@ -113,77 +114,80 @@ const EditVoucher = () => {
     };
 
     return (
-        <>
-            <div className="edit-voucher">
-                <h2>Edit Voucher</h2>
-                {voucher ? (
-                    <form onSubmit={formik.handleSubmit} className="edit-form">
-                        <div className="form-group">
-                            <label>Voucher Value:</label>
-                            <input
-                                type="number"
-                                name="voucherValue"
-                                value={formik.values.voucherValue}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.touched.voucherValue && formik.errors.voucherValue ? (
-                                <div className="error-message">{formik.errors.voucherValue}</div>
-                            ) : null}
-                        </div>
-                        <div className="form-group">
-                            <label>Quantity:</label>
-                            <input
-                                type="number"
-                                name="voucherQuantity"
-                                value={formik.values.voucherQuantity}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.touched.voucherQuantity && formik.errors.voucherQuantity ? (
-                                <div className="error-message">{formik.errors.voucherQuantity}</div>
-                            ) : null}
-                        </div>
-                        <div className="form-group">
-                            <label>Start Date:</label>
-                            <input
-                                type="date"
-                                name="startDate"
-                                value={formik.values.startDate}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.touched.startDate && formik.errors.startDate ? (
-                                <div className="error-message">{formik.errors.startDate}</div>
-                            ) : null}
-                        </div>
-                        <div className="form-group">
-                            <label>End Date:</label>
-                            <input
-                                type="date"
-                                name="endDate"
-                                value={formik.values.endDate}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.touched.endDate && formik.errors.endDate ? (
-                                <div className="error-message">{formik.errors.endDate}</div>
-                            ) : null}
-                        </div>
-                        <div className="button-group">
-                            <button type="button" className="back-button" onClick={handleBack}>
-                                <FaArrowLeft /> Back to manage Voucher
-                            </button>
-                            <button type="submit" className="update-button">
-                                <FaSave /> Update Voucher
-                            </button>
-                        </div>
-                    </form>
-                ) : (
-                    <p>Loading...</p>
-                )}
+        <div className="layout-container">
+            <NavbarStaff />
+            <div className="content-container">
+                <div className="edit-voucher">
+                    <h2>Edit Voucher</h2>
+                    {voucher ? (
+                        <form onSubmit={formik.handleSubmit} className="edit-form">
+                            <div className="form-group">
+                                <label>Voucher Value:</label>
+                                <input
+                                    type="number"
+                                    name="voucherValue"
+                                    value={formik.values.voucherValue}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                                {formik.touched.voucherValue && formik.errors.voucherValue ? (
+                                    <div className="error-message">{formik.errors.voucherValue}</div>
+                                ) : null}
+                            </div>
+                            <div className="form-group">
+                                <label>Quantity:</label>
+                                <input
+                                    type="number"
+                                    name="voucherQuantity"
+                                    value={formik.values.voucherQuantity}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                                {formik.touched.voucherQuantity && formik.errors.voucherQuantity ? (
+<div className="error-message">{formik.errors.voucherQuantity}</div>
+                                ) : null}
+                            </div>
+                            <div className="form-group">
+                                <label>Start Date:</label>
+                                <input
+                                    type="date"
+                                    name="startDate"
+                                    value={formik.values.startDate}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                                {formik.touched.startDate && formik.errors.startDate ? (
+                                    <div className="error-message">{formik.errors.startDate}</div>
+                                ) : null}
+                            </div>
+                            <div className="form-group">
+                                <label>End Date:</label>
+                                <input
+                                    type="date"
+                                    name="endDate"
+                                    value={formik.values.endDate}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                                {formik.touched.endDate && formik.errors.endDate ? (
+                                    <div className="error-message">{formik.errors.endDate}</div>
+                                ) : null}
+                            </div>
+                            <div className="button-group">
+                                <button type="button" className="back-button" onClick={handleBack}>
+                                    <FaArrowLeft /> Back to manage Voucher
+                                </button>
+                                <button type="submit" className="update-button">
+                                    <FaSave /> Update Voucher
+                                </button>
+                            </div>
+                        </form>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 

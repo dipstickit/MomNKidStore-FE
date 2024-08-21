@@ -165,14 +165,11 @@ export default function TrackOrder() {
             Change Status
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            {statusOptions.map(option => (
-              <Dropdown.Item
-                key={option.value}
-                onClick={() => updateOrderStatus(row.orderId, option.value)}
-              >
-                {option.label}
-              </Dropdown.Item>
-            ))}
+            <Dropdown.Item
+              onClick={() => updateOrderStatus(row.orderId, 4)}
+            >
+              Delevering
+            </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       )
