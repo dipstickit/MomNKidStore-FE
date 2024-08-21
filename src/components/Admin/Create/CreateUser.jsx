@@ -9,11 +9,12 @@ import { MainAPI } from "../../API";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { MdArrowBack } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-
+import Navbar from "../NavBar/NavBar";
 const CreateUser = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const nav = useNavigate();
+
     const validationSchema = Yup.object({
         email: Yup.string()
             .email("Invalid email address")
@@ -24,6 +25,8 @@ const CreateUser = () => {
         confirmPassword: Yup.string()
             .oneOf([Yup.ref('password'), null], "Passwords must match")
             .required("Confirm Password is required"),
+        role: Yup.string()
+            .required("Role is required"),
     });
 
     const formik = useFormik({
@@ -31,17 +34,22 @@ const CreateUser = () => {
             email: "",
             password: "",
             confirmPassword: "",
+            role: "",
         },
         validationSchema: validationSchema,
         onSubmit: async (values) => {
+            console.log("Form data:", values);
             try {
                 const token = JSON.parse(localStorage.getItem("accessToken"));
+                const roleId = values.role === "Staff" ? 2 : 4;
+
                 await axios.post(
                     `${MainAPI}/Admin/create-staff`,
                     {
                         email: values.email,
                         password: values.password,
                         confirmPassword: values.confirmPassword,
+                        roleId: roleId,
                     },
                     {
                         headers: {
@@ -66,73 +74,93 @@ const CreateUser = () => {
     };
 
     return (
-        <div className="create-staff-container">
-            <ToastContainer autoClose={2000} />
-            <h2>Create Staff Account</h2>
-            <form onSubmit={formik.handleSubmit} className="create-staff-form">
-                <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        {...formik.getFieldProps('email')}
-                        className={formik.touched.email && formik.errors.email ? 'input-error' : ''}
-                    />
-                    {formik.touched.email && formik.errors.email ? (
-                        <div className="error-message">{formik.errors.email}</div>
-                    ) : null}
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Password</label>
-                    <div className="password-input">
+        <div className="create-user-page">
+            <Navbar />
+            <div className="create-staff-container">
+                <ToastContainer autoClose={2000} />
+                <h2>Create Account</h2>
+                <form onSubmit={formik.handleSubmit} className="create-staff-form">
+                    <div className="form-group">
+                        <label htmlFor="email">Email</label>
                         <input
-                            type={showPassword ? "text" : "password"}
-                            id="password"
-                            name="password"
-                            {...formik.getFieldProps('password')}
-                            className={formik.touched.password && formik.errors.password ? 'input-error' : ''}
+                            type="email"
+                            id="email"
+                            name="email"
+                            {...formik.getFieldProps('email')}
+                            className={formik.touched.email && formik.errors.email ? 'input-error' : ''}
                         />
-                        <span
-                            className="toggle-password"
-                            onClick={() => setShowPassword(!showPassword)}
-                        >
-                            {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-                        </span>
+                        {formik.touched.email && formik.errors.email ? (
+                            <div className="error-message">{formik.errors.email}</div>
+                        ) : null}
                     </div>
-                    {formik.touched.password && formik.errors.password ? (
-                        <div className="error-message">{formik.errors.password}</div>
-                    ) : null}
-                </div>
-                <div className="form-group">
-                    <label htmlFor="confirmPassword">Confirm Password</label>
-                    <div className="password-input">
-                        <input
-                            type={showConfirmPassword ? "text" : "password"}
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            {...formik.getFieldProps('confirmPassword')}
-                            className={formik.touched.confirmPassword && formik.errors.confirmPassword ? 'input-error' : ''}
-                        />
-                        <span
-                            className="toggle-password"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        >
-                            {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-                        </span>
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <div className="password-input">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                {...formik.getFieldProps('password')}
+                                className={formik.touched.password && formik.errors.password ? 'input-error' : ''}
+                            />
+                            <span
+                                className="toggle-password"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                            </span>
+                        </div>
+                        {formik.touched.password && formik.errors.password ? (
+                            <div className="error-message">{formik.errors.password}</div>
+                        ) : null}
                     </div>
-                    {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
-                        <div className="error-message">{formik.errors.confirmPassword}</div>
-                    ) : null}
-                </div>
-                <button type="submit" className="submit-button">
-                    Create Account
-                </button>
-                <button type="button" className="back-button" onClick={handleBackClick}>
-                    <MdArrowBack /> Back to User Management
-                </button>
-            </form>
+                    <div className="form-group">
+                        <label htmlFor="confirmPassword">Confirm Password</label>
+                        <div className="password-input">
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                {...formik.getFieldProps('confirmPassword')}
+                                className={formik.touched.confirmPassword && formik.errors.confirmPassword ? 'input-error' : ''}
+                            />
+                            <span
+                                className="toggle-password"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                            </span>
+                        </div>
+                        {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
+                            <div className="error-message">{formik.errors.confirmPassword}</div>
+                        ) : null}
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="role">Role</label>
+                        <select
+                            id="role"
+                            name="role"
+                            {...formik.getFieldProps('role')}
+                            className={formik.touched.role && formik.errors.role ? 'input-error' : ''}
+                        >
+                            <option value="" label="Select role" />
+                            <option value="Staff" label="Staff" />
+                            <option value="Delivery" label="Delivery" />
+                        </select>
+                        {formik.touched.role && formik.errors.role ? (
+                            <div className="error-message">{formik.errors.role}</div>
+                        ) : null}
+                    </div>
+                    <button type="submit" className="submit-button">
+                        Create Account
+                    </button>
+                    <button type="button" className="back-button" onClick={handleBackClick}>
+                        <MdArrowBack /> Back to User Management
+                    </button>
+                </form>
+            </div>
         </div>
+
     );
 };
 

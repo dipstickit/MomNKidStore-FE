@@ -85,6 +85,8 @@ export default function UserManagement() {
         return "Staff";
       case 3:
         return "Customer";
+      case 4:
+        return "Delivery";
       default:
         return "Unknown";
     }
@@ -150,7 +152,7 @@ export default function UserManagement() {
             />
           </div>
           <button className="btn" onClick={() => nav("/admin/create-staff")}>
-            Create Staff
+            Create Staff & Delivery
           </button>
         </div>
         <div className="table mt-3">
