@@ -9,7 +9,7 @@ export default function NavBarStaff() {
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('auth');
-        toast.success('Đăng xuất thành công');
+        toast.success('Logout successful');
         nav('/login');
     };
 
@@ -28,7 +28,7 @@ export default function NavBarStaff() {
                     style={{ textAlign: 'center', borderRadius: '50px', border: 'none' }}
                     onClick={handleLogout}
                 >
-                    Đăng xuất
+                    Logout
                 </button>
             </div>
 

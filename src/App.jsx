@@ -34,15 +34,15 @@ import EditPost from "./components/Staff/ManagePosts/EditPost/EditPost";
 import ReportDetail from "./components/Staff/Report/ReportDetail";
 import ModalCreatePost from "./components/Staff/ManagePosts/ModalCreatePost/ModalCreatePost";
 import PurchaseHistory from "./components/UserAccount/UserProfile/PurchaseHistory";
-import OrderDetail from "./components/UserAccount/UserProfile/OrderDetail"; // Import OrderDetail
+import OrderDetail from "./components/UserAccount/UserProfile/OrderDetail";
 import Contact from "./components/Contact/Contact";
 import UpdateInfo from "./components/UserAccount/UserProfile/UpdateInfo";
 import ViewReport from "./components/UserAccount/UserProfile/ViewReport";
 import ViewReportDetail from "./components/UserAccount/UserProfile/ViewReportDetail";
-
 import PreOrderPage from "./components/ProductInfo/PreOrderPage/PreOrderPage";
-
-import CreateReport from "./components/UserAccount/UserProfile/CreateReport"
+import CreateReport from "./components/UserAccount/UserProfile/CreateReport";
+import PaymentSuccess from "./components/PaymentSuccess";
+import RequireAuth from "./components/RequireAuth";
 
 function App() {
   useEffect(() => {
@@ -94,38 +94,48 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/pre-order/:productId" element={<PreOrderPage />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
 
         {/* admin routes */}
-        <Route path="/admin" element={<NavBar />} />
-        <Route path="/admin/user" element={<UserManagement />} />
-        <Route path="/admin/edit/:id" element={<Edit />} />
-        <Route path="/admin/create-staff" element={<CreateUser />} />
-        <Route path="/admin/dashboard" element={<Dashboard />} />
+        <Route element={<RequireAuth allowedRoles={"1"} />}>
+          <Route path="/admin" element={<NavBar />} />
+          <Route path="/admin/user" element={<UserManagement />} />
+          <Route path="/admin/edit/:id" element={<Edit />} />
+          <Route path="/admin/create-staff" element={<CreateUser />} />
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+        </Route>
 
-        {/* staff routes */}
-        <Route path="/staff/*" element={<StaffManagement />} />
-        <Route path="/edit-voucher/:voucherId" element={<EditVoucher />} />
-        <Route path="/edit-category/:categoryId" element={<EditCategory />} />
-        <Route path="/edit-product/:productId" element={<EditProduct />} />
-        <Route path="/create-product" element={<CreateProduct />} />
-        <Route path="/create-blog" element={<ModalCreatePost />} />
-        <Route path="/edit-blog/:blogId" element={<EditPost />} />
-        <Route path="/detail-report/:reportId" element={<ReportDetail />} />
 
         {/* Deliverier routes */}
         <Route path="/deliverier/*" element={<DeliverierManagement />} />
 
+        {/* staff routes */}
+        <Route element={<RequireAuth allowedRoles={"2"} />}>
+          <Route path="/staff/*" element={<StaffManagement />} />
+          <Route path="/edit-voucher/:voucherId" element={<EditVoucher />} />
+          <Route path="/edit-category/:categoryId" element={<EditCategory />} />
+          <Route path="/edit-product/:productId" element={<EditProduct />} />
+          <Route path="/create-product" element={<CreateProduct />} />
+          <Route path="/create-blog" element={<ModalCreatePost />} />
+          <Route path="/edit-blog/:blogId" element={<EditPost />} />
+          <Route path="/detail-report/:reportId" element={<ReportDetail />} />
+        </Route>
+
 
 
         {/* additional public routes */}
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/customer-account" element={<CustomerProfile />} />
-        <Route path="/purchase-history" element={<PurchaseHistory />} />
-        <Route path="/update-info" element={<UpdateInfo />} />
-        <Route path="/order-detail/:orderId" element={<OrderDetail />} /> {/* Add OrderDetail route */}
-        <Route path="/product-reports" element={<ViewReport />} />
-        <Route path="/customer/report-detail/:reportId" element={<ViewReportDetail />} />
-        <Route path="/create-report/:orderId" element={<CreateReport />} />
+        <Route element={<RequireAuth allowedRoles={"3"} />}>
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/customer-account" element={<CustomerProfile />} />
+          <Route path="/purchase-history" element={<PurchaseHistory />} />
+          <Route path="/update-info" element={<UpdateInfo />} />
+          <Route path="/order-detail/:orderId" element={<OrderDetail />} /> {/* Add OrderDetail route */}
+          <Route path="/product-reports" element={<ViewReport />} />
+          <Route path="/customer/report-detail/:reportId" element={<ViewReportDetail />} />
+          <Route path="/create-report/:orderId" element={<CreateReport />} />
+          <Route path="/pre-order/:productId" element={<PreOrderPage />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+        </Route>
 
         {/* catch all */}
         <Route path="*" element={<div>Không có gì ở đây</div>} />

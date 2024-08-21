@@ -23,7 +23,7 @@ export default function UseFull() {
     <div style={{ marginTop: "2%" }}>
       <div className="use_container">
         <div className="d-flex justify-content-between align-center">
-          <h2 style={{ marginBottom: "20px" }}>Thông tin bổ ích</h2>
+          <h2 style={{ marginBottom: "20px" }}>Blog</h2>
           <span>
             <Link
               to={"/blogs"}
@@ -32,7 +32,7 @@ export default function UseFull() {
                 color: "#FF3E9F",
               }}
             >
-              Xem tất cả <IoIosArrowDropright />
+              View all <IoIosArrowDropright />
             </Link>
           </span>
         </div>
