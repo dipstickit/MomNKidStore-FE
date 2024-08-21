@@ -8,8 +8,9 @@ import * as Yup from "yup";
 import "./EditPost.scss";
 import { MainAPI } from "../../../API";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
+import NavbarStaff from "../../NavBar/NavBarStaff";
 
-
+// Cloudinary URL
 const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/dmyyf65yy/image/upload";
 
 // Validation schema
@@ -32,7 +33,6 @@ const EditPost = () => {
     fetchProductOptions();
   }, [blogId]);
 
-
   const fetchBlogDetails = async () => {
     try {
       const response = await axios.get(`${MainAPI}/Blog/GetAllBlogByBlogId/${blogId}`);
@@ -42,7 +42,6 @@ const EditPost = () => {
       toast.error("Failed to fetch blog details.");
     }
   };
-
 
   const fetchProductOptions = async () => {
     try {
@@ -58,7 +57,6 @@ const EditPost = () => {
     }
   };
 
-
   const handleUpdate = async (values) => {
     const token = JSON.parse(localStorage.getItem('accessToken'));
 
@@ -66,7 +64,6 @@ const EditPost = () => {
       toast.error("No authorization token found.");
       return;
     }
-
 
     const payload = {
       blogTitle: values.blogTitle,
@@ -113,97 +110,101 @@ const EditPost = () => {
   };
 
   return (
-    <div className="blog-detail-container">
-      <button className="back-button" onClick={() => navigate('/staff/manage_posts')}>
-        <FaArrowLeft /> Back to Manage Blog
-      </button>
-      {blog ? (
-        <div className="blog-detail">
-          <h1>{isEditing ? "Edit Blog" : blog.blogTitle}</h1>
-          {isEditing ? (
-            <Formik
-              initialValues={{
-                blogTitle: blog.blogTitle,
-                blogContent: blog.blogContent,
-                blogImage: blog.blogImage || "",
-                productId: blog.productId ? blog.productId[0] : "",
-              }}
-              validationSchema={validationSchema}
-              onSubmit={async (values, { setFieldValue }) => {
-                if (values.blogImage instanceof File) {
-                  const imageUrl = await uploadImage(values.blogImage);
-                  setFieldValue("blogImage", imageUrl);
-                }
-                await handleUpdate(values);
-              }}
-            >
-              {({ setFieldValue }) => (
-                <Form className="edit-form">
-                  <label>
-                    Title:
-                    <Field
-                      type="text"
-                      name="blogTitle"
-                      className="form-field"
-                    />
-                    <ErrorMessage name="blogTitle" component="div" className="error" />
-                  </label>
-                  <label>
-                    Content:
-                    <Field
-                      as="textarea"
-                      name="blogContent"
-                      className="form-field"
-                    />
-                    <ErrorMessage name="blogContent" component="div" className="error" />
-                  </label>
-                  <label>
-                    Image:
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={async (event) => {
-                        if (event.currentTarget.files.length > 0) {
-                          const file = event.currentTarget.files[0];
-                          const imageUrl = await uploadImage(file);
-                          setFieldValue("blogImage", imageUrl);
-                        }
-                      }}
-                      className="form-field"
-                    />
-                    <ErrorMessage name="blogImage" component="div" className="error" />
-                  </label>
-                  <label>
-                    Product:
-                    <Field as="select" name="productId" className="form-field">
-                      <option value="">Select a product</option>
-                      {productOptions.map(product => (
-                        <option key={product.id} value={product.id}>
-                          {product.name}
-                        </option>
-                      ))}
-                    </Field>
-                    <ErrorMessage name="productId" component="div" className="error" />
-                  </label>
-                  <div className="button-container">
-                    <button type="submit" className="save-button"> <FaSave /> Save</button>
-                    <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>Cancel</button>
-                  </div>
-                </Form>
-
+    <div className="layout-container">
+      <NavbarStaff /> {/* Add the Navbar on the left side */}
+      <div className="content-container">
+        <div className="blog-detail-container">
+          <button className="back-button" onClick={() => navigate('/staff/manage_posts')}>
+            <FaArrowLeft /> Back to Manage Blog
+          </button>
+          {blog ? (
+            <div className="blog-detail">
+              <h1>{isEditing ? "Edit Blog" : blog.blogTitle}</h1>
+              {isEditing ? (
+                <Formik
+                  initialValues={{
+                    blogTitle: blog.blogTitle,
+                    blogContent: blog.blogContent,
+                    blogImage: blog.blogImage || "",
+                    productId: blog.productId ? blog.productId[0] : "",
+                  }}
+                  validationSchema={validationSchema}
+                  onSubmit={async (values, { setFieldValue }) => {
+                    if (values.blogImage instanceof File) {
+                      const imageUrl = await uploadImage(values.blogImage);
+                      setFieldValue("blogImage", imageUrl);
+                    }
+                    await handleUpdate(values);
+                  }}
+                >
+                  {({ setFieldValue }) => (
+                    <Form className="edit-form">
+                      <label>
+                        Title:
+                        <Field
+                          type="text"
+                          name="blogTitle"
+                          className="form-field"
+                        />
+                        <ErrorMessage name="blogTitle" component="div" className="error" />
+                      </label>
+                      <label>
+                        Content:
+                        <Field
+                          as="textarea"
+                          name="blogContent"
+                          className="form-field"
+                        />
+                        <ErrorMessage name="blogContent" component="div" className="error" />
+                      </label>
+                      <label>
+                        Image:
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={async (event) => {
+                            if (event.currentTarget.files.length > 0) {
+                              const file = event.currentTarget.files[0];
+                              const imageUrl = await uploadImage(file);
+                              setFieldValue("blogImage", imageUrl);
+                            }
+                          }}
+                          className="form-field"
+                        />
+                        <ErrorMessage name="blogImage" component="div" className="error" />
+                      </label>
+                      <label>
+                        Product:
+                        <Field as="select" name="productId" className="form-field">
+                          <option value="">Select a product</option>
+                          {productOptions.map(product => (
+                            <option key={product.id} value={product.id}>
+                              {product.name}
+                            </option>
+                          ))}
+                        </Field>
+                        <ErrorMessage name="productId" component="div" className="error" />
+                      </label>
+                      <div className="button-container">
+                        <button type="submit" className="save-button"> <FaSave /> Save</button>
+                        <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>Cancel</button>
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
+              ) : (
+                <div className="blog-content">
+                  <p>{blog.blogContent}</p>
+                  {blog.blogImage && <img src={blog.blogImage} alt={blog.blogTitle} />}
+                  <button onClick={() => setIsEditing(true)}>Edit</button>
+                </div>
               )}
-            </Formik>
-          ) : (
-            <div className="blog-content">
-              <p>{blog.blogContent}</p>
-              {blog.blogImage && <img src={blog.blogImage} alt={blog.blogTitle} />}
-              <button onClick={() => setIsEditing(true)}>Edit</button>
             </div>
+          ) : (
+            <p>Loading blog details...</p>
           )}
         </div>
-      ) : (
-        <p>Loading blog details...</p>
-      )}
+      </div>
     </div>
   );
 };

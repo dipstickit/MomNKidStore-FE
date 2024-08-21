@@ -8,12 +8,13 @@ import { DeleteIcon } from "../../../utils/Icon/DeleteIcon";
 import { useNavigate } from "react-router-dom";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import "./ManageCategory.scss";
 
 export default function ManageCategory() {
   const [categories, setCategories] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
-  const [categoryName, setCategoryName] = useState("");
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -56,23 +57,25 @@ export default function ManageCategory() {
     fetchData();
   }, []);
 
-  const handleAddCategory = async () => {
+  const handleAddCategory = async (values, { setSubmitting, resetForm }) => {
     const token = JSON.parse(localStorage.getItem("accessToken"));
 
     if (!token) {
       toast.error("No access token found. Please log in again.");
+      setSubmitting(false);
       return;
     }
 
-    if (categories.some(category => category.productCategoryName.toLowerCase() === categoryName.toLowerCase())) {
+    if (categories.some(category => category.productCategoryName.toLowerCase() === values.categoryName.toLowerCase())) {
       toast.error("Category name already exists. Please choose a different name.");
+      setSubmitting(false);
       return;
     }
 
     try {
       const response = await axios.post(
         `${MainAPI}/ProductCategory`,
-        { productCategoryName: categoryName },
+        { productCategoryName: values.categoryName },
         {
           headers: {
             "Content-Type": "application/json",
@@ -85,7 +88,7 @@ export default function ManageCategory() {
 
       fetchData();
       setShowAdd(false);
-      setCategoryName("");
+      resetForm();
       toast.success("Category added successfully");
     } catch (error) {
       console.error("Error adding category:", error);
@@ -104,6 +107,7 @@ export default function ManageCategory() {
         toast.error("Network error or no response from server.");
       }
     }
+    setSubmitting(false);
   };
 
   const handleEditCategory = (categoryId) => {
@@ -205,22 +209,35 @@ export default function ManageCategory() {
       <div className="category">
         {showAdd && (
           <div className="add-category" style={{ marginLeft: "10px", textAlign: 'left' }}>
-            <div className="add-category-detail">
-              <h4 style={{ marginLeft: '10px' }}>Create Category</h4>
-              <label className="category-name">Category Name:</label>
-              <input
-                type="text"
-                value={categoryName}
-                onChange={(event) => setCategoryName(event.target.value)}
-              />
-              &nbsp;&nbsp;&nbsp;
-              <button className="add-cancel" onClick={handleAddCategory}>
-                Create
-              </button>
-              <button className="add-cancel" onClick={() => setShowAdd(false)}>
-                Cancel
-              </button>
-            </div>
+            <Formik
+              initialValues={{ categoryName: "" }}
+              validationSchema={Yup.object({
+                categoryName: Yup.string()
+                  .min(2, 'Category name must be at least 2 characters')
+                  .required('Category name is required')
+              })}
+              onSubmit={handleAddCategory}
+            >
+              {({ isSubmitting }) => (
+                <Form className="add-category-detail">
+                  <h4 style={{ marginLeft: '10px' }}>Create Category</h4>
+                  <label className="category-name">Category Name:</label>
+                  <Field
+                    type="text"
+                    name="categoryName"
+                    className="form-control"
+                  />
+                  <ErrorMessage name="categoryName" component="div" className="error-message" />
+                  &nbsp;&nbsp;&nbsp;
+                  <button className="add-cancel" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Creating..." : "Create"}
+                  </button>
+                  <button className="add-cancel" type="button" onClick={() => setShowAdd(false)}>
+                    Cancel
+                  </button>
+                </Form>
+              )}
+            </Formik>
           </div>
         )}
 

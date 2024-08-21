@@ -205,6 +205,8 @@ export default function TrackOrder() {
                 <option value="10">Pre-order</option>
                 <option value="11">Pre-order Completed</option>
                 <option value="12">Pre-order Canceled</option>
+                <option value="20">Returning</option>
+                <option value="21">Have Returned</option>
               </select>
             </div>
 

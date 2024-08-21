@@ -78,7 +78,7 @@ const EditVoucher = () => {
         onSubmit: async (values) => {
             const token = JSON.parse(localStorage.getItem("accessToken"));
 
-            if (!token) {
+           if (!token) {
                 toast.error("No access token found. Please log in again.");
                 return;
             }
@@ -144,7 +144,11 @@ const EditVoucher = () => {
                                     onBlur={formik.handleBlur}
                                 />
                                 {formik.touched.voucherQuantity && formik.errors.voucherQuantity ? (
+
                                     <div className="error-message">{formik.errors.voucherQuantity}</div>
+
+<div className="error-message">{formik.errors.voucherQuantity}</div>
+
                                 ) : null}
                             </div>
                             <div className="form-group">
