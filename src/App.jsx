@@ -43,7 +43,7 @@ import PreOrderPage from "./components/ProductInfo/PreOrderPage/PreOrderPage";
 import CreateReport from "./components/UserAccount/UserProfile/CreateReport";
 import PaymentSuccess from "./components/PaymentSuccess";
 import RequireAuth from "./components/RequireAuth";
-
+import PaymentFail from "./components/PaymentFail";
 function App() {
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -88,7 +88,6 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/pre-order/:productId" element={<PreOrderPage />} />
-        <Route path="/payment-success" element={<PaymentSuccess />} />
 
         {/* admin routes */}
         <Route element={<RequireAuth allowedRoles={"1"} />}>
@@ -122,8 +121,6 @@ function App() {
         </Route>
 
 
-
-
         {/* additional public routes */}
         <Route element={<RequireAuth allowedRoles={"3"} />}>
           <Route path="/cart" element={<Cart />} />
@@ -136,6 +133,7 @@ function App() {
           <Route path="/create-report/:orderId" element={<CreateReport />} />
           <Route path="/pre-order/:productId" element={<PreOrderPage />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-fail" element={<PaymentFail />} />
         </Route>
 
         {/* catch all */}
