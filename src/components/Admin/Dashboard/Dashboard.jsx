@@ -61,7 +61,7 @@ export default function Dashboard() {
           <div className="d-flex justify-content-between align-items-center">
             <h1 className="mt-0">Dashboard</h1>
             <div className="date-picker-container">
-              <DatePicker
+              {/* <DatePicker
                 selected={startDate}
                 onChange={handleStartDateChange}
                 selectsStart
@@ -79,7 +79,7 @@ export default function Dashboard() {
                 minDate={startDate}
                 dateFormat="dd/MM/yyyy"
                 className="date-picker"
-              />
+              /> */}
             </div>
           </div>
           {error ? (
