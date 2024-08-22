@@ -90,10 +90,10 @@ const UpdateInfo = () => {
         <HeaderPage />
       </div>
       <div className="update-info-container">
-        <h2>Cập nhật thông tin</h2>
+        <h2>Update Profile</h2>
         <form onSubmit={handleSubmit} className="update-info-form">
           <div className="form-group">
-            <label>Tên người dùng:</label>
+            <label>Customer Name:</label>
             <input 
               type="text" 
               name="userName" 
@@ -103,7 +103,7 @@ const UpdateInfo = () => {
             />
           </div>
           <div className="form-group">
-            <label>Thông tin liên lạc:</label>
+            <label>Number phone:</label>
             <input 
               type="text" 
               name="phone" 
@@ -113,7 +113,7 @@ const UpdateInfo = () => {
             />
           </div>
           <div className="form-group">
-            <label>Địa chỉ thường trú:</label>
+            <label>Address:</label>
             <input 
               type="text" 
               name="address" 
@@ -123,7 +123,7 @@ const UpdateInfo = () => {
             />
           </div>
           <div className="form-group">
-            <label>Năm sinh:</label>
+            <label>Date of birth:</label>
             <input 
               type="date" 
               name="dob" 
@@ -132,7 +132,7 @@ const UpdateInfo = () => {
               required 
             />
           </div>
-          <button type="submit" className="update-info-button">Cập nhật</button>
+          <button type="submit" className="update-info-button">Update</button>
         </form>
       </div>
       <div className="header-footer-wrapper">

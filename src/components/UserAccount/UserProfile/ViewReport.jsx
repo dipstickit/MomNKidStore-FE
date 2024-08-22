@@ -30,7 +30,8 @@ export default function ViewReport() {
             Authorization: `Bearer ${token}`,
           },
         });
-
+        const data = response.data;
+        data.sort((a, b) => new Date(b.createAt) - new Date(a.createAt));
         setReports(response.data);
         setLoading(false);
       } catch (error) {
@@ -51,7 +52,7 @@ export default function ViewReport() {
     const token = JSON.parse(localStorage.getItem("accessToken"));
     const decodedToken = jwtDecode(token);
     const customerId = decodedToken.customerId;  // Lấy customerId từ token
-
+    
     try {
         const url = `${MainAPI}/Report/DeleteReport?reportId=${reportId}&customerId=${customerId}`;
         await axios.delete(url, {
@@ -118,7 +119,7 @@ export default function ViewReport() {
             className="btn btn-success me-2"
             onClick={() => handleReportClick(row.reportId)}
           >
-            Xem chi tiết
+            View details
           </button>
           {row.status === 0 && ( // Only show delete button if status is "Pending"
             <button
@@ -145,7 +146,7 @@ export default function ViewReport() {
     <div className="view-report-wrapper">
       <HeaderPage />
       <div className="container mt-5">
-        <h2 className="text-center mt-5 mb-4">Báo cáo sản phẩm</h2>
+        <h2 className="text-center mt-5 mb-4">Report product</h2>
         <DataTable
           columns={columns}
           data={reports}

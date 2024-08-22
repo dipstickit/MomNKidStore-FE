@@ -113,12 +113,12 @@ export default function ViewReportDetail() {
             <div className="report-detail-container">
                 {report ? (
                     <div className="report-detail">
-                        <h1>Mã báo cáo: {report.reportId}</h1>
-                        <p><strong>Mã đặt hàng:</strong> {report.orderId}</p>
-                        <p><strong>Tên khách hàng:</strong> {report.customerName}</p>
+                        <h1>Report Code: {report.reportId}</h1>
+                        <p><strong>Order Code:</strong> {report.orderId}</p>
+                        <p><strong>Customer Name:</strong> {report.customerName}</p>
                         {isEditing ? (
                             <div>
-                                <label><strong>Tiêu đề báo cáo:</strong></label>
+                                <label><strong>Report Title:</strong></label>
                                 <input
                                     type="text"
                                     name="reportTitle"
@@ -126,7 +126,7 @@ export default function ViewReportDetail() {
                                     onChange={handleInputChange}
                                     className="form-control"
                                 />
-                                <label><strong>Nội dung gửi:</strong></label>
+                                <label><strong>Content Sent:</strong></label>
                                 <textarea
                                     name="reportContent"
                                     value={editData.reportContent}
@@ -134,7 +134,7 @@ export default function ViewReportDetail() {
                                     className="form-control"
                                     rows="4"
                                 />
-                                <label><strong>URL Hình ảnh:</strong></label>
+                                <label><strong>URL Image:</strong></label>
                                 <input
                                     type="text"
                                     name="reportImage"
@@ -145,30 +145,30 @@ export default function ViewReportDetail() {
                                 <div className="report-image-container">
                                     <img src={editData.reportImage || placeholderImage} alt="Report" />
                                 </div>
-                                <Button variant="success" onClick={handleSaveChanges}>Lưu thay đổi</Button>
+                                <Button variant="success" onClick={handleSaveChanges}>Save change</Button>
                                 <Button variant="secondary" onClick={handleEditToggle} className="ms-2">Hủy bỏ</Button>
                             </div>
                         ) : (
                             <>
-                                <p><strong>Tiêu đề báo cáo:</strong> {report.reportTitle}</p>
-                                <p><strong>Nội dung gửi:</strong> {report.reportContent || "Chưa có nội dung"}</p>
-                                <p><strong>Phản hồi:</strong> {report.responseContent || "Chưa có phản hồi"}</p>
-                                <p><strong>Ngày gửi:</strong> {formattedDate(new Date(report.createAt))}</p>
-                                <p><strong>Ngày cập nhật:</strong> {report.updateAt ? formattedDate(new Date(report.updateAt)) : "Chưa cập nhật"}</p>
-                                <p><strong>Trạng thái:</strong> {report.status === 0 ? "Pending" : report.status === 1 ? "Processing" : report.status === 2 ? "Canceled" : report.status === 3 ? "Exchanged" : "Unknown"}</p>
+                                <p><strong>Report Title:</strong> {report.reportTitle}</p>
+                                <p><strong>Content sent:</strong> {report.reportContent || "No content yet"}</p>
+                                <p><strong>Response Content:</strong> {report.responseContent || "No response yet"}</p>
+                                <p><strong>Date sent:</strong> {formattedDate(new Date(report.createAt))}</p>
+                                <p><strong>Update date:</strong> {report.updateAt ? formattedDate(new Date(report.updateAt)) : "Not updated yet"}</p>
+                                <p><strong>Status:</strong> {report.status === 0 ? "Pending" : report.status === 1 ? "Processing" : report.status === 2 ? "Canceled" : report.status === 3 ? "Exchanged" : "Unknown"}</p>
                                 <div className="report-image-container">
                                     <img src={report.reportImage || placeholderImage} alt="Report" />
                                 </div>
                                 {report.status === 2 && (
                                     <Button variant="primary" onClick={handleEditToggle}>
-                                        <MdEdit size={18} /> Chỉnh sửa
+                                        <MdEdit size={18} /> Edit
                                     </Button>
                                 )}
                             </>
                         )}
                     </div>
                 ) : (
-                    <p>Chưa có báo cáo nào của bạn</p>
+                    <p>There are no reports from you yet</p>
                 )}
             </div>
             <FooterPage /> {/* Attach FooterPage */}

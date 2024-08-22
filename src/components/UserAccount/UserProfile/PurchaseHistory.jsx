@@ -193,6 +193,7 @@ export default function PurchaseHistory() {
   const [filterStatus, setFilterStatus] = useState("");
   const [dateFilter, setDateFilter] = useState(null);
   const navigate = useNavigate();
+  
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -202,6 +203,7 @@ export default function PurchaseHistory() {
 
       try {
         let url = `${MainAPI}/Order/get-by-customerId?customerId=${customerId}`;
+
         if (filterStatus !== "") {
           url += `&status=${filterStatus}`;
         }
@@ -211,6 +213,8 @@ export default function PurchaseHistory() {
             Authorization: `Bearer ${token}`,
           },
         });
+        const data = response.data;
+        data.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
 
         let filteredOrders = response.data;
 
@@ -280,7 +284,7 @@ export default function PurchaseHistory() {
             className="btn btn-success me-2"
             onClick={() => handleOrderClick(row.orderId)}
           >
-            Xem chi tiết
+           View details
           </button>
           {row.status === 3 && (
             <button
@@ -307,25 +311,25 @@ export default function PurchaseHistory() {
     <div className="purchase-history-wrapper">
       <HeaderPage />
       <div className="container mt-5">
-        <h2 className="text-center mt-5 mb-4">Lịch sử mua hàng</h2>
+        <h2 className="text-center mt-5 mb-4">Purchase History</h2>
         <div className="d-flex justify-content-between mb-4">
           <select
             className="form-select"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
-            <option value="">Tất cả</option>
-            <option value="0">Đang chờ</option>
-            <option value="1">Đã thanh toán</option>
-            <option value="2">Đã hủy</option>
-            <option value="3">Giao hàng thành công</option>
-            <option value="4">Đang vận chuyển</option>
-            <option value="5">Hoàn tiền</option>
-            <option value="10">Đơn đặt trước</option>
-            <option value="11">Đặt trước thành công</option>
-            <option value="12">Hủy đặt trước</option>
-            <option value="20">Đang xử lý đơn hàng đổi trả</option>
-            <option value="21">Đã đổi trả</option>
+            <option value="">All Statuses</option>
+            <option value="0">Pending</option>
+            <option value="1">Paid</option>
+            <option value="2">Canceled</option>
+            <option value="3">Delivered</option>
+            <option value="4">Delivering</option>
+            <option value="5">Refund</option>
+            <option value="10">Pre-Order</option>
+            <option value="11">Pre-Order Completed</option>
+            <option value="12">Pre-Order Canceled</option>
+            <option value="20">Returning</option>
+            <option value="21">Have Returned</option>
           </select>
           <input
             type="date"
@@ -354,7 +358,7 @@ const getOrderStatusText = (status) => {
     case 1:
       return "Paid";
     case 2:
-      return "Cancelled";
+      return "Canceled";
     case 3:
       return "Delivered";
     case 4:
@@ -368,9 +372,9 @@ const getOrderStatusText = (status) => {
     case 12:
       return "Pre-order Canceled"
     case 20:
-      return "Exchange-Processing";
+      return "Returning";
     case 21:
-      return "Exchanged";
+      return "Have Returned";
     default:
       return "Unknown";
   }
