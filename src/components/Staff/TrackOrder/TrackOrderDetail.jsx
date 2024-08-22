@@ -89,6 +89,10 @@ export default function OrderDetail() {
                 return "Preorder-completed";
             case 12:
                 return "Preorder-canceled";
+            case 20:
+                return "Returning";
+            case 21:
+                return "Have Returned";
             default:
                 return "Unknown";
         }

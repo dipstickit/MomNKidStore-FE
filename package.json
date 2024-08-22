@@ -19,6 +19,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
+    "canvas-confetti": "^1.9.3",
     "chart.js": "^4.4.3",
     "date-fns": "^3.6.0",
     "formik": "^2.4.6",
