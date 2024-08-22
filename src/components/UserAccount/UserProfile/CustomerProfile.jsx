@@ -83,23 +83,23 @@ export default function CustomerProfile() {
         </div>
         <div className="profile-details">
           <h2>{customer.userName}</h2>
-          <p>Thông tin liên lạc: {customer.phone}</p>
-          <p>Địa chỉ thường trú: {customer.address}</p>
-          <p>Ngày tháng năm sinh: {formattedDate(new Date(customer.dob))}</p>
-          <p>Điểm tích lũy: {customer.point}</p>
+          <p>Phone: {customer.phone}</p>
+          <p>Address: {customer.address}</p>
+          <p>Date of Birth: {formattedDate(new Date(customer.dob))}</p>
+          <p>Voucher points: {customer.point}</p>
         </div>
         <div className="menu-list">
           <div className="menu-item" onClick={handleViewHistory}>
             <FaHistory style={{ marginRight: '10px' }} />
-            Lịch sử mua hàng
+            Purchase History
           </div>
           <div className="menu-item" onClick={handleEditClick}>
             <FaEdit style={{ marginRight: '10px' }} />
-            Cập nhật thông tin
+            Update Profile
           </div>
-          <div className="menu-item" onClick={handleViewReports}>  {/* Mục mới cho báo cáo sản phẩm */}
+          <div className="menu-item" onClick={handleViewReports}>  
             <FaFileAlt style={{ marginRight: '10px' }} />
-            Báo cáo sản phẩm
+            Report Product
           </div>
         </div>
       </div>

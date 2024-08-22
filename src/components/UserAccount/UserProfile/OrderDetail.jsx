@@ -167,36 +167,36 @@ const OrderDetail = () => {
 
       <div className="order-detail-wrapper">
         <div className="container">
-          <h2>Thông tin đơn hàng</h2>
+          <h2>Order Information</h2>
           <table className="order-info">
             <tbody>
               <tr>
-                <td>Mã đơn hàng:</td>
+                <td>Order Code:</td>
                 <td>{order.orderId}</td>
               </tr>
               <tr>
-                <td>Ngày:</td>
+                <td>Date:</td>
                 <td>{formattedDate(new Date(order.orderDate))}</td>
               </tr>
               <tr>
-                <td>Tổng tiền:</td>
+                <td>Total Price:</td>
                 <td>{formatVND(order.totalPrice)}</td>
               </tr>
               <tr>
-                <td>Trạng thái:</td>
+                <td>Status:</td>
                 <td>{getOrderStatusText(order.status)}</td>
               </tr>
             </tbody>
           </table>
 
-          <h2>Sản phẩm đơn hàng</h2>
+          <h2>Order products</h2>
           <table className="order-items">
             <thead>
               <tr>
-                <th>Hình ảnh</th>
-                <th>Tên sản phẩm</th>
-                <th>Số lượng</th>
-                <th>Giá</th>
+                <th>Image</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
               </tr>
             </thead>
             <tbody>
@@ -230,29 +230,29 @@ const OrderDetail = () => {
 const getOrderStatusText = (status) => {
   switch (status) {
     case 0:
-      return "Đang chờ";
+      return "Pending";
     case 1:
-      return "Đã thanh toán";
+      return "Paid";
     case 2:
-      return "Đã hủy";
+      return "Canceled";
     case 3:
-      return "Đang vận chuyển";
+      return "Delivered";
     case 4:
-      return "Giao hàng thành công";
+      return "Delivering";
     case 5:
-      return "Hoàn tiền";
+      return "Refund";
 
     case 10:
-      return "Đơn đặt trước"
+      return "Pre-Order"
     case 11:
-      return "Đặt trước thành công"
+      return "Pre-Order Completed"
     case 12:
-      return "Hủy đặt trước"
+      return "Pre-Order Canceled"
 
     case 20:
-      return "Đang xử lý đơn đổi trả";
+      return "Returning";
     case 21:
-      return "Đổi trả thành công";
+      return "Have Returned";
     default:
       return "Unknown";
   }

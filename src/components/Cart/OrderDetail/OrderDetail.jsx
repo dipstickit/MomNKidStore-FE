@@ -90,7 +90,7 @@ export default function OrderDetail() {
         }
       );
       fetchCartData();
-      toast.success("Sản phẩm đã được thêm vào giỏ hàng!");
+      toast.success("Product has been added to cart!");
     } catch (error) {
       console.error("Error updating cart quantity:", error);
     }
@@ -110,7 +110,7 @@ export default function OrderDetail() {
           }
         );
         fetchCartData();
-        toast.success("Cập nhật số lượng sản phẩm thành công!");
+        toast.success("Update product quantity successfully!");
       } catch (error) {
         console.error("Error updating cart quantity:", error);
       }
@@ -125,7 +125,7 @@ export default function OrderDetail() {
         },
       });
       fetchCartData();
-      toast.success("Đã xóa sản phẩm khỏi giỏ hàng!");
+      toast.success("Product removed from cart!");
     } catch (error) {
       console.error("Error deleting cart item:", error);
     }
@@ -142,16 +142,16 @@ export default function OrderDetail() {
             />
           </div>
           <div>
-            <h5>Hiện chưa có sản phẩm nào trong giỏ hàng</h5>
+            <h5>No products in cart</h5>
           </div>
         </div>
       ) : (
         <div className="order-product-list">
           <div className="order-product-list-block">
             <div className="item-cart-product-line">
-              <div className="item-cart-price">Đơn giá</div>
-              <div className="item-cart-quantity">Số lượng</div>
-              <div className="item-cart-total">Thành tiền</div>
+              <div className="item-cart-price">Unit price</div>
+              <div className="item-cart-quantity">Quantity</div>
+              <div className="item-cart-total">Total price</div>
               <div className="item-cart-actions">Actions</div>
             </div>
             {cartList.map((cartItem) => (
@@ -219,7 +219,7 @@ export default function OrderDetail() {
 
             <div className="order-summary-points">
               <div className="points-display">
-                Điểm thưởng của bạn: {data.point ? data.point.toLocaleString("vi-VN") : "0"} điểm
+                Your voucher points: {data.point ? data.point.toLocaleString("vi-VN") : "0"} điểm
               </div>
               <label>
                 <input
@@ -227,18 +227,18 @@ export default function OrderDetail() {
                   checked={isExchangedPoint}
                   onChange={handlePointChange}
                 />
-                Sử dụng điểm thưởng
+                Use points
               </label>
             </div>
 
             <div className="order-summary-vouchers">
-              <span>Danh sách voucher:</span>
+              <span>List of vouchers:</span>
               <select onChange={handleVoucherChange} value={selectedVoucherId || ""}>
-                <option value="">Chọn mã giảm giá</option>
+                <option value="">Select code discount</option>
                 {vouchers.map((voucher) => (
                   <option key={voucher.voucherId} value={voucher.voucherId}>
-                    Mã giảm giá {voucher.voucherValue}% (Áp dụng từ{" "}
-                    {voucher.startDate} đến {voucher.endDate})
+                    Code discount {voucher.voucherValue}% (Apply from{" "}
+                    {voucher.startDate} to {voucher.endDate})
                   </option>
                 ))}
               </select>

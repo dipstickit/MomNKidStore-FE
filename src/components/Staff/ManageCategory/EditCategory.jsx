@@ -8,6 +8,7 @@ import { FaArrowLeft, FaSave } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 import "./EditCategory.scss";
 import { MainAPI } from "../../API";
+import NavbarStaff from "../NavBar/NavBarStaff";  // Import NavbarStaff
 
 const EditCategory = () => {
     const { categoryId } = useParams();
@@ -94,38 +95,41 @@ const EditCategory = () => {
     };
 
     return (
-        <>
-            <div className="edit-category">
-                <h2>Edit Category</h2>
-                {category ? (
-                    <form onSubmit={formik.handleSubmit} className="edit-form">
-                        <div className="form-group">
-                            <label>Category Name:</label>
-                            <input
-                                type="text"
-                                name="categoryName"
-                                value={formik.values.categoryName}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                            />
-                            {formik.touched.categoryName && formik.errors.categoryName ? (
-                                <div className="error-message">{formik.errors.categoryName}</div>
-                            ) : null}
-                        </div>
-                        <div className="button-group">
-                            <button type="button" className="back-button" onClick={handleBack}>
-                                <FaArrowLeft /> Back to Manage Category
-                            </button>
-                            <button type="submit" className="update-button">
-                                <FaSave /> Update Category
-                            </button>
-                        </div>
-                    </form>
-                ) : (
-                    <p>Loading...</p>
-                )}
+        <div className="layout-container">
+            <NavbarStaff />
+            <div className="content-container">
+                <div className="edit-category">
+                    <h2>Edit Category</h2>
+                    {category ? (
+                        <form onSubmit={formik.handleSubmit} className="edit-form">
+                            <div className="form-group">
+                                <label>Category Name:</label>
+                                <input
+                                    type="text"
+                                    name="categoryName"
+                                    value={formik.values.categoryName}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                />
+                                {formik.touched.categoryName && formik.errors.categoryName ? (
+                                    <div className="error-message">{formik.errors.categoryName}</div>
+                                ) : null}
+                            </div>
+                            <div className="button-group">
+                                <button type="button" className="back-button" onClick={handleBack}>
+                                    <FaArrowLeft /> Back to Manage Category
+                                </button>
+                                <button type="submit" className="update-button">
+                                    <FaSave /> Update Category
+                                </button>
+                            </div>
+                        </form>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 
