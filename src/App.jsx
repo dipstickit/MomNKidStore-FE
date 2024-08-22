@@ -132,10 +132,10 @@ function App() {
           <Route path="/customer/report-detail/:reportId" element={<ViewReportDetail />} />
           <Route path="/create-report/:orderId" element={<CreateReport />} />
           <Route path="/pre-order/:productId" element={<PreOrderPage />} />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/payment-fail" element={<PaymentFail />} />
         </Route>
 
+        <Route path="/payment-success" element={<PaymentSuccess />} />
         {/* catch all */}
         <Route path="*" element={<div>Không có gì ở đây</div>} />
       </Routes>
