@@ -93,7 +93,7 @@ export default function Report() {
     };
 
     const statusOptions = [
-        { value: 0, label: "Pending" },
+        
         { value: 1, label: "Processing" },
         { value: 2, label: "Cancelled" }
     ];

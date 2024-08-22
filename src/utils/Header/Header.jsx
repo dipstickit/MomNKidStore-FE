@@ -150,7 +150,7 @@ export default function HeaderPage() {
                     <button type="button" className="btn position-relative">
                       <FaShoppingCart />
                       <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        Giỏ hàng
+                        Cart
                       </span>
                     </button>
                   </div>
