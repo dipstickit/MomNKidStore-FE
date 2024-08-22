@@ -16,8 +16,8 @@ const PaymentOptions = ({ setSelectedMethod }) => {
         <PaymentOptionsButton
           selected={selectedMethod === "VNPAY"}
           icon="https://res.cloudinary.com/dmyyf65yy/image/upload/v1723772161/vnpay-logo-vinadesign-25-12-57-55_xmlr0u.jpg"
-          title="Thanh toán ví VNPAY"
-          description="Ví VNPAY"
+          title="VNPAY Wallet Payment"
+          description="VNPAY Wallet"
           onClick={() => handleMethodChange("VNPAY")}
         />
       </div>
