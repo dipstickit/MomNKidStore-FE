@@ -174,7 +174,7 @@ export default function OrderUserInfo() {
 
   return (
     <div className="order-user-info">
-      <h2>Thông tin đặt hàng</h2>
+      <h2>Order Information</h2>
       <PaymentOptions setSelectedMethod={setSelectedMethod} />
       <div className="customer-info">
         {!editMode && customerInfo.userName && customerInfo.phone && customerInfo.address ? (
@@ -183,10 +183,10 @@ export default function OrderUserInfo() {
             <p><strong>Phone:</strong> {customerInfo.phone}</p>
             <p><strong>Address:</strong> {customerInfo.address}</p>
             <button type="button" className="btn btn-secondaryy" onClick={() => setEditMode(true)}>
-              Cập nhật thông tin
+              Update Information
             </button>
             <button type="button" className="btn btn-primaryy" onClick={handleDirectOrder}>
-              Đặt hàng
+              Confirm
             </button>
           </>
         ) : (
