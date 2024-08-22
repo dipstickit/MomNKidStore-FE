@@ -11,7 +11,7 @@ const PaymentOptions = ({ setSelectedMethod }) => {
 
   return (
     <div className="payment-options">
-      <h5>Phương Thức Thanh Toán</h5>
+      <h5>Payment Methods</h5>
       <div className="payment-methods">
         <PaymentOptionsButton
           selected={selectedMethod === "VNPAY"}

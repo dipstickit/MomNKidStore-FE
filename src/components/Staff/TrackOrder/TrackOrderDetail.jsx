@@ -103,21 +103,21 @@ export default function OrderDetail() {
             <div className="order-summary">
                 <h1>Order Detail - #{order.orderId}</h1>
                 <div className="order-info">
-                    <p><strong>Mã đơn hàng:</strong> {order.orderId}</p>
-                    <p><strong>Ngày:</strong> {convertSQLDate(order.orderDate)}</p>
-                    <p><strong>Tổng tiền:</strong> {formatVND(order.totalPrice)}</p>
-                    <p><strong>Trạng thái:</strong> <span className={`status ${getStatusClass(order.status).toLowerCase().replace(/\s+/g, '-')}`}>{getStatusClass(order.status).replace(/-/g, ' ')}</span></p>
+                    <p><strong>Order Code:</strong> {order.orderId}</p>
+                    <p><strong>Date:</strong> {convertSQLDate(order.orderDate)}</p>
+                    <p><strong>Total Price:</strong> {formatVND(order.totalPrice)}</p>
+                    <p><strong>Status:</strong> <span className={`status ${getStatusClass(order.status).toLowerCase().replace(/\s+/g, '-')}`}>{getStatusClass(order.status).replace(/-/g, ' ')}</span></p>
                 </div>
                 {customer && (
                     <div className="customer-info">
-                        <p><strong>Tên khách hàng:</strong> {customer.userName}</p>
-                        <p><strong>Địa chỉ:</strong> {customer.address}</p>
+                        <p><strong>Customer Name:</strong> {customer.userName}</p>
+                        <p><strong>Address:</strong> {customer.address}</p>
                         <p><strong>Phone:</strong> {customer.phone}</p>
                     </div>
                 )}
             </div>
 
-            <h2>Sản phẩm đơn hàng</h2>
+            <h2>Order products</h2>
             <div className="order-items">
                 {order.orderDetails.map((item, index) => (
                     <div key={index} className="order-item">
@@ -127,10 +127,10 @@ export default function OrderDetail() {
                             className="product-image"
                         />
                         <div className="item-info">
-                            <p><strong>Tên sản phẩm:</strong> {item.product.productName}</p>
-                            <p><strong>Số lượng:</strong> {item.orderQuantity}</p>
-                            <p><strong>Giá:</strong> {formatVND(item.productPrice)}</p>
-                            <p><strong>Tổng:</strong> {formatVND(item.orderQuantity * item.productPrice)}</p>
+                            <p><strong>Product Name:</strong> {item.product.productName}</p>
+                            <p><strong>Quantity:</strong> {item.orderQuantity}</p>
+                            <p><strong>Price:</strong> {formatVND(item.productPrice)}</p>
+                            <p><strong>Total Price:</strong> {formatVND(item.orderQuantity * item.productPrice)}</p>
                         </div>
                     </div>
                 ))}

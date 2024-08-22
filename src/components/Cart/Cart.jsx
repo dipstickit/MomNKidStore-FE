@@ -22,9 +22,9 @@ export default function Cart() {
           <HeaderPage />
         </div>
         <div className="title">
-          <h1>Giỏ hàng</h1>
+          <h1>Cart</h1>
           <button onClick={handleClick} className="button-62">
-            <FaLongArrowAltLeft /> Tiếp tục mua hàng
+            <FaLongArrowAltLeft /> Continue shopping
           </button>
         </div>
         <div className="order-information">
