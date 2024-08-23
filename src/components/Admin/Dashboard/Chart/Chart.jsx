@@ -78,24 +78,12 @@ export default function Chart({ startDate, endDate }) {
       });
   }, [startDate, endDate]);
 
-  const dataBarChart = {
-    labels: monthSales.length > 0 ? monthSales.map((sale) => `Tháng ${sale.month}`) : [],
-    datasets: [
-      {
-        label: "Doanh thu theo tháng",
-        data: monthSales.length > 0 ? monthSales.map((sale) => sale.totalSales) : [],
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
-        borderColor: "rgba(54, 162, 235, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
 
   const dataLineChart = {
     labels: monthSales.length > 0 ? monthSales.map((sale) => `Tháng ${sale.month}`) : [],
     datasets: [
       {
-        label: "Doanh thu theo tháng",
+        label: "Monthly Revenue",
         data: monthSales.length > 0 ? monthSales.map((sale) => sale.totalSales) : [],
         fill: false,
         borderColor: "rgba(75, 192, 192, 1)",
@@ -108,7 +96,7 @@ export default function Chart({ startDate, endDate }) {
     labels: topProducts.length > 0 ? topProducts.map((product) => product.productName) : [],
     datasets: [
       {
-        label: "Số lượng đã bán",
+        label: "Number of units sold",
         data: topProducts.length > 0 ? topProducts.map((product) => product.productQuantity) : [],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
@@ -133,24 +121,18 @@ export default function Chart({ startDate, endDate }) {
     <>
       <div className="row-chart">
         <div className="chart-col-vertical col-md-8">
-          <p className="fw-bold m-0">Tổng doanh thu </p>
+          <p className="fw-bold m-0">Total revenue by month </p>
           <div className="chart">
             <Line options={options} data={dataLineChart} />
           </div>
         </div>
         <div className="chart-col-pie col-md-4">
-          <p className="fw-bold m-0">Top sản phẩm đã bán</p>
+          <p className="fw-bold m-0">Top products sold</p>
           <div className="chart">
             <Pie data={dataPieChart} />
           </div>
         </div>
       </div>
-      {/* <div className="chart-col-vertical col-md-8">
-        <p className="fw-bold m-0">Doanh thu theo tháng</p>
-        <div className="chart">
-          <Bar options={options} data={dataBarChart} />
-        </div>
-      </div> */}
     </>
   );
 }

@@ -14,6 +14,7 @@ export default function UserManagement() {
   const nav = useNavigate();
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRole, setSelectedRole] = useState("");
 
   const fetchData = async () => {
     try {
@@ -73,14 +74,16 @@ export default function UserManagement() {
 
 
 
-  const filteredData = data.filter((user) =>
-    user.userName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredData = data.filter((user) => {
+    const matchesSearchQuery = user.userName.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesRoleFilter = selectedRole ? user.roleId === parseInt(selectedRole) : true;
+    return matchesSearchQuery && matchesRoleFilter;
+  });
 
   const getRoleName = (roleId) => {
     switch (roleId) {
-      case 1:
-        return "Admin";
+      // case 1:
+      //   return "Admin";
       case 2:
         return "Staff";
       case 3:
@@ -134,9 +137,9 @@ export default function UserManagement() {
   ];
 
 
-
   return (
     <div className="userManage_container">
+      <ToastContainer />
       <NavBar />
       <div className="content">
         <h1 className="mt-0">User Management</h1>
@@ -150,6 +153,20 @@ export default function UserManagement() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+          </div>
+          <div className="role-filter">
+            <label>Filter by Role: </label>
+            <select
+              id="roleFilter"
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+            >
+              <option value="">All Roles</option>
+              {/* <option value="1">Admin</option> */}
+              <option value="2">Staff</option>
+              <option value="3">Customer</option>
+              <option value="4">Delivery</option>
+            </select>
           </div>
           <button className="btn" onClick={() => nav("/admin/create-staff")}>
             Create Staff & Delivery

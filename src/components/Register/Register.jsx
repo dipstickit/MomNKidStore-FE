@@ -27,15 +27,15 @@ export default function Register() {
       dob: "",
     },
     validationSchema: Yup.object({
-      username: Yup.string().required("Tên đăng nhập là bắt buộc"),
-      email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
-      password: Yup.string().required("Mật khẩu là bắt buộc"),
+      username: Yup.string().required("Username is required"),
+      email: Yup.string().email("Invalid email").required("Email is required"),
+      password: Yup.string().required("Password is required"),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Mật khẩu không khớp")
-        .required("Nhập lại mật khẩu là bắt buộc"),
-      phone: Yup.string().required("Số điện thoại là bắt buộc"),
-      address: Yup.string().required("Địa chỉ là bắt buộc"),
-      dob: Yup.date().required("Ngày sinh là bắt buộc"),
+        .required("Re-entering password is required"),
+      phone: Yup.string().required("Phone number is required"),
+      address: Yup.string().required("Address is required"),
+      dob: Yup.date().required("Date of birth is required"),
     }),
     onSubmit: async (values) => {
       const payload = {
@@ -53,13 +53,13 @@ export default function Register() {
           `${MainAPI}/Auth/register-customer`,
           payload
         );
-        toast.success("Đăng ký thành công! Đang chuyển hướng");
+        toast.success("Registration successful! Redirecting");
         setTimeout(() => {
           nav("/login");
         }, 2000);
       } catch (err) {
         toast.error(
-          err.response?.data?.errors || "Đã xảy ra lỗi. Vui lòng thử lại."
+          err.response?.data?.errors || "An error occurred. Please try again."
         );
       }
     },
@@ -78,7 +78,7 @@ export default function Register() {
       <div className="register-container d-flex justify-content-center align-items-center">
         <ToastContainer autoClose={2000} />
         <div className="register-form">
-          <h2 className="mt-2">Đăng ký</h2>
+          <h2 className="mt-2">Register</h2>
           <form onSubmit={formik.handleSubmit}>
             <div className="register-info">
               <div className="register-detail">
@@ -87,7 +87,7 @@ export default function Register() {
                   type="text"
                   name="username"
                   value={formik.values.username}
-                  placeholder="Tên đăng nhập"
+                  placeholder="Username"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
@@ -117,7 +117,7 @@ export default function Register() {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={formik.values.password}
-                  placeholder="Mật khẩu"
+                  placeholder="Password"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
@@ -135,7 +135,7 @@ export default function Register() {
                   type={showPasswordConfirm ? "text" : "password"}
                   name="confirmPassword"
                   value={formik.values.confirmPassword}
-                  placeholder="Nhập lại mật khẩu"
+                  placeholder="Re-enter password"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
@@ -153,7 +153,7 @@ export default function Register() {
                   type="text"
                   name="phone"
                   value={formik.values.phone}
-                  placeholder="Số điện thoại"
+                  placeholder="Phone number"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
@@ -168,7 +168,7 @@ export default function Register() {
                   type="text"
                   name="address"
                   value={formik.values.address}
-                  placeholder="Địa chỉ"
+                  placeholder="Address"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
@@ -182,7 +182,7 @@ export default function Register() {
                   type="date"
                   name="dob"
                   value={formik.values.dob}
-                  placeholder="Ngày sinh"
+                  placeholder="Date of birth"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
@@ -193,7 +193,7 @@ export default function Register() {
             </div>
             <div className="other">
               <div>
-                <Link to="/login">Bạn đã có tài khoản?</Link>
+                <Link to="/login">Already have an account?</Link>
               </div>
             </div>
 
@@ -201,7 +201,7 @@ export default function Register() {
           </form>
           <div className="additional-buttons">
             <Link to="/" className="btn-secondary">
-              <FaHome className="home-icon" /> Quay lại trang chủ
+              <FaHome className="home-icon" /> Back to home page
             </Link>
           </div>
         </div>

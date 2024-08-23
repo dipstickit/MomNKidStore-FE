@@ -46,6 +46,31 @@
         }
       }
 
+      .role-filter {
+        display: flex;
+        align-items: center;
+        margin-right: auto;
+
+        label {
+          margin-right: 10px;
+          font-size: 1rem;
+          color: #555;
+        }
+
+        select {
+          padding: 8px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-size: 1rem;
+          transition: border-color 0.3s;
+
+          &:focus {
+            outline: none;
+            border-color: #10b981;
+          }
+        }
+      }
+
       .btn {
         padding: 10px 20px;
         font-size: 1rem;

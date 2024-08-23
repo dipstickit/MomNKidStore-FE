@@ -34,11 +34,11 @@ function Login() {
       if (response.ok) {
         return data;
       } else {
-        return { status: response.status, message: data.message || "Đăng nhập không thành công" };
+        return { status: response.status, message: data.message || "Login failed" };
       }
     } catch (error) {
       console.error("API call error:", error);
-      return { status: 500, message: "Đã xảy ra lỗi. Vui lòng thử lại." };
+      return { status: 500, message: "An error occurred. Please try again." };
     }
   };
 
@@ -49,9 +49,9 @@ function Login() {
     },
     validationSchema: Yup.object({
       email: Yup.string()
-        .email("Email không hợp lệ")
-        .required("Vui lòng nhập email"),
-      password: Yup.string().required("Vui lòng nhập mật khẩu"),
+        .email("Invalid email")
+        .required("Please enter email"),
+      password: Yup.string().required("Please enter password"),
     }),
     onSubmit: async (values) => {
       try {
@@ -83,7 +83,7 @@ function Login() {
 
         if (role === "1") {
           toast.success("Login Admin successfully");
-          nav("/admin");
+          nav("/admin/dashboard");
         } else if (role === "2") {
           toast.success("Login Staff successfully");
           nav("/staff");
@@ -100,7 +100,7 @@ function Login() {
 
       } catch (error) {
         console.error("Error during login:", error);
-        toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
+        toast.error("An error occurred. Please try again.");
       }
     }
   });
@@ -113,7 +113,7 @@ function Login() {
     <>
       <div className="login-container">
         <div className="login-form">
-          <h2>Đăng nhập</h2>
+          <h2>Login</h2>
           <form onSubmit={formik.handleSubmit}>
             <div className="login-info">
               <div className="login-detail">
@@ -140,7 +140,7 @@ function Login() {
                   id="password"
                   name="password"
                   value={formik.values.password}
-                  placeholder="Mật khẩu"
+                  placeholder="Password"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   required
@@ -154,14 +154,14 @@ function Login() {
               </div>
             </div>
             <div className="other">
-              <Link to="/register">Tạo tài khoản</Link>
-              <Link to="/forgot-password">Quên mật khẩu?</Link>
+              <Link to="/register">Create account</Link>
+              <Link to="/forgot-password">Forgot password?</Link>
             </div>
             <input type="submit" value="Log In" className="login-btn" />
           </form>
           <div className="additional-buttons">
             <Link to="/" className="btn-secondary">
-              <FaHome className="home-icon" /> Quay lại trang chủ
+              <FaHome className="home-icon" /> Back to home page
             </Link>
           </div>
         </div>
