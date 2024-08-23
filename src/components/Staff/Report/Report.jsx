@@ -15,6 +15,9 @@ export default function Report() {
     const nav = useNavigate();
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [filteredReports, setFilteredReports] = useState([]);
 
     const fetchReports = async () => {
         try {
@@ -26,6 +29,7 @@ export default function Report() {
                 }
             });
             setReports(response.data);
+            setFilteredReports(response.data);
             setLoading(false);
         } catch (error) {
             console.error("Error fetching report data:", error);
@@ -72,10 +76,26 @@ export default function Report() {
         }
     };
 
-
     useEffect(() => {
         fetchReports();
     }, []);
+
+    useEffect(() => {
+        filterReports();
+    }, [startDate, endDate, reports]);
+
+    const filterReports = () => {
+        const filtered = reports.filter(report => {
+            const updateAt = new Date(report.updateAt);
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            if (endDate) {
+                end.setHours(23, 59, 59, 999);
+            }
+            return (!startDate || updateAt >= start) && (!endDate || updateAt < end);
+        });
+        setFilteredReports(filtered);
+    };
 
     const getStatusText = (status) => {
         switch (status) {
@@ -93,7 +113,6 @@ export default function Report() {
     };
 
     const statusOptions = [
-        
         { value: 1, label: "Processing" },
         { value: 2, label: "Cancelled" }
     ];
@@ -123,7 +142,7 @@ export default function Report() {
                             {
                                 name: 'offset',
                                 options: {
-                                    offset: [0, 8], // Tạo khoảng cách giữa nút và menu dropdown
+                                    offset: [0, 8],
                                 },
                             },
                         ],
@@ -165,6 +184,20 @@ export default function Report() {
             <ToastContainer />
             <div className="content">
                 <h1>Report Management</h1>
+                <div className="filter-container">
+                    <label>Start Date:</label>
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                    />
+                    <label>End Date:</label>
+                    <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                    />
+                </div>
                 <div className="report-management">
                     {loading ? (
                         <div className="spinner-report">
@@ -174,7 +207,7 @@ export default function Report() {
                         <div className="table">
                             <DataTable
                                 columns={columns}
-                                data={reports}
+                                data={filteredReports}
                                 pagination
                                 paginationPerPage={10}
                                 paginationRowsPerPageOptions={[10, 20, 30, 40, 50, 60, 70, 80]}

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MainAPI } from "../../API";
 import "./NavBar.scss";
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function NavBar() {
   const token = JSON.parse(localStorage.getItem("accessToken"));

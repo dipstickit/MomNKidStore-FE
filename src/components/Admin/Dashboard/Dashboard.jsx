@@ -11,30 +11,46 @@ import axios from "axios";
 import { MainAPI } from "../../API";
 
 export default function Dashboard() {
-  const [startDate, setStartDate] = useState(new Date("2024-08-03"));
-  const [endDate, setEndDate] = useState(new Date("2024-08-22"));
   const [data, setData] = useState({});
   const [cancelOrder, setCancelOrder] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
   const [error, setError] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [totalSoldProduct, setTotalSoldProduct] = useState(null);
 
-  const handleStartDateChange = (date) => {
-    setStartDate(date);
-  };
-
-  const handleEndDateChange = (date) => {
-    setEndDate(date);
-  };
   const token = JSON.parse(localStorage.getItem("accessToken"));
+  useEffect(() => {
+    const fetchTotalSoldProduct = async () => {
+      try {
+        const monthYear = `${selectedDate.getMonth() + 1}/${selectedDate.getFullYear()}`;
+        const response = await axios.get(`${MainAPI}/Admin/totalSoldProduct`, {
+          params: {
+            filter: monthYear,
+          },
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (response.data) {
+          setTotalSoldProduct(response.data);
+        } else {
+          setTotalSoldProduct("Tháng này hiện không có sản phẩm.");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Failed to fetch the total sold products.");
+        setTotalSoldProduct(null);
+      }
+    };
+
+    fetchTotalSoldProduct();
+  }, [selectedDate]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${MainAPI}/Admin/dashboard`, {
-          params: {
-            startDate: formattedDate(startDate),
-            endDate: formattedDate(endDate),
-          },
           headers: {
             "Authorization": `Bearer ${token}`,
           },
@@ -51,35 +67,26 @@ export default function Dashboard() {
     };
 
     fetchData();
-  }, [startDate, endDate]);
-
+  }, []);
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
   return (
     <div className="d-flex">
       <NavBar />
       <div className="dashboard_container">
         <div className="dashboard-content container">
+          <h1 className="mt-0">Dashboard</h1>
+          <label>Date Filter by product sold</label>
           <div className="d-flex justify-content-between align-items-center">
-            <h1 className="mt-0">Dashboard</h1>
             <div className="date-picker-container">
-              {/* <DatePicker
-                selected={startDate}
-                onChange={handleStartDateChange}
-                selectsStart
-                startDate={startDate}
-                endDate={endDate}
-                dateFormat="dd/MM/yyyy"
-                className="date-picker"
-              />
               <DatePicker
-                selected={endDate}
-                onChange={handleEndDateChange}
-                selectsEnd
-                startDate={startDate}
-                endDate={endDate}
-                minDate={startDate}
-                dateFormat="dd/MM/yyyy"
-                className="date-picker"
-              /> */}
+                selected={selectedDate}
+                onChange={handleDateChange}
+                dateFormat="MM-yyyy"
+                placeholderText="Order date"
+                showMonthYearPicker
+              />
             </div>
           </div>
           {error ? (
@@ -90,9 +97,9 @@ export default function Dashboard() {
                 <div className="col col-md-4">
                   <div className="card card-content m-0">
                     <div className="card-body col-10">
-                      <div className="card-title fw-bold">Số sản phẩm đã bán</div>
+                      <div className="card-title fw-bold">Number of products sold</div>
                       <div className="d-flex justify-content-between m-0">
-                        <div>{data.totalSoldProduct}</div>
+                        <div>{totalSoldProduct}</div>
                         <div className="col-2 icon">
                           <BsBoxSeam />
                         </div>
@@ -103,7 +110,7 @@ export default function Dashboard() {
                 <div className="col col-md-4">
                   <div className="card card-content m-0">
                     <div className="card-body col-10">
-                      <div className="card-title fw-bold">Tổng doanh thu</div>
+                      <div className="card-title fw-bold">Total revenue</div>
                       <div className="d-flex justify-content-between m-0">
                         <div>{formatVND(data.totalRevenue)}</div>
                         <div className="col-2 icon">
@@ -116,7 +123,7 @@ export default function Dashboard() {
                 <div className="col col-md-4">
                   <div className="card card-content m-0">
                     <div className="card-body col-10">
-                      <div className="card-title fw-bold">Tổng số đơn hàng</div>
+                      <div className="card-title fw-bold">TotalOrder</div>
                       <div className="d-flex justify-content-between m-0">
                         <div>{data.totalOrder}</div>
                         <div className="col-2 icon">
@@ -128,8 +135,6 @@ export default function Dashboard() {
                 </div>
               </div>
               <Chart
-                startDate={formattedDate(startDate)}
-                endDate={formattedDate(endDate)}
               />
             </>
           )}

@@ -6,6 +6,9 @@ import HeaderPage from "../../../utils/Header/Header";
 import FooterPage from "../../../utils/Footer/FooterPage";
 import { jwtDecode } from "jwt-decode";
 import { MainAPI } from "../../API";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { formatVND } from "../../../utils/Format";
 
 const PreOrderPage = () => {
     const { productId } = useParams();
@@ -118,8 +121,21 @@ const PreOrderPage = () => {
     };
 
     const handlePreOrder = async () => {
-        if (!quantity || !shippingAddress || !orderCustomerName || !orderCustomerPhone) {
-            setError("All fields are required.");
+        if (!quantity || quantity < 1) {
+            toast.error("Quantity must be at least 1.");
+            return;
+        }
+        if (!orderCustomerName.trim()) {
+            toast.error("Customer name is required.");
+            return;
+        }
+        if (!orderCustomerPhone.trim() || !/^\d+$/.test(orderCustomerPhone.trim())) {
+            toast.error("Phone number is required, and must contain only digits.");
+
+            return;
+        }
+        if (!shippingAddress.trim()) {
+            toast.error("Shipping address is required.");
             return;
         }
 
@@ -163,14 +179,15 @@ const PreOrderPage = () => {
     return (
         <div className="pre-order-page">
             <HeaderPage />
+            <ToastContainer />
             <div className="pre-order-content">
                 <div className="product-info">
                     {product ? (
                         <>
                             <img src={product.images[0]?.imageProduct1} alt={product.productName} />
-                            <h3>{product.productName}</h3>
-                            <p>{product.productInfor}</p>
-                            <p><strong>Price:</strong> {product.productPrice} VND</p>
+                            <h3>Product Name: {product.productName}</h3>
+                            <p><strong>Description: </strong>{product.productInfor}</p>
+                            <p><strong>Price: </strong>{formatVND(product.productPrice)}</p>
                         </>
                     ) : (
                         <p>Loading product information...</p>

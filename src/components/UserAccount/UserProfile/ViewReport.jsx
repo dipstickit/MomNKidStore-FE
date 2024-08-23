@@ -15,6 +15,7 @@ import "./ViewReport.scss";
 export default function ViewReport() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filteredReports, setFilteredReports] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,22 +53,23 @@ export default function ViewReport() {
     const token = JSON.parse(localStorage.getItem("accessToken"));
     const decodedToken = jwtDecode(token);
     const customerId = decodedToken.customerId;  // Lấy customerId từ token
-    
+
     try {
-        const url = `${MainAPI}/Report/DeleteReport?reportId=${reportId}&customerId=${customerId}`;
-        await axios.delete(url, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        toast.success("Report deleted successfully.");
-        // Update the report list after deletion
-        setReports(reports.filter((report) => report.reportId !== reportId));
+      const url = `${MainAPI}/Report/DeleteReport?reportId=${reportId}&customerId=${customerId}`;
+      await axios.delete(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success("Report deleted successfully.");
+      // Update the report list after deletion
+      setReports(reports.filter((report) => report.reportId !== reportId));
     } catch (error) {
-        console.error("Error deleting report:", error);
-        toast.error("Failed to delete the report.");
+      console.error("Error deleting report:", error);
+      toast.error("Failed to delete the report.");
     }
-};
+  };
+
 
 
   const getStatusText = (status) => {
@@ -146,10 +148,11 @@ export default function ViewReport() {
     <div className="view-report-wrapper">
       <HeaderPage />
       <div className="container mt-5">
-        <h2 className="text-center mt-5 mb-4">Report product</h2>
+        <h2 className="text-center mt-5 mb-4">Report Product</h2>
+
         <DataTable
           columns={columns}
-          data={reports}
+          data={filteredReports.length > 0 ? filteredReports : reports}
           pagination
           highlightOnHover
           responsive
@@ -158,4 +161,5 @@ export default function ViewReport() {
       <FooterPage />
     </div>
   );
+
 }

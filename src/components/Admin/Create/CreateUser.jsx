@@ -75,9 +75,9 @@ const CreateUser = () => {
 
     return (
         <div className="create-user-page">
+            <ToastContainer />
             <Navbar />
             <div className="create-staff-container">
-                <ToastContainer autoClose={2000} />
                 <h2>Create Account</h2>
                 <form onSubmit={formik.handleSubmit} className="create-staff-form">
                     <div className="form-group">

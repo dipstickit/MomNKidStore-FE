@@ -87,7 +87,6 @@ function App() {
         <Route path="/blogs/post/:id" element={<Post />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/pre-order/:productId" element={<PreOrderPage />} />
 
         {/* admin routes */}
         <Route element={<RequireAuth allowedRoles={"1"} />}>
@@ -137,7 +136,7 @@ function App() {
         </Route>
 
         {/* catch all */}
-        <Route path="*" element={<div>Không có gì ở đây</div>} />
+        <Route path="*" element={<div>There are no records to display</div>} />
       </Routes>
       <ToastContainer />
     </BrowserRouter>
