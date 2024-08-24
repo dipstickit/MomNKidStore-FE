@@ -184,7 +184,7 @@ export default function Report() {
             <ToastContainer />
             <div className="content">
                 <h1>Report Management</h1>
-                <div className="filter-container">
+                {/* <div className="filter-container">
                     <label>Start Date:</label>
                     <input
                         type="date"
@@ -197,7 +197,7 @@ export default function Report() {
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
                     />
-                </div>
+                </div> */}
                 <div className="report-management">
                     {loading ? (
                         <div className="spinner-report">
