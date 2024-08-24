@@ -113,7 +113,7 @@ export default function HeaderPage() {
               nav("/home");
             }}
           >
-            <img src="https://res.cloudinary.com/dmyyf65yy/image/upload/v1722845760/fresh-milk-with-text-banner_1308-6819.jpg_nefazw.jpg" />
+            <img src="https://res.cloudinary.com/dmyyf65yy/image/upload/v1724468496/_4ca70df4-207a-4540-aadb-571ec2efff4b_wpm48c.jpg" />
           </div>
 
           <div className="search col-6">
