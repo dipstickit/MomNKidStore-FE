@@ -16,7 +16,7 @@ const validationSchema = Yup.object({
   blogTitle: Yup.string().required("Title is required"),
   blogContent: Yup.string().required("Content is required"),
   blogImage: Yup.string().url("Invalid URL").nullable(),
-  productId: Yup.number().required("Product ID is required"),
+  productId: Yup.array().min(1, "At least one product must be selected").required("Product ID is required"),
 });
 
 const EditPost = () => {
@@ -25,16 +25,33 @@ const EditPost = () => {
   const [blog, setBlog] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [productOptions, setProductOptions] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
 
   useEffect(() => {
-    fetchBlogDetails();
-    fetchProductOptions();
+    const loadInitialData = async () => {
+      await fetchProductOptions();
+      await fetchBlogDetails();
+    };
+
+    loadInitialData();
   }, [blogId]);
 
   const fetchBlogDetails = async () => {
     try {
       const response = await axios.get(`${MainAPI}/Blog/GetAllBlogByBlogId/${blogId}`);
-      setBlog(response.data);
+      const blogData = response.data;
+
+      setBlog(blogData);
+
+      if (blogData && Array.isArray(blogData.productId)) {
+        const selected = blogData.productId.map(productId => {
+          const product = productOptions.find(p => p.id === productId);
+          return product || { id: productId, name: `Product ${productId}` };
+        });
+        setSelectedProducts(selected);
+      } else {
+        setSelectedProducts([]);
+      }
     } catch (error) {
       console.error("Error fetching blog details:", error);
       toast.error("Failed to fetch blog details.");
@@ -44,8 +61,6 @@ const EditPost = () => {
   const fetchProductOptions = async () => {
     try {
       const response = await axios.get(`${MainAPI}/Product/get-all-products`);
-      console.log("Product API response:", response.data);
-
       const products = response.data.productList.map(product => ({
         id: product.productId,
         name: product.productName,
@@ -70,7 +85,7 @@ const EditPost = () => {
       blogContent: values.blogContent,
       blogImage: values.blogImage || "",
       status: true,
-      productId: [Number(values.productId)],
+      productId: selectedProducts.map(p => p.id),
     };
 
     try {
@@ -109,6 +124,16 @@ const EditPost = () => {
     }
   };
 
+  const handleProductSelect = (product) => {
+    if (!selectedProducts.some(p => p.id === product.id)) {
+      setSelectedProducts([...selectedProducts, product]);
+    }
+  };
+
+  const handleProductRemove = (id) => {
+    setSelectedProducts(selectedProducts.filter(p => p.id !== id));
+  };
+
   return (
     <div className="layout-container">
       <NavbarStaff />
@@ -126,79 +151,106 @@ const EditPost = () => {
                     blogTitle: blog.blogTitle,
                     blogContent: blog.blogContent,
                     blogImage: blog.blogImage || "",
-                    productId: blog.productId ? blog.productId[0] : "",
+                    productId: selectedProducts.map(product => product.id),
                   }}
                   validationSchema={validationSchema}
-                  onSubmit={async (values, { setFieldValue }) => {
+                  onSubmit={async (values) => {
                     if (values.blogImage instanceof File) {
                       const imageUrl = await uploadImage(values.blogImage);
-                      setFieldValue("blogImage", imageUrl);
+                      values.blogImage = imageUrl;
                     }
                     await handleUpdate(values);
                   }}
                 >
-                  {({ setFieldValue }) => (
-                    <Form className="edit-form">
-                      <div className="form-group">
-                        <label htmlFor="blogTitle">Title:</label>
-                        <Field
-                          type="text"
-                          name="blogTitle"
-                          id="blogTitle"
-                          className="form-field"
-                        />
-                        <ErrorMessage name="blogTitle" component="div" className="error" />
-                      </div>
+                  {({ setFieldValue, values }) => {
+                    // Đồng bộ selectedProducts với productId trong Formik
+                    useEffect(() => {
+                      setFieldValue("productId", selectedProducts.map(product => product.id));
+                    }, [selectedProducts, setFieldValue]);
 
-                      <div className="form-group">
-                        <label htmlFor="blogContent">Content:</label>
-                        <Field
-                          as="textarea"
-                          name="blogContent"
-                          id="blogContent"
-                          className="form-field"
-                        />
-                        <ErrorMessage name="blogContent" component="div" className="error" />
-                      </div>
+                    return (
+                      <Form className="edit-form">
+                        <div className="form-group">
+                          <label htmlFor="blogTitle">Title:</label>
+                          <Field
+                            type="text"
+                            name="blogTitle"
+                            id="blogTitle"
+                            className="form-field"
+                          />
+                          <ErrorMessage name="blogTitle" component="div" className="error" />
+                        </div>
 
-                      <div className="form-group">
-                        <label htmlFor="blogImage">Image:</label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          id="blogImage"
-                          onChange={async (event) => {
-                            if (event.currentTarget.files.length > 0) {
-                              const file = event.currentTarget.files[0];
-                              const imageUrl = await uploadImage(file);
-                              setFieldValue("blogImage", imageUrl);
-                            }
-                          }}
-                          className="form-field"
-                        />
-                        <ErrorMessage name="blogImage" component="div" className="error" />
-                      </div>
+                        <div className="form-group">
+                          <label htmlFor="blogContent">Content:</label>
+                          <Field
+                            as="textarea"
+                            name="blogContent"
+                            id="blogContent"
+                            className="form-field"
+                          />
+                          <ErrorMessage name="blogContent" component="div" className="error" />
+                        </div>
 
-                      <div className="form-group">
-                        <label htmlFor="productId">Product:</label>
-                        <Field as="select" name="productId" id="productId" className="form-field">
-                          <option value="">Select a product</option>
-                          {productOptions.map(product => (
-                            <option key={product.id} value={product.id}>
-                              {product.name}
-                            </option>
-                          ))}
-                        </Field>
-                        <ErrorMessage name="productId" component="div" className="error" />
-                      </div>
+                        <div className="form-group">
+                          <label htmlFor="blogImage">Image:</label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            id="blogImage"
+                            onChange={async (event) => {
+                              if (event.currentTarget.files.length > 0) {
+                                const file = event.currentTarget.files[0];
+                                const imageUrl = await uploadImage(file);
+                                setFieldValue("blogImage", imageUrl);
+                              }
+                            }}
+                            className="form-field"
+                          />
+                          <ErrorMessage name="blogImage" component="div" className="error" />
+                        </div>
 
-                      <div className="button-container">
-                        <button type="submit" className="save-button"> <FaSave /> Save</button>
-                        <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>Cancel</button>
-                      </div>
-                    </Form>
+                        <div className="form-group">
+                          <label htmlFor="productId">Product:</label>
+                          <div className="dropdown">
+                            <button type="button" className="dropdown-button full-width-button">
+                              Select Products
+                            </button>
 
-                  )}
+                            <div className="dropdown-content">
+                              {productOptions.map(product => (
+                                <div
+                                  key={product.id}
+                                  className="dropdown-item"
+                                  onClick={() => handleProductSelect(product)}
+                                >
+                                  {product.name}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="selected-products">
+                            {selectedProducts.map(product => (
+                              <div key={product.id} className="selected-product">
+                                {product.name}
+                                <button type="button" onClick={() => handleProductRemove(product.id)}>
+                                  Remove
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                          <ErrorMessage name="productId" component="div" className="error" />
+                        </div>
+
+                        <div className="button-container">
+                          <button type="submit" className="save-button">
+                            <FaSave /> Save
+                          </button>
+                          <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>Cancel</button>
+                        </div>
+                      </Form>
+                    );
+                  }}
                 </Formik>
               ) : (
                 <div className="blog-content">

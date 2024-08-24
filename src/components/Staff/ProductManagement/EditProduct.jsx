@@ -11,7 +11,10 @@ import './EditProduct.scss';
 import NavbarStaff from "../NavBar/NavBarStaff"
 
 const validationSchema = Yup.object({
-    productName: Yup.string().required("Product Name is required"),
+    productName: Yup.string()
+        .required("Product Name is required")
+        .min(1, "Product Name must be at least 1 character")
+        .max(50, "Product Name cannot exceed 50 characters"),
     productInfor: Yup.string().required("Product Information is required"),
     productPrice: Yup.number()
         .positive("Product Price must be greater than 0")
@@ -21,7 +24,6 @@ const validationSchema = Yup.object({
         .required("Product Quantity is required"),
     productCategoryId: Yup.number().required('Category is required'),
     images: Yup.array().min(1, "At least one image is required"),
-    productStatus: Yup.string().required('Product status is required'),
 });
 
 const uploadImageToCloudinary = async (file) => {
@@ -77,7 +79,6 @@ const EditProduct = () => {
                     productQuantity: response.data.productQuantity,
                     productCategoryId: response.data.productCategoryId || '',
                     images: response.data.images.map(img => ({ imageProduct1: img.imageProduct1 })) || [],
-                    productStatus: response.data.productStatus ? 'available' : 'unavailable',
                 });
             } catch (error) {
                 console.error('Error fetching product:', error);
@@ -107,7 +108,6 @@ const EditProduct = () => {
             productQuantity: 0,
             productCategoryId: '',
             images: [],
-            productStatus: 'available',
         },
         validationSchema,
         onSubmit: async (values) => {
@@ -131,7 +131,6 @@ const EditProduct = () => {
                     productQuantity: values.productQuantity,
                     productCategoryId: Number(values.productCategoryId),
                     images: imagesFormatted,
-                    productStatus: values.productStatus === 'available',
                 };
 
                 if (!token) {
@@ -159,7 +158,7 @@ const EditProduct = () => {
         const files = Array.from(event.currentTarget.files);
         const newImagePreviews = files.map(file => URL.createObjectURL(file));
 
-        setImagePreviews(prev => [...prev, ...newImagePreviews]);
+        setImagePreviews(newImagePreviews);
         formik.setFieldValue("images", files);
     };
 
@@ -167,7 +166,6 @@ const EditProduct = () => {
         <div className="editProduct_page">
             <NavbarStaff />
             <div className="editProduct_container">
-                <ToastContainer autoClose={2000} />
                 <h1>Edit Product</h1>
                 <form onSubmit={formik.handleSubmit} className="form">
                     <div className="form-group">
@@ -271,23 +269,6 @@ const EditProduct = () => {
                         {imagePreviews.map((imageSrc, index) => (
                             <img key={index} src={imageSrc} alt={`Preview ${index}`} className="preview-img" />
                         ))}
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="productStatus">Status</label>
-                        <select
-                            id="productStatus"
-                            name="productStatus"
-                            value={formik.values.productStatus}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        >
-                            <option value="available">Available</option>
-                            <option value="unavailable">Unavailable</option>
-                        </select>
-                        {formik.touched.productStatus && formik.errors.productStatus ? (
-                            <div className="error">{formik.errors.productStatus}</div>
-                        ) : null}
                     </div>
 
                     <button type="submit" className="btn submit-btn">

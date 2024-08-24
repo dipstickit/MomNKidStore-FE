@@ -7,7 +7,7 @@ import { MainAPI } from "../../API";
 import { FaImage, FaPlus, FaArrowLeft } from "react-icons/fa";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import NavbarStaff from "../NavBar/NavBarStaff";  // Import your Navbar component
+import NavbarStaff from "../NavBar/NavBarStaff";
 import "./CreateProduct.scss";
 
 export default function CreateProduct() {
