@@ -166,7 +166,6 @@ const EditProduct = () => {
         <div className="editProduct_page">
             <NavbarStaff />
             <div className="editProduct_container">
-                <ToastContainer autoClose={2000} />
                 <h1>Edit Product</h1>
                 <form onSubmit={formik.handleSubmit} className="form">
                     <div className="form-group">
