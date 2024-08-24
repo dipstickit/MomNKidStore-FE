@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Voucher.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import Switch from "react-switch";
 import { MainAPI } from "../../API";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { MdModeEdit } from "react-icons/md";
-import { DeleteIcon } from "../../../utils/Icon/DeleteIcon";
 import * as Yup from "yup";
 
 export default function ManageVoucher() {
@@ -19,13 +18,16 @@ export default function ManageVoucher() {
   const [startDate, setStartDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortType, setSortType] = useState("newest");
+  const [statusFilter, setStatusFilter] = useState("all");
   const pageSize = 10;
   const navigate = useNavigate();
-
   const token = JSON.parse(localStorage.getItem("accessToken"));
 
-  const fetchData = async () => {
+  useEffect(() => {
+    fetchData();
+  }, []);
 
+  const fetchData = async () => {
     if (!token) {
       console.error("No access token found.");
       return;
@@ -35,12 +37,11 @@ export default function ManageVoucher() {
       const response = await axios.get(`${MainAPI}/VoucherOfShop/staff`, {
         headers: {
           "x-access-token": token,
-          "Authorization": `Bearer ${token}`
+          "Authorization": `Bearer ${token}`,
         },
       });
 
       setVouchers(response.data);
-      console.log("Vouchers:", response.data);
     } catch (error) {
       console.error("Error fetching data voucher:", error);
       if (error.response) {
@@ -59,10 +60,6 @@ export default function ManageVoucher() {
       }
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const voucherSchema = Yup.object().shape({
     voucherValue: Yup.number()
@@ -90,18 +87,17 @@ export default function ManageVoucher() {
     try {
       await voucherSchema.validate(formData, { abortEarly: false });
 
-
       if (!token) {
         toast.error("No access token found. Please log in again.");
         return;
       }
 
-      const response = await axios.post(
+      await axios.post(
         `${MainAPI}/VoucherOfShop`,
         {
           voucherValue: Number(voucherValue),
           voucherQuantity: Number(quantity),
-          startDate: startDate,
+          startDate,
           endDate: exDate,
         },
         {
@@ -113,13 +109,8 @@ export default function ManageVoucher() {
       );
 
       fetchData();
-      setShowAdd(false);
-      setExDate("");
-      setVoucherValue("");
-      setQuantity("");
-      setStartDate("");
+      resetForm();
       toast.success("Voucher added successfully");
-
     } catch (error) {
       if (error.name === "ValidationError") {
         error.inner.forEach((err) => {
@@ -149,25 +140,32 @@ export default function ManageVoucher() {
     navigate(`/edit-voucher/${voucherId}`);
   };
 
-  const handleDeleteVoucher = async (voucherId) => {
-
+  const handleSwitchStatus = async (voucherId, currentStatus) => {
     if (!token) {
       toast.error("No access token found. Please log in again.");
       return;
     }
 
     try {
-      await axios.delete(`${MainAPI}/VoucherOfShop/${voucherId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+      await axios.put(
+        `${MainAPI}/VoucherOfShop`,
+        null,
+        {
+          params: {
+            voucherId,
+            status: !currentStatus,
+          },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
-      toast.success("Voucher deleted successfully");
+      toast.success("Voucher status updated successfully");
       fetchData();
     } catch (error) {
-      console.error("Error deleting voucher:", error);
+      console.error("Error switching voucher status:", error);
       if (error.response) {
         switch (error.response.status) {
           case 401:
@@ -186,15 +184,20 @@ export default function ManageVoucher() {
   };
 
   const sortVouchers = (vouchers, sortType) => {
+    let sortedVouchers = [...vouchers];
+    if (statusFilter !== "all") {
+      const isActive = statusFilter === "active";
+      sortedVouchers = sortedVouchers.filter((voucher) => voucher.status === isActive);
+    }
     switch (sortType) {
       case "voucherValue":
-        return [...vouchers].sort((a, b) => b.voucherValue - a.voucherValue);
+        return sortedVouchers.sort((a, b) => b.voucherValue - a.voucherValue);
       case "startDate":
-        return [...vouchers].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+        return sortedVouchers.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
       case "newest":
-        return [...vouchers].sort((a, b) => b.voucherId - a.voucherId);
+        return sortedVouchers.sort((a, b) => b.voucherId - a.voucherId);
       default:
-        return vouchers;
+        return sortedVouchers;
     }
   };
 
@@ -211,9 +214,16 @@ export default function ManageVoucher() {
     setCurrentPage(page);
   };
 
+  const resetForm = () => {
+    setExDate("");
+    setVoucherValue("");
+    setQuantity("");
+    setStartDate("");
+    setShowAdd(false);
+  };
+
   return (
     <>
-      <ToastContainer autoClose={2000} />
       <div className="manage-voucher-container">
         <div className="content">
           <h1>Voucher Management</h1>
@@ -222,6 +232,15 @@ export default function ManageVoucher() {
               <button className="btn add-btn" onClick={() => setShowAdd(true)}>
                 Create Voucher
               </button>
+            </div>
+
+            <div className="filter-options">
+              <label>Status: </label>
+              <select onChange={(e) => setStatusFilter(e.target.value)} value={statusFilter}>
+                <option value="all">All</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
             </div>
 
             <div className="sort-options">
@@ -299,9 +318,21 @@ export default function ManageVoucher() {
                         <button className="action-btn" onClick={() => handleEditVoucher(voucher.voucherId)}>
                           <MdModeEdit color="green" />
                         </button>
-                        <button className="action-btn" onClick={() => handleDeleteVoucher(voucher.voucherId)}>
-                          <DeleteIcon color="red" />
-                        </button>
+                        <Switch
+                          checked={voucher.status}
+                          onChange={() => handleSwitchStatus(voucher.voucherId, voucher.status)}
+                          onColor="#86d3ff"
+                          onHandleColor="#2693e6"
+                          handleDiameter={30}
+                          uncheckedIcon={false}
+                          checkedIcon={false}
+                          boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+                          activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+                          height={20}
+                          width={48}
+                          className="react-switch"
+                          id={`switch-${voucher.voucherId}`}
+                        />
                       </td>
                     </tr>
                   ))

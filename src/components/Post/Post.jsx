@@ -43,10 +43,6 @@ export default function Post() {
     const decodedToken = jwtDecode(token);
     const customerId = decodedToken.customerId;
 
-    if (selectedProduct.productQuantity <= 0) {
-      toast.error("Product is out of stock, please pre-order.");
-      return;
-    }
     try {
       const response = await axios.post(
         `${MainAPI}/Cart`,
@@ -62,7 +58,6 @@ export default function Post() {
         }
       );
       console.log(response);
-
       if (response.status === 200 || response.status === 201) {
         toast.success("Product has been added to cart!");
       } else {

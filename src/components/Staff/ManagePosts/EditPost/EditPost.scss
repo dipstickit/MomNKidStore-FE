@@ -36,8 +36,6 @@
 .content-container {
     flex: 1;
     padding: 20px;
-    background-color: #f8f9fa;
-    width: 100%;
 
     .blog-detail-container {
         max-width: 900px;
@@ -109,7 +107,6 @@
         .edit-form {
             display: flex;
             flex-direction: column;
-            max-width: 1000px;
             margin-top: 20px;
 
             .form-group {
@@ -135,6 +132,84 @@
                         height: 200px;
                         resize: vertical;
                     }
+
+                    &:focus {
+                        border-color: #80bdff;
+                        outline: none;
+                    }
+                }
+            }
+
+            .dropdown {
+                position: relative;
+
+                .dropdown-button {
+                    width: 100%;
+                    background-color: rgb(241, 238, 238);
+                    color: black !important;
+                    border: none;
+                    padding: 12px 150px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    text-align: left;
+                    font-size: 16px;
+
+                    &:hover {
+                        background-color: #5a6268;
+                    }
+                }
+
+                .dropdown-content {
+                    display: none;
+                    position: absolute;
+                    background-color: white;
+                    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+                    padding: 12px 16px;
+                    z-index: 1;
+                    width: 90%;
+                    border-radius: 4px;
+                    border: 1px solid #ddd;
+
+                    .dropdown-item {
+                        padding: 5px 0;
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: #f1f1f1;
+                        }
+                    }
+                }
+
+                &:hover .dropdown-content {
+                    display: block;
+                }
+
+
+            }
+
+            .selected-products {
+                margin-top: 20px;
+
+                .selected-product {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px;
+                    background-color: #f1f1f1;
+                    border-radius: 4px;
+                    margin-bottom: 10px;
+
+                    button {
+                        background-color: #dc3545;
+                        color: white;
+                        border: none;
+                        border-radius: 4px;
+                        padding: 4px 8px;
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: #c82333;
+                        }
+                    }
                 }
             }
 
@@ -149,7 +224,6 @@
                     color: #fff;
                     border: none;
                     padding: 14px 40px;
-                    /* Increase padding for buttons */
                     border-radius: 4px;
                     cursor: pointer;
                     font-size: 16px;

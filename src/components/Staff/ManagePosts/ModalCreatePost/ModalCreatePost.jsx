@@ -15,7 +15,7 @@ const validationSchema = Yup.object({
   blogTitle: Yup.string().required("Title is required"),
   blogContent: Yup.string().required("Content is required"),
   blogImage: Yup.string().url("Invalid URL").nullable(),
-  productId: Yup.number().required("Product ID is required"),
+  productId: Yup.array().min(1, "At least one product must be selected").required("Product ID is required"),
   status: Yup.string().oneOf(['active', 'inactive'], 'Invalid status').required("Status is required"),
 });
 
@@ -54,7 +54,7 @@ const ModalCreatePost = () => {
       blogContent: values.blogContent,
       blogImage: values.blogImage || "",
       status: values.status === 'active',
-      productId: [Number(values.productId)],
+      productId: values.productId.map(Number),
     };
 
     try {
@@ -92,9 +92,19 @@ const ModalCreatePost = () => {
     }
   };
 
+  const handleProductChange = (e, product, setFieldValue, values) => {
+    let updatedProducts;
+    if (e.target.checked) {
+      updatedProducts = [...values.productId, product.id];
+    } else {
+      updatedProducts = values.productId.filter(id => id !== product.id);
+    }
+    setFieldValue('productId', updatedProducts);
+  };
+
   return (
     <div className="layout-container">
-      <NavbarStaff /> {/* Add the Navbar on the left side */}
+      <NavbarStaff />
       <div className="content-container">
         <div className="create-post-container">
           <h1>Create New Blog</h1>
@@ -104,18 +114,14 @@ const ModalCreatePost = () => {
               blogContent: "",
               blogImage: "",
               status: "active",
-              productId: "",
+              productId: [], // Initialize productId as an array
             }}
             validationSchema={validationSchema}
-            onSubmit={async (values, { setFieldValue }) => {
-              if (values.blogImage instanceof File) {
-                const imageUrl = await uploadImage(values.blogImage);
-                setFieldValue("blogImage", imageUrl);
-              }
+            onSubmit={async (values) => {
               await handleCreate(values);
             }}
           >
-            {({ setFieldValue }) => (
+            {({ setFieldValue, values }) => (
               <Form className="create-form">
                 <label>
                   Title:
@@ -161,14 +167,36 @@ const ModalCreatePost = () => {
                 </label>
                 <label>
                   Product:
-                  <Field as="select" name="productId" className="form-field">
-                    <option value="">Select a product</option>
-                    {productOptions.map(product => (
-                      <option key={product.id} value={product.id}>
-                        {product.name}
-                      </option>
-                    ))}
-                  </Field>
+                  <div className="dropdown-multiselect">
+                    <div className="dropdown">
+                      <button className="dropdown-button">Select Products</button>
+                      <div className="dropdown-content">
+                        {productOptions.map(product => (
+                          <label key={product.id} className="dropdown-item">
+                            <input
+                              type="checkbox"
+                              value={product.id}
+                              onChange={(e) => handleProductChange(e, product, setFieldValue, values)}
+                            />
+                            {product.name}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="selected-products">
+                      {values.productId.length > 0 && (
+                        <div>
+                          <h4>Selected Products:</h4>
+                          <ul>
+                            {values.productId.map(productId => {
+                              const product = productOptions.find(p => p.id === productId);
+                              return product ? <li key={product.id}>{product.name}</li> : null;
+                            })}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   <ErrorMessage name="productId" component="div" className="error" />
                 </label>
                 <div className="button-container">

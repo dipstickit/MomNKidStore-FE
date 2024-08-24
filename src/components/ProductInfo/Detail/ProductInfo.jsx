@@ -85,6 +85,10 @@ export default function ProductInfo() {
     }
 
     if (product) {
+      if (product.productQuantity > 0) {
+        toast.error("Product is in stock. No need to pre-order.");
+        return;
+      }
       nav(`/pre-order/${product.productId}`);
     }
   };
