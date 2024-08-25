@@ -65,18 +65,24 @@ export default function Review() {
       toast.error("No access token found");
       return;
     }
-
+  
+    const customerId = getCustomerIdFromToken();
+    if (!customerId) {
+      toast.error("Failed to retrieve customer ID");
+      return;
+    }
+  
     try {
-      const response = await fetch(`${MainAPI}/Feedback/${feedbackId}`, {
+      const response = await fetch(`${MainAPI}/Feedback/${feedbackId}/${customerId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       if (response.ok) {
         toast.success("Feedback deleted successfully");
-        fetchData();
+        fetchData(); // Refresh data after deletion
       } else {
         toast.error("Failed to delete feedback");
       }
@@ -85,6 +91,7 @@ export default function Review() {
       console.error("Error:", error);
     }
   };
+  
 
   const handleEditFeedback = (feedback) => {
     setFeedbackContent(feedback.feedbackContent);
